@@ -47,9 +47,21 @@ def truncate_utf8(s, max_bytes=SUMMARY_MAX_BYTES):
     return "".join(out).rstrip()
 
 
+# Items that always leave the desk as the generic sensitive message, however the ticket was made (rules, AI or a
+# clerk edit). 902 = 自殺危機: team decision — self-harm goes out like psychiatric details, keeping P1, the
+# emergency flag and the real category.
+SENSITIVE_ITEMS = frozenset({902})
+
+
 def _ticket_flags(t):
     f = t.get("flags") or []
-    return set(f) if isinstance(f, (list, tuple, set)) else set()
+    flags = set(f) if isinstance(f, (list, tuple, set)) else set()
+    try:
+        if int(t.get("item_code") or 0) in SENSITIVE_ITEMS:
+            flags.add("sensitive")
+    except (TypeError, ValueError):
+        pass
+    return flags
 
 
 def _age_min(t, now):

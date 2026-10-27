@@ -18,7 +18,7 @@ from darkshelter.config import make_config, hmac_key
 from darkshelter.extract import analyze
 from darkshelter.net import codec
 from darkshelter.store import Store
-from darkshelter.wireview import build_summary, wire_view
+from darkshelter.wireview import F_EMERGENCY, build_summary, wire_view
 
 ROOT = Path(__file__).resolve().parent.parent
 NOW = time.mktime((2026, 10, 28, 10, 0, 0, 0, 0, -1))
@@ -230,6 +230,91 @@ class RedTeamWireTest(unittest.TestCase):
         v = wire_view(self.ticket(priority=1, category=4, item_code=0, zone_code=codebook.ZONE_EXTERNAL,
                                   location="活動中心後門", transcript=""), NOW, "B")
         self.assertIn("活動中心後門", v["summary"])
+
+
+class DeskFlowWireTest(unittest.TestCase):
+    """Round-2 team decisions, checked through the real desk routes (typed intake -> confirm -> wire/CSV/print)."""
+
+    @classmethod
+    def setUpClass(cls):
+        from darkshelter.desk_app import create_app
+        cls.tmp = tempfile.TemporaryDirectory(ignore_cleanup_errors=True)
+        cls.cfg = make_config({"paths": {"desk_db": os.path.join(cls.tmp.name, "desk.db"),
+                                         "eoc_db": os.path.join(cls.tmp.name, "eoc.db")},
+                               "ports": {"emu_control_http": 1}})  # nothing listens there
+        cls.app = create_app(cls.cfg, mock=True, start_sender=False)
+        cls.desk = cls.app.desk
+        cls.c = cls.app.test_client()
+        cls.key = hmac_key(cls.cfg)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.desk.stop()
+        time.sleep(0.6)
+        cls.desk.store.close()
+        cls.tmp.cleanup()
+
+    def intake(self, text):
+        r = self.c.post("/api/intake/text", json={"text": text, "clerk": "值班人員A"})
+        self.assertEqual(r.status_code, 200, r.get_data(as_text=True))
+        job_id = r.get_json()["job_id"]
+        deadline = time.time() + 15
+        while time.time() < deadline:
+            j = self.c.get(f"/api/jobs/{job_id}").get_json()
+            if j["status"] in ("done", "error"):
+                self.assertEqual(j["status"], "done", j)
+                return j
+            time.sleep(0.1)
+        self.fail(f"job for {text} did not finish")
+
+    def confirm_all(self, seqs):
+        for s in seqs:
+            r = self.c.post(f"/api/tickets/{s}/confirm", json={"clerk": "值班人員A"})
+            self.assertEqual(r.status_code, 200, r.get_data(as_text=True))
+
+    def sent(self, seq):
+        """(wire view, the bytes that would be sent, the record the EOC decodes)."""
+        v = wire_view(self.desk.store.get(seq), time.time(), "B")
+        self.assertIsNotNone(v)
+        data, n = codec.pack_summary([v], 200, self.key, 7, 1, 1)
+        self.assertEqual(n, 1)
+        return v, data, codec.unpack(data, {7: self.key}).records[0]
+
+    def printed(self, seq):
+        """What the printed board shows for a ticket: the fields app.js renderBoard puts in a board row
+        (code, category icon, zone, wire state, wire summary, EOC status)."""
+        st = self.c.get("/api/state").get_json()
+        row = [t for t in st["board"]["tickets"] if t["seq"] == seq][0]
+        return " ".join(str(x) for x in (row["code"], row["category_icon"], row["zone_label"], row["wire_state"]["zh"],
+                                         row["wire_state"]["en"], row["wire_summary"], row["eoc_status_zh"]))
+
+    def test_self_harm_goes_out_like_psychiatric_details(self):
+        """Self-harm: generic 「機密醫療需求，請聯絡B站」 on the wire, in the CSV and in the print view; P1, the emergency
+        flag and the real category kept; the desk card keeps the details."""
+        texts = ["他說他想自殺", "我女兒在B區3床割腕了", "阿伯有自傷行為，一直傷害自己", "她吞了很多藥", "我不想活了"]
+        harm = []
+        for text in texts:
+            j = self.intake(text)
+            st = self.c.get("/api/state").get_json()
+            cards = [d for d in st["drafts"] if d["seq"] in j["seqs"] and d["item_code"] == 902]
+            self.assertEqual(len(cards), 1, text)
+            card = cards[0]
+            self.assertEqual((card["priority"], card["category"], card["emergency"]), (1, 9, "suicide"), text)
+            self.confirm_all(j["seqs"])
+            harm.append((text, card["seq"]))
+        csv_text = self.c.get("/export.csv").get_data().decode("utf-8-sig")
+        self.assertIn("機密醫療需求，請聯絡B站", csv_text)
+        for text, seq in harm:
+            v, data, rec = self.sent(seq)
+            self.assertEqual(rec["summary"], "機密醫療需求，請聯絡B站", text)
+            self.assertEqual((rec["priority"], rec["category"], rec["item_code"], rec["quantity"]), (1, 9, 0, 0), text)
+            self.assertTrue(v["flags"] & F_EMERGENCY, text)
+            printed = self.printed(seq)
+            self.assertIn("機密醫療需求", printed, text)
+            for w in ("自殺", "自杀", "自傷", "自伤", "割腕", "不想活"):
+                self.assertNotIn(w.encode("utf-8"), data, f"{w} in the sent bytes: {text}")
+                self.assertNotIn(w, printed, f"{w} in the print view: {text}")
+                self.assertNotIn(w, csv_text, f"{w} in the CSV")
 
 
 if __name__ == "__main__":
