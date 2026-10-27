@@ -1,11 +1,11 @@
 # Red-team pass — 2026-10-28, 04:40–05:00 (Taipei)
 
-Six agents attacked the build in parallel for about 12 minutes each. They worked read-only, so no code changed
-during the pass. Each one used its own ports and databases, and none loaded Whisper because free memory was 2.9 GB.
+Six agents attacked the build in parallel for about 12 minutes each. A second round of two agents (G and H) then
+checked the findings that hadn't been proven. They all worked read-only, so no code changed during the pass. Each one used its own ports and databases, and none loaded Whisper because free memory was 2.9 GB.
 Every finding is **verified** (a proof of concept was run, and its key output is quoted) unless it is marked
 **unverified** (found by reading the code only).
 
-**Totals:** 2 critical, 6 high, 8 medium and 13 low. Both critical findings can lose a life-threatening request.
+**Totals:** 2 critical, 6 high, 8 medium and 12 low (one low was withdrawn in the second round). Both critical findings can lose a life-threatening request.
 
 The proof-of-concept scripts are in the session scratch folder, under `redteam\A` … `redteam\F`. They were not
 copied into the repo.
@@ -18,6 +18,8 @@ copied into the repo.
 | D | Web/API: CSRF, DNS rebinding, XSS, R-T bypass through the API, double-submit races |
 | E | Operations and demo day: Ollama hang/garbage/500, bursts, 100 kB input, CJK paths, restarts |
 | F | Spec and claims audit: SPEC requirements not covered by §13, false claims in README/PROGRESS |
+| G | Second round: stored XSS on the desk and EOC pages (L6) |
+| H | Second round: end-to-end check of M3, and of C2 in the running app |
 
 ## What to fix first
 
@@ -212,8 +214,9 @@ Each fix should be followed by the full §13 suite, which takes about 15 minutes
   validate types and return 400.
 - **L5. Zero-width characters defeat matching (A).** 「洗​腎」 and 「救‍命」 come out P3. This affects
   typed or pasted text only. Fix: strip Unicode category Cf in `textnorm`.
-- **L6. Two `innerHTML` sinks skip `esc()` (D, unverified).** They are in `static/desk/app.js:79` (toast) and `:502`
-  (system lines). It was not traced whether user text reaches them. Fix: use `textContent`.
+- **L6 (withdrawn by G). The two `innerHTML` sinks D flagged are not exploitable.** Every caller of `app.js:79`
+  escapes what it passes, and `:502` shows only escaped strings or numbers from the server. See "Attacks that
+  failed".
 - **L7. 「不用洗腎了」 comes out P1 (A).** This is over-triage, which errs on the safe side. Noted only.
 - **L8. The `privacy_view_default` setting is ignored (F).** The toggle is hard-wired on in `index.html:86`. On is
   the safe default. Fix: set the toggle from `/api/state`.
@@ -283,6 +286,10 @@ Each fix should be followed by the full §13 suite, which takes about 15 minutes
   - The repo runs from a path with spaces and CJK characters (`測試 資料夾\ds`).
   - A second instance on the same ports gets a clear zh/en message and exits with code 2.
   - A killed desk child restarts in about 1 s, with every draft kept. No orphan processes are left behind.
+- **Stored XSS (G):** `<img src=x onerror=alert(1)>` was sent as the clerk name and as `deadline_text`. It reached
+  the EOC `/api/state` and the desk board as raw text. Every renderer escapes it (desk cards, toast, system lines,
+  EOC rows and desk list), and numbers are integers from the server or the wire. What remains is M2: the raw text
+  goes out on the wire.
 
 ## Not done in this pass
 

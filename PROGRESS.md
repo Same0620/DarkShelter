@@ -119,8 +119,8 @@ This laptop **is** the target, so "here" and "on the laptop" are the same machin
 3. Close browser tabs before the demo (memory); restart Ollama CPU-only after any reboot (command above).
 4. The 12 % LLM hallucination rate (flagged fields) is above the 5 % target — consider tightening the prompt.
 5. Safari/macOS untested.
-6. **Red-team pass (04:40–05:00): see `REDTEAM.md`.** Six agents attacked the build read-only and found
-   2 critical, 6 high, 8 medium and 13 low problems. No code was changed. The two critical problems:
+6. **Red-team pass (04:40–05:00): see `REDTEAM.md`.** Eight agents in two rounds attacked the build read-only
+   and found 2 critical, 6 high, 8 medium and 12 low problems. No code was changed. The two critical problems:
    - when the LLM is skipped (FAST mode, during a rush), plainly urgent phrases such as 救命, 溺水 and 心臟病發作
      come out P3;
    - two people with the same need in one sentence become one ticket, and the second person is dropped.
