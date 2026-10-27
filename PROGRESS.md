@@ -70,7 +70,7 @@ This laptop **is** the target, so "here" and "on the laptop" are the same machin
   p50 1.3 s / p95 1.9 s, 0 LLM errors. **Hallucination (LLM fields not found in the transcript): 12.2 %** — above the
   PLAN's 5 % target; those fields are flagged "AI guess" (amber) and can only raise urgency, never lower it.
 - Network (`net_experiment.md`): census first on every profile (~4.1–4.8 s after the link returns, 5 s probe pacing);
-  all P1s in 4.3–10.7 s; 60–140 B per request vs. 1.2 MB as voice notes (~140–335× fewer bytes).
+  all P1s in 4.3–10.7 s; 60–140 B per request vs. 1.2 MB as voice notes (~150–335× fewer bytes).
 - P1 behind 200 P3s at 1.2 kbps / 20 % loss: arrived in 1.5 s (bound 4.65 s), no P3 byte sent meanwhile.
 
 ## Decisions and disagreements (per CLAUDE.md)
@@ -119,3 +119,10 @@ This laptop **is** the target, so "here" and "on the laptop" are the same machin
 3. Close browser tabs before the demo (memory); restart Ollama CPU-only after any reboot (command above).
 4. The 12 % LLM hallucination rate (flagged fields) is above the 5 % target — consider tightening the prompt.
 5. Safari/macOS untested.
+6. **Red-team pass (04:40–05:00): see `REDTEAM.md`.** Six agents attacked the build read-only and found
+   2 critical, 6 high, 8 medium and 13 low problems. No code was changed. The two critical problems:
+   - when the LLM is skipped (FAST mode, during a rush), plainly urgent phrases such as 救命, 溺水 and 心臟病發作
+     come out P3;
+   - two people with the same need in one sentence become one ticket, and the second person is dropped.
+
+   The fixes are listed in priority order in REDTEAM.md. Re-run the full §13 suite after each one.
