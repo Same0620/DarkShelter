@@ -63,6 +63,8 @@ python run_demo.py --config my.json
 - Ctrl+C stops all three processes.
 - If only one of the two databases exists, `run_demo` refuses to start: use `--reset` to reset both
   (otherwise reused ticket numbers would be dropped as duplicates at the EOC).
+- **Filming a one-take video:** see [FILMING.md](FILMING.md). `python scripts/film_reset.py` gives a clean start
+  for each take: both databases, link DOWN, Ollama running, desk FULL, and the two windows side by side.
 - **More than one desk:** give every desk its own `desk_id` and `desk_letter` in `config.json`. Never copy a whole
   `config.json` from another desk. At the EOC, add each extra desk's key under `"eoc": {"desk_keys": {"<desk_id>": "<hex key>"}}`.
 
