@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DarkShelter 應變中心看板</title>
+<link rel="stylesheet" href="/static/eoc/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <span class="logo" aria-hidden="true">🛰️</span>
+    <div>
+      <h1>災害應變中心 需求看板</h1>
+      <div class="sub">EOC board · DarkShelter</div>
+    </div>
+  </div>
+  <div class="conn" id="conn" role="status">
+    <span class="dot" id="conn-dot"></span>
+    <span id="conn-text">連線中…</span><small id="conn-en">connecting</small>
+  </div>
+</header>
+
+<main class="layout">
+  <section class="board" aria-label="需求看板 Requests">
+    <div class="counts" id="counts">
+      <div class="count p1"><span class="n" id="c-p1">0</span><span class="l">P1 緊急<small>urgent</small></span></div>
+      <div class="count p2"><span class="n" id="c-p2">0</span><span class="l">P2 優先<small>priority</small></span></div>
+      <div class="count p3"><span class="n" id="c-p3">0</span><span class="l">P3 一般<small>routine</small></span></div>
+      <div class="count all"><span class="n" id="c-open">0</span><span class="l">未結案<small>open</small></span></div>
+    </div>
+    <div id="groups"></div>
+    <p class="empty" id="empty">尚未收到任何需求 <small>No requests received yet</small></p>
+  </section>
+
+  <aside class="side">
+    <section class="panel">
+      <h2>收容處所人數 <small>Shelter census</small></h2>
+      <div id="desks"><p class="muted">尚未收到心跳 <small>no heartbeat yet</small></p></div>
+    </section>
+    <section class="panel">
+      <h2>接收統計 <small>Receiver</small></h2>
+      <dl class="stats">
+        <dt>收到筆數 <small>records received</small></dt><dd id="s-records">0</dd>
+        <dt>重複已略過 <small>duplicates suppressed</small></dt><dd id="s-dups">0</dd>
+        <dt>收到位元組 <small>bytes received</small></dt><dd id="s-bytes">0</dd>
+        <dt>封包數 <small>datagrams</small></dt><dd id="s-dgrams">0</dd>
+        <dt>心跳 <small>heartbeats</small></dt><dd id="s-hb">0</dd>
+        <dt>驗證失敗 <small>bad MAC</small></dt><dd id="s-badmac">0</dd>
+      </dl>
+    </section>
+    <section class="panel legend">
+      <h2>圖例 <small>Legend</small></h2>
+      <ul>
+        <li><span class="flag unverified">未確認</span> 值班人員尚未確認 <small>UNVERIFIED</small></li>
+        <li><span class="flag escalated">已升級</span> 逾時未回覆 <small>ESCALATED</small></li>
+        <li><span class="flag sensitive">機密</span> 機密醫療 <small>confidential</small></li>
+        <li><span class="flag protection">保護</span> 保護個案，請社工聯絡 <small>protection</small></li>
+        <li><span class="flag closed">已撤回／結案</span> <small>closed at the desk</small></li>
+      </ul>
+    </section>
+  </aside>
+</main>
+<div class="toast" id="toast" role="alert" hidden></div>
+<script src="/static/eoc/app.js"></script>
+</body>
+</html>
