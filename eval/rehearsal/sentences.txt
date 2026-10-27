@@ -1,0 +1,6 @@
+1_dialysis_insulin|阿嬤在B區12床，明天早上要洗腎，她的胰島素今天也用完了
+2_rescue|我爸還在中正路三巷的家裡沒出來
+3_bp_meds|阿伯的高血壓藥只剩兩天
+4_daughter_repeat|我阿嬤B區12床明天早上要洗腎
+5_no_chest_pain|我沒有胸痛，只是有點累
+6_unsure_chest|不知道是不是胸痛
