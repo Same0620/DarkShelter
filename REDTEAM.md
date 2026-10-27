@@ -62,6 +62,8 @@ Each fix should be followed by the full §13 suite, which takes about 15 minutes
   - 「阿公明天要洗腎，阿嬤後天也要洗腎」 gives only 阿公 明天.
 - **With the real Ollama:** the daughter comes back as an AI-only P1, but with no subject and no location. In FAST
   mode she is lost entirely.
+- **In the running app (H):** one draft, 「兒子 中正路 受困人員」. The card does show the whole transcript as a quote
+  (`app.js:198-199`), so the clerk reading it is the only safeguard.
 - **Fix:** group by (item, subject, location), and split the need when they differ.
 
 ### High
@@ -154,12 +156,13 @@ Each fix should be followed by the full §13 suite, which takes about 15 minutes
   「飲用水 王小明 0912 345 678 A 123 456 789」.
 - **Fix:** ignore the client's value and always derive the text from `deadline_at`.
 
-**M3. A protection case can be located through the other ticket from the same sentence (B, unverified end to end).**
-- **PoC (in-process only):** 「B區12床的王小姐被先生家暴，她也需要毛毯」 produces two tickets:
-  - the protection ticket, generic and with zone 0, as intended;
-  - 「B區12床 毛毯」 with the next seq number and the same age.
+**M3. A protection case can be located through the other ticket from the same sentence (B; verified end to end by H).**
+- **PoC (mock demo):** 「B區12床的王小姐被先生家暴，她也需要毛毯」 was confirmed as two tickets. The EOC holds:
+  - `B-001`: 「保護個案，請社工聯絡B站」, zone 0, as intended;
+  - `B-002`: 「B區12床 毛毯」, zone 524.
 
-  Anyone reading the link can pair the two.
+  The codes are adjacent, the ages are the same, and the two arrived 62 ms apart. Anyone reading the EOC or the link
+  can place the protection case at bed B12.
 - **Fix:** when a sentence produces a protection need, send its other tickets without the zone.
 
 **M4. Replaying an old heartbeat rolls the EOC's census back (C).**
