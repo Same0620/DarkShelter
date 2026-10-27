@@ -133,7 +133,7 @@ class OllamaLLM:
     """Qwen2.5-1.5B (or any model) through Ollama's /api/chat with a JSON-schema format."""
 
     def __init__(self, url="http://127.0.0.1:11434", model="qwen2.5:1.5b", timeout_s=15, num_predict=320,
-                 keep_alive=-1, warmup_timeout_s=60, num_ctx=2048):
+                 keep_alive=-1, warmup_timeout_s=60, num_ctx=2048, use_mmap=True):
         self.url = str(url).rstrip("/")
         self.model = model
         self.timeout_s = float(timeout_s)
@@ -141,6 +141,10 @@ class OllamaLLM:
         self.keep_alive = keep_alive
         self.warmup_timeout_s = float(warmup_timeout_s)
         self.num_ctx = int(num_ctx)
+        # Memory-map the model file: ~340 MB less committed memory on Windows, which lets Whisper
+        # and the LLM fit together on a laptop that is short of memory. Sent on every request so
+        # Ollama never reloads the model because options differ.
+        self.use_mmap = bool(use_mmap)
         self.system_prompt = load_system_prompt()
         self.fewshot = fewshot_messages()
         # The LLM is local by design: never route it through a system proxy.
@@ -155,7 +159,8 @@ class OllamaLLM:
         c = cfg.get("llm", {})
         return cls(url=c.get("url", "http://127.0.0.1:11434"), model=c.get("model", "qwen2.5:1.5b"),
                    timeout_s=c.get("timeout_s", 15), num_predict=c.get("num_predict", 320),
-                   keep_alive=c.get("keep_alive", -1), warmup_timeout_s=c.get("warmup_timeout_s", 60))
+                   keep_alive=c.get("keep_alive", -1), warmup_timeout_s=c.get("warmup_timeout_s", 60),
+                   use_mmap=c.get("use_mmap", True))
 
     # ------------------------------------------------------------ availability
     def tags(self, timeout=2.0):
@@ -190,7 +195,8 @@ class OllamaLLM:
             "format": SCHEMA,
             "stream": False,
             "keep_alive": self.keep_alive,
-            "options": {"temperature": 0, "num_predict": self.num_predict, "num_ctx": self.num_ctx},
+            "options": {"temperature": 0, "num_predict": self.num_predict, "num_ctx": self.num_ctx,
+                        "use_mmap": self.use_mmap},
         }
 
     def extract(self, transcript, timeout_s=None):

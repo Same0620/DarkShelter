@@ -1,0 +1,49 @@
+{
+  "equal": true,
+  "compare": {
+    "equal": true,
+    "missing": [],
+    "mismatched": [],
+    "extra": [],
+    "dup_count": 45,
+    "desk": 43,
+    "eoc": 43
+  },
+  "elapsed_s": 77.0,
+  "converge_after_kills_s": 36.0,
+  "kills": {
+    "sender": 5,
+    "eoc": 5
+  },
+  "shown_duplicates": 0,
+  "dup_receptions_suppressed": 45,
+  "tickets_desk": 43,
+  "tickets_eoc": 43,
+  "changes": {
+    "edited": [
+      35,
+      38,
+      5
+    ],
+    "discarded": [
+      39
+    ],
+    "resolved": [
+      28
+    ]
+  },
+  "seqs": 45,
+  "passed": true,
+  "profile": {
+    "rate_bps": 16000,
+    "loss": 0.3,
+    "delay_ms": 150,
+    "jitter_ms": 100,
+    "mtu": 1200,
+    "flap_up_s": 6.0,
+    "flap_down_s": 3.0
+  },
+  "seed": 13,
+  "kills_requested": 5,
+  "started": "2026-10-28 03:07:06"
+}

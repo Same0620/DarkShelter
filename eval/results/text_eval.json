@@ -24,12 +24,12 @@
    "fn": 0
   },
   "latency_ms": {
-   "rules_p50": 0.14,
-   "rules_p95": 0.3,
+   "rules_p50": 0.12,
+   "rules_p95": 0.28,
    "llm_p50": null,
    "llm_p95": null,
-   "total_p50": 0.14,
-   "total_p95": 0.3
+   "total_p50": 0.12,
+   "total_p95": 0.28
   },
   "llm_errors": 0,
   "llm_fields": 0,
@@ -66,7 +66,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 31.2,
+   "rules_ms": 24.56,
    "llm": null
   },
   {
@@ -97,7 +97,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.24,
+   "rules_ms": 0.2,
    "llm": null
   },
   {
@@ -221,7 +221,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.12,
+   "rules_ms": 0.13,
    "llm": null
   },
   {
@@ -314,7 +314,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.6,
+   "rules_ms": 0.44,
    "llm": null
   },
   {
@@ -345,7 +345,7 @@
     "emergency": "rescue",
     "dup_of": null
    },
-   "rules_ms": 0.24,
+   "rules_ms": 0.13,
    "llm": null
   },
   {
@@ -407,7 +407,7 @@
     "emergency": "rescue",
     "dup_of": null
    },
-   "rules_ms": 0.3,
+   "rules_ms": 0.27,
    "llm": null
   },
   {
@@ -454,7 +454,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.51,
+   "rules_ms": 0.42,
    "llm": null
   },
   {
@@ -485,7 +485,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.13,
+   "rules_ms": 0.11,
    "llm": null
   },
   {
@@ -518,7 +518,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.24,
+   "rules_ms": 0.16,
    "llm": null
   },
   {
@@ -551,7 +551,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.14,
+   "rules_ms": 0.11,
    "llm": null
   },
   {
@@ -584,7 +584,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.19,
+   "rules_ms": 0.17,
    "llm": null
   },
   {
@@ -617,7 +617,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.16,
+   "rules_ms": 0.17,
    "llm": null
   },
   {
@@ -683,7 +683,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.16,
+   "rules_ms": 0.17,
    "llm": null
   },
   {
@@ -840,7 +840,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.11,
+   "rules_ms": 0.1,
    "llm": null
   },
   {
@@ -965,7 +965,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.16,
+   "rules_ms": 0.17,
    "llm": null
   },
   {
@@ -996,7 +996,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.15,
+   "rules_ms": 0.16,
    "llm": null
   },
   {
@@ -1091,7 +1091,7 @@
     "emergency": "protection",
     "dup_of": null
    },
-   "rules_ms": 0.15,
+   "rules_ms": 0.16,
    "llm": null
   },
   {
@@ -1215,7 +1215,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.09,
+   "rules_ms": 0.1,
    "llm": null
   },
   {
@@ -1262,7 +1262,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.25,
+   "rules_ms": 0.18,
    "llm": null
   },
   {
@@ -1293,7 +1293,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.18,
+   "rules_ms": 0.16,
    "llm": null
   },
   {
@@ -1324,7 +1324,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.13,
+   "rules_ms": 0.11,
    "llm": null
   },
   {
@@ -1355,7 +1355,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.24,
+   "rules_ms": 0.15,
    "llm": null
   },
   {
@@ -1386,7 +1386,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.12,
+   "rules_ms": 0.09,
    "llm": null
   },
   {
@@ -1417,7 +1417,7 @@
     "emergency": "rescue",
     "dup_of": null
    },
-   "rules_ms": 0.17,
+   "rules_ms": 0.1,
    "llm": null
   },
   {
@@ -1448,7 +1448,7 @@
     "emergency": "rescue",
     "dup_of": null
    },
-   "rules_ms": 0.16,
+   "rules_ms": 0.09,
    "llm": null
   },
   {
@@ -1479,7 +1479,7 @@
     "emergency": "rescue",
     "dup_of": null
    },
-   "rules_ms": 0.13,
+   "rules_ms": 0.08,
    "llm": null
   },
   {
@@ -1510,7 +1510,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.12,
+   "rules_ms": 0.1,
    "llm": null
   },
   {
@@ -1541,7 +1541,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.2,
+   "rules_ms": 0.14,
    "llm": null
   },
   {
@@ -1572,7 +1572,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.09,
+   "rules_ms": 0.08,
    "llm": null
   },
   {
@@ -1603,7 +1603,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.07,
+   "rules_ms": 0.08,
    "llm": null
   },
   {
@@ -1747,7 +1747,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.09,
+   "rules_ms": 0.08,
    "llm": null
   },
   {
@@ -1778,7 +1778,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.18,
+   "rules_ms": 0.09,
    "llm": null
   },
   {
@@ -1809,7 +1809,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.24,
+   "rules_ms": 0.15,
    "llm": null
   },
   {
@@ -1840,7 +1840,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.11,
+   "rules_ms": 0.1,
    "llm": null
   },
   {
@@ -1949,7 +1949,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.12,
+   "rules_ms": 0.11,
    "llm": null
   },
   {
@@ -1980,7 +1980,7 @@
     "emergency": "rescue",
     "dup_of": null
    },
-   "rules_ms": 0.11,
+   "rules_ms": 0.1,
    "llm": null
   },
   {
@@ -2042,7 +2042,7 @@
     "emergency": null,
     "dup_of": "dup1a"
    },
-   "rules_ms": 0.08,
+   "rules_ms": 0.09,
    "llm": null
   },
   {
@@ -2104,7 +2104,7 @@
     "emergency": null,
     "dup_of": "dup2a"
    },
-   "rules_ms": 0.08,
+   "rules_ms": 0.09,
    "llm": null
   },
   {
@@ -2197,7 +2197,7 @@
     "emergency": "rescue",
     "dup_of": null
    },
-   "rules_ms": 0.18,
+   "rules_ms": 0.1,
    "llm": null
   },
   {
@@ -2228,7 +2228,7 @@
     "emergency": "rescue",
     "dup_of": "dup4a"
    },
-   "rules_ms": 0.2,
+   "rules_ms": 0.14,
    "llm": null
   },
   {
@@ -2259,7 +2259,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.17,
+   "rules_ms": 0.1,
    "llm": null
   },
   {
@@ -2290,7 +2290,7 @@
     "emergency": null,
     "dup_of": "dup5a"
    },
-   "rules_ms": 0.25,
+   "rules_ms": 0.15,
    "llm": null
   },
   {
@@ -2321,7 +2321,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.12,
+   "rules_ms": 0.09,
    "llm": null
   },
   {
@@ -2352,7 +2352,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.09,
+   "rules_ms": 0.08,
    "llm": null
   },
   {

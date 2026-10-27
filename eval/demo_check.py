@@ -14,6 +14,8 @@ import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+import darkshelter  # noqa: E402,F401  (cp950-safe console: ✓/⏳ print as ? instead of crashing)
 REQUESTS = [
     "阿嬤明天早上要洗腎，她的胰島素今天也用完了",   # 2 x P1
     "我爸還在中正路三巷的家裡沒出來",               # P1 rescue
@@ -130,7 +132,14 @@ def main(argv=None):
     ck.step("every P1 before any P3 (EOC receive times)", p1 and p3 and max(p1) <= min(p3),
             f"P1 rx +{max(p1) - t_switch:.2f} s (last), P3 rx +{min(p3) - t_switch:.2f} s (first)" if p1 and p3 else "")
     dup = sum(int(t.get("dup_count") or 0) for t in est["tickets"])
-    st = call(desk, "/api/state")
+    # the sender refreshes its voice-note total every few seconds: wait until it covers every delivery
+    deadline = time.time() + 15
+    while True:
+        st = call(desk, "/api/state")
+        delivered = sum(1 for t in st["board"]["tickets"] if t.get("delivered_wall"))
+        if st["bytes"]["voice_equiv_bytes"] >= delivered * 10 * 2000 or time.time() > deadline:
+            break
+        time.sleep(0.5)
     ck.step("byte meter", st["bytes"]["data_bytes_up"] > 0,
             f"sent {st['bytes']['data_bytes_up']} B vs voice notes {st['bytes']['voice_equiv_bytes']} B "
             f"(ratio {st['bytes']['ratio']}x); duplicates re-acked at EOC: {dup}")

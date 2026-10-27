@@ -26,7 +26,7 @@ DEFAULTS = {
             "beam_size": 1, "max_seconds": 30, "cpu_threads": 0},
     "llm": {"enabled": True, "url": "http://127.0.0.1:11434", "model": "qwen2.5:1.5b",
             "timeout_s": 15, "warmup_timeout_s": 60, "num_predict": 320, "keep_alive": -1,
-            "min_tokens_per_s": 4},
+            "min_tokens_per_s": 4, "use_mmap": True},
     "pipeline": {"backlog_fast_mode": 3},
     "triage": {"sla_minutes": {"emergency": 3, "1": 30, "2": 240, "3": 1440},
                "unconfirmed_p1_reminder_s": 120, "unconfirmed_p1_alert_s": 300},

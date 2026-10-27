@@ -137,7 +137,8 @@ class StubNormalTest(StubCase):
         self.assertIs(body["stream"], False)
         self.assertEqual(body["keep_alive"], -1)
         self.assertEqual(body["format"], SCHEMA)
-        self.assertEqual(body["options"], {"temperature": 0, "num_predict": 320, "num_ctx": 2048})
+        # SPEC 6.4 options + use_mmap (memory-maps the model: ~340 MB less committed memory, see PROGRESS.md)
+        self.assertEqual(body["options"], {"temperature": 0, "num_predict": 320, "num_ctx": 2048, "use_mmap": True})
         roles = [m["role"] for m in body["messages"]]
         self.assertEqual(roles, ["system", "user", "assistant", "user", "assistant", "user"])
         self.assertTrue(body["messages"][-1]["content"].startswith("逐字稿："))

@@ -174,7 +174,7 @@ def main(argv=None):
         say("已刪除兩個資料庫", "both databases reset")
     elif desk_db.exists() != eoc_db.exists():
         say("請用 --reset 同時重設兩個資料庫", "use --reset to reset both databases")
-        say(f"desk_db={desk_db} exists={desk_db.exists()} ・ eoc_db={eoc_db} exists={eoc_db.exists()}")
+        say(f"desk_db={desk_db} exists={desk_db.exists()}  |  eoc_db={eoc_db} exists={eoc_db.exists()}")
         return 3
 
     children = [Child(n, m, a, run_dir / f"{n}.log", cfg_path, args.mock) for n, m, a, _ in CHILDREN]
@@ -190,7 +190,7 @@ def main(argv=None):
                 raise SystemExit(4)
         desk_url = f"http://127.0.0.1:{ports['desk']}"
         eoc_url = f"http://127.0.0.1:{ports['eoc']}"
-        say(f"已啟動 ready{' (MOCK)' if args.mock else ''}：登記台 desk {desk_url} ・ 應變中心 EOC {eoc_url} ・ "
+        say(f"已啟動 ready{' (MOCK)' if args.mock else ''}：登記台 desk {desk_url}  |  應變中心 EOC {eoc_url}  |  "
             f"網路模擬 emulator http://127.0.0.1:{ports['linkemu']}/stats")
         say(f"記錄檔 logs: {run_dir}", "Ctrl+C 結束 / Ctrl+C to stop")
         if not args.no_browser:
