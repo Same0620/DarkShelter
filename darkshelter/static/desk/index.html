@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DarkShelter 登記台</title>
+<link rel="stylesheet" href="/static/desk/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">🏕️ <span id="shelter-name">DarkShelter</span> <small id="desk-code"></small></div>
+  <div class="top-status">
+    <span id="mode-badge" class="badge" title="模式 Mode">…</span>
+    <span id="link-badge" class="badge" title="網路 Link">…</span>
+    <label class="clerk">值班 <small>Clerk</small>
+      <select id="clerk-select"></select>
+    </label>
+  </div>
+</header>
+
+<div id="banners" aria-live="assertive"></div>
+<div id="toast" class="toast hidden" role="status"></div>
+
+<main class="cols">
+  <!-- ============ LEFT: intake + drafts ============ -->
+  <section class="col col-left">
+    <div class="tabs" role="tablist">
+      <button class="tab active" data-tab="requests" id="tab-requests">需求 <small>Requests</small></button>
+      <button class="tab" data-tab="checkin" id="tab-checkin">登記 <small>Check-in</small></button>
+    </div>
+
+    <div class="panel tab-panel" id="panel-requests">
+      <p class="consent">需求會記錄並傳給應變中心；錄音不保存。也可只用打字。<br>
+        <small>Requests are recorded and sent to the EOC; audio is not kept. Typing is fine too.</small>
+        <label class="toggle"><input type="checkbox" id="type-only"> 只打字 <small>Type only</small></label>
+      </p>
+      <div class="record-row" id="record-row">
+        <button id="record-btn" class="btn btn-record">🎙️ 錄音（建議由值班人員複述重點）<small>Record (clerk repeats the key points)</small></button>
+        <div class="meter" title="音量 Level"><div id="level-bar"></div></div>
+        <span id="rec-status" class="muted"></span>
+      </div>
+      <div class="typed-row">
+        <textarea id="text-input" rows="2" placeholder="打字輸入需求，按 Enter 送出（Shift+Enter 換行） / Type a request, Enter to submit"></textarea>
+        <button id="text-submit" class="btn btn-primary">送出<small>Submit</small></button>
+      </div>
+      <div class="chips" id="quick-chips"></div>
+      <div id="job-line" class="job-line muted">尚無工作 <small>No jobs yet</small></div>
+    </div>
+
+    <div class="panel tab-panel hidden" id="panel-checkin">
+      <form id="checkin-form" autocomplete="off">
+        <div class="grid2">
+          <label>姓氏（可不填）<small>Family name (optional)</small><input name="family_name" maxlength="20"></label>
+          <label>人數 <small>Size</small><input name="size" type="number" min="1" max="50" value="1" required></label>
+          <label>區／床 <small>Zone / bed</small><input name="zone" placeholder="例如 B12 或 B區12床"></label>
+          <label>長者 <small>Elderly</small><input name="elderly" type="number" min="0" value="0"></label>
+          <label>嬰兒 <small>Infants</small><input name="infants" type="number" min="0" value="0"></label>
+          <label>兒童 <small>Children</small><input name="children" type="number" min="0" value="0"></label>
+          <label>孕婦 <small>Pregnant</small><input name="pregnant" type="number" min="0" value="0"></label>
+          <label>行動不便 <small>Disabled</small><input name="disabled" type="number" min="0" value="0"></label>
+        </div>
+        <ol class="screening">
+          <li><label><input type="checkbox" name="q1"> 有人需要洗腎、氧氣或用電的醫療器材嗎？</label></li>
+          <li><label><input type="checkbox" name="q2"> 有人每天一定要吃的藥（例如胰島素）嗎？</label></li>
+          <li><label><input type="checkbox" name="q3"> 有嬰幼兒、孕婦或行動不便的人嗎？</label></li>
+          <li><label><input type="checkbox" name="q4"> 有家人失聯，或還有人在家裡沒出來嗎？</label></li>
+          <li><label><input type="checkbox" name="q5"> 還有其他需要幫忙的嗎（寵物、聯絡家人）？</label></li>
+        </ol>
+        <button type="submit" class="btn btn-primary" id="checkin-submit">完成登記 <small>Check in</small></button>
+        <span id="checkin-result" class="muted"></span>
+      </form>
+      <details class="households"><summary>目前登記戶 <small>Households</small> (<span id="hh-count">0</span>)</summary>
+        <div id="hh-list"></div></details>
+    </div>
+
+    <h2 class="section-title">草稿 <small>Drafts</small> <span id="draft-count" class="count"></span></h2>
+    <div id="drafts"></div>
+    <div id="recent-closed"></div>
+  </section>
+
+  <!-- ============ MIDDLE: board ============ -->
+  <section class="col col-mid">
+    <div class="board-head">
+      <h2 class="section-title">需求看板 <small>Board</small></h2>
+      <div class="board-tools">
+        <label class="toggle"><input type="checkbox" id="privacy-toggle" checked> 隱私檢視 <small>Privacy view</small></label>
+        <button class="btn btn-small" id="print-btn">🖨️ 列印 <small>Print</small></button>
+        <a class="btn btn-small" href="/export.csv" id="export-link">⬇️ CSV</a>
+      </div>
+    </div>
+    <div id="board-counts" class="counts"></div>
+    <div id="board"></div>
+    <div id="print-header" class="print-only"></div>
+  </section>
+
+  <!-- ============ RIGHT: network + system ============ -->
+  <section class="col col-right">
+    <div class="panel">
+      <h3>網路 <small>Link</small> <span id="link-state" class="badge"></span></h3>
+      <div class="profiles" id="profiles"></div>
+      <div id="queue-line" class="muted"></div>
+      <div class="bytemeter">
+        <div class="bm-row"><span>實際傳送 <small>sent</small></span><b id="bm-data">0 B</b></div>
+        <div class="bm-row"><span>若用語音訊息 <small>as voice notes</small></span><b id="bm-voice">0 B</b></div>
+        <div class="bm-ratio" id="bm-ratio"></div>
+        <div class="muted small" id="bm-total"></div>
+      </div>
+      <div class="netstats" id="netstats"></div>
+    </div>
+    <div class="panel">
+      <h3>系統 <small>System</small></h3>
+      <div id="mode-line"></div>
+      <label class="small">模式 <small>Mode</small>
+        <select id="mode-select">
+          <option value="">自動 AUTO</option><option>FULL</option><option>FAST</option><option>TYPED</option><option>PAPER</option>
+        </select></label>
+      <div id="sys-lines" class="small"></div>
+      <div id="thread-lights" class="lights"></div>
+    </div>
+    <div class="panel">
+      <h3>收容人數 <small>Census</small></h3>
+      <div id="census" class="census"></div>
+    </div>
+  </section>
+</main>
+
+<script src="/static/desk/recorder.js"></script>
+<script src="/static/desk/app.js"></script>
+</body>
+</html>

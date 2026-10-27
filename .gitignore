@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Runtime data (databases, logs) and local config with the generated HMAC key
+data/run/
+config.json
+
+# Model files (Whisper / Ollama) never go into git
+models/
+*.bin
+*.gguf
+*.safetensors
+*.onnx
+
+# Team recordings for the audio eval (personal voices)
+eval/audio/*.wav
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

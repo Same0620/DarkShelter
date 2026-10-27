@@ -1,0 +1,19 @@
+{
+  "desk_id": 7, "desk_letter": "B", "shelter_name": "示範國小 避難收容處所",
+  "clerks": ["值班人員A", "值班人員B"],
+  "backup_channel": {"zh": "請派人到村辦公室通報，或使用衛星電話", "en": "Send a runner to the village office or use the satellite phone"},
+  "ports": {"desk_http": 8000, "eoc_http": 8100, "emu_udp": 9001, "eoc_udp": 9002, "emu_control_http": 9100},
+  "paths": {"desk_db": "data/run/desk.db", "eoc_db": "data/run/eoc.db", "models_dir": null},
+  "asr": {"model": "small", "fast_model": "base", "compute_type": "int8", "language": "zh",
+          "beam_size": 1, "max_seconds": 30, "cpu_threads": 0},
+  "llm": {"enabled": true, "url": "http://127.0.0.1:11434", "model": "qwen2.5:1.5b",
+          "timeout_s": 15, "warmup_timeout_s": 60, "num_predict": 320, "keep_alive": -1, "min_tokens_per_s": 4},
+  "pipeline": {"backlog_fast_mode": 3},
+  "triage": {"sla_minutes": {"emergency": 3, "1": 30, "2": 240, "3": 1440},
+             "unconfirmed_p1_reminder_s": 120, "unconfirmed_p1_alert_s": 300},
+  "net": {"mtu": 200, "window": 2, "rto_initial_s": 3.0, "rto_min_s": 0.5, "rto_max_s": 30,
+          "rto_backoff_cap": 2.0, "heartbeat_s": 5, "probe_max_s": 5, "down_after_timeouts": 4,
+          "hmac_key_hex": "<generated at first run if absent>"},
+  "privacy": {"keep_audio": false, "scrub_national_id": true, "privacy_view_default": true},
+  "voice_baseline_bytes_per_s": 2000
+}

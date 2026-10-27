@@ -1,0 +1,16 @@
+[
+  {
+    "transcript": "我阿嬤在B區12床，她明天早上要洗腎，然後她的胰島素今天就用完了。",
+    "output": {"needs": [
+      {"category": "LIFE_SUSTAINING", "item": "洗腎", "quantity": 0, "subject": "阿嬤", "subject_group": "elderly", "location": "B區12床", "time_phrase": "明天早上", "summary": "阿嬤明天早上要洗腎"},
+      {"category": "MEDICATION", "item": "胰島素", "quantity": 0, "subject": "阿嬤", "subject_group": "elderly", "location": "B區12床", "time_phrase": "今天就用完了", "summary": "阿嬤的胰島素今天用完"}
+    ]}
+  },
+  {
+    "transcript": "我們家四個人需要毛毯，還有我兒子手機沒電了，想聯絡他爸爸。",
+    "output": {"needs": [
+      {"category": "SUPPLIES", "item": "毛毯", "quantity": 4, "subject": "我們家", "subject_group": "unknown", "location": "", "time_phrase": "", "summary": "全家四人需要毛毯"},
+      {"category": "COMMUNICATION", "item": "手機沒電", "quantity": 0, "subject": "我兒子", "subject_group": "unknown", "location": "", "time_phrase": "", "summary": "兒子手機沒電，想聯絡爸爸"}
+    ]}
+  }
+]

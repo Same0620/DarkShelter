@@ -1,0 +1,6 @@
+flask
+numpy
+faster-whisper
+# optional (the desk runs without them; health shows a warning)
+psutil
+opencc-python-reimplemented

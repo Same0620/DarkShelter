@@ -1,0 +1,126 @@
+{
+  "version": 1,
+  "notes": "Keyword entries carry Traditional and Simplified forms plus common mishearings. Optional 'preceded_by': the keyword counts only right after one of these words (an optional 他/她/的 may sit between). Matching is longest-first, non-overlapping, case-insensitive for Latin letters.",
+  "entries": [
+    {"id": "sym_dyspnea", "keywords": ["呼吸困難", "呼吸困难", "喘不過氣", "喘不过气", "喘不過來", "喘不过来", "很喘", "無法呼吸", "无法呼吸", "沒辦法呼吸", "没办法呼吸", "吸不到氣", "吸不到气"], "not_followed_by": [], "category": 1, "item_code": 101, "red_flag": true, "negatable": true, "emergency": "medical", "sensitive": false},
+    {"id": "sym_chest_pain", "keywords": ["胸痛", "胸口痛", "胸口很痛", "胸部疼痛"], "not_followed_by": [], "category": 1, "item_code": 101, "red_flag": true, "negatable": true, "emergency": "medical", "sensitive": false},
+    {"id": "sym_chest_tight", "keywords": ["胸悶", "胸闷", "胸口悶", "胸口闷", "胸口很悶", "胸口很闷"], "not_followed_by": [], "category": 1, "item_code": 101, "red_flag": true, "negatable": true, "emergency": "medical", "sensitive": false},
+    {"id": "sym_heart", "keywords": ["心臟不舒服", "心脏不舒服", "心臟很不舒服", "心脏很不舒服"], "not_followed_by": [], "category": 1, "item_code": 101, "red_flag": true, "negatable": true, "emergency": "medical", "sensitive": false},
+    {"id": "sym_bleeding", "keywords": ["大量出血", "一直流血", "流血不止", "流很多血", "血流不止", "流了很多血"], "not_followed_by": [], "category": 1, "item_code": 102, "red_flag": true, "negatable": true, "emergency": "medical", "sensitive": false},
+    {"id": "sym_faint", "keywords": ["昏倒", "暈倒", "晕倒", "昏過去", "昏过去", "暈過去", "晕过去", "昏迷", "叫不醒"], "not_followed_by": [], "category": 1, "item_code": 104, "red_flag": true, "negatable": true, "emergency": "medical", "sensitive": false},
+    {"id": "sym_seizure", "keywords": ["抽搐", "癲癇發作", "癫痫发作", "羊癲瘋", "羊癫疯"], "not_followed_by": [], "category": 1, "item_code": 105, "red_flag": true, "negatable": true, "emergency": "medical", "sensitive": false},
+    {"id": "sym_stroke", "keywords": ["中風", "中风"], "not_followed_by": [], "category": 1, "item_code": 106, "red_flag": true, "negatable": true, "emergency": "medical", "sensitive": false},
+    {"id": "sym_labour", "keywords": ["要生了", "快生了", "破水", "陣痛", "阵痛"], "not_followed_by": [], "category": 1, "item_code": 103, "red_flag": true, "negatable": true, "emergency": "medical", "sensitive": false},
+
+    {"id": "unresp_breath", "keywords": ["沒有呼吸", "沒呼吸", "没有呼吸", "没呼吸"], "not_followed_by": ["困難", "困难", "不順", "不顺"], "category": 1, "item_code": 107, "red_flag": true, "negatable": false, "emergency": "medical", "sensitive": false},
+    {"id": "unresp_other", "keywords": ["沒心跳", "没心跳", "沒有心跳", "没有心跳", "沒反應", "没反应", "沒有反應", "没有反应", "沒意識", "没意识", "沒有意識", "没有意识", "失去意識", "失去意识"], "not_followed_by": [], "category": 1, "item_code": 107, "red_flag": true, "negatable": false, "emergency": "medical", "sensitive": false},
+
+    {"id": "rescue_trapped", "keywords": ["受困", "困在", "被困", "困住", "被壓", "被压", "被埋", "出不來", "出不来", "還在家裡沒出來", "还在家里没出来", "沒出來", "没出来"], "not_followed_by": [], "category": 4, "item_code": 401, "red_flag": true, "negatable": false, "emergency": "rescue", "sensitive": false},
+    {"id": "rescue_missing", "keywords": ["失聯", "失联", "聯絡不上", "联络不上", "聯繫不上", "联系不上", "失蹤", "失踪", "找不到人"], "not_followed_by": [], "category": 4, "item_code": 402, "red_flag": true, "negatable": false, "emergency": "rescue", "sensitive": false},
+    {"id": "rescue_lost_child", "keywords": ["走丟", "走丢", "小孩走失", "孩子走失", "找不到小孩", "找不到孩子", "走失"], "not_followed_by": [], "category": 4, "item_code": 403, "red_flag": true, "negatable": false, "emergency": "rescue", "sensitive": false},
+    {"id": "rescue_wander_elder", "keywords": ["找不到阿公", "找不到阿嬤", "找不到阿嬷", "找不到爺爺", "找不到爷爷", "找不到奶奶", "失智走失", "失智老人走失"], "not_followed_by": [], "category": 4, "item_code": 404, "red_flag": true, "negatable": false, "emergency": "rescue", "sensitive": false},
+    {"id": "rescue_unaccompanied", "keywords": ["沒有大人陪", "没有大人陪", "沒大人陪", "没大人陪", "沒有大人照顧", "没有大人照顾"], "not_followed_by": [], "category": 4, "item_code": 406, "red_flag": true, "negatable": false, "emergency": "rescue", "sensitive": false},
+    {"id": "rescue_child_gone", "keywords": ["不見了", "不见了", "不見", "不见", "找不到了", "找不到人了"], "preceded_by": ["小孩", "孩子", "小朋友", "兒子", "儿子", "女兒", "女儿", "孫子", "孙子", "孫女", "孙女", "寶寶", "宝宝"], "not_followed_by": [], "category": 4, "item_code": 403, "red_flag": true, "negatable": false, "emergency": "rescue", "sensitive": false},
+    {"id": "rescue_elder_gone", "keywords": ["不見了", "不见了", "不見", "不见", "找不到了", "找不到人了"], "preceded_by": ["阿公", "阿嬤", "阿嬷", "爺爺", "爷爷", "奶奶", "外婆", "外公", "老人家", "長輩", "长辈"], "not_followed_by": [], "category": 4, "item_code": 404, "red_flag": true, "negatable": false, "emergency": "rescue", "sensitive": false},
+    {"id": "rescue_adult_gone", "keywords": ["不見了", "不见了", "找不到了", "找不到人了"], "preceded_by": ["爸爸", "媽媽", "妈妈", "爸", "媽", "妈", "先生", "太太", "老公", "老婆", "哥哥", "姊姊", "姐姐", "弟弟", "妹妹", "家人"], "not_followed_by": [], "category": 4, "item_code": 402, "red_flag": true, "negatable": false, "emergency": "rescue", "sensitive": false},
+    {"id": "family_tracing", "keywords": ["尋找家人", "寻找家人", "找家人", "找親人", "找亲人", "尋人", "寻人", "走散", "失散", "找不到家人"], "not_followed_by": [], "category": 4, "item_code": 405, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+
+    {"id": "suicide", "keywords": ["想自殺", "想自杀", "自殺", "自杀", "不想活了", "不想活", "想死", "想不開", "想不开", "活不下去", "輕生", "轻生", "自殘", "自残"], "not_followed_by": [], "category": 9, "item_code": 902, "red_flag": true, "negatable": false, "emergency": "suicide", "sensitive": false},
+
+    {"id": "device_dead", "keywords": ["製氧機沒電", "制氧机没电", "製氧機沒有電", "制氧机没有电", "呼吸器沒電", "呼吸器没电", "呼吸器沒有電", "呼吸機沒電", "呼吸机没电", "抽痰機沒電", "抽痰机没电", "製氧機停了", "製氧機不能用"], "not_followed_by": [], "category": 2, "item_code": 203, "red_flag": true, "negatable": false, "emergency": null, "sensitive": false},
+    {"id": "oxygen_low", "keywords": ["氧氣快沒了", "氧气快没了", "養氣快沒了", "氧氣快用完", "氧气快用完", "氧氣筒快沒了", "氧氣沒了", "氧气没了"], "not_followed_by": [], "category": 2, "item_code": 202, "red_flag": true, "negatable": false, "emergency": null, "sensitive": false},
+
+    {"id": "protection", "keywords": ["家暴", "家庭暴力", "他打我", "她打我", "被他打", "他會打我", "他会打我", "保護令", "保护令", "性侵", "跟蹤", "跟踪", "不敢回家", "怕他找到", "怕她找到"], "not_followed_by": [], "category": 13, "item_code": 1301, "red_flag": false, "negatable": false, "emergency": "protection", "sensitive": false},
+    {"id": "protection_hit", "keywords": ["被打"], "not_followed_by": ["到", "中", "針", "针", "傷", "伤"], "category": 13, "item_code": 1301, "red_flag": false, "negatable": false, "emergency": "protection", "sensitive": false},
+
+    {"id": "sensitive_med", "keywords": ["愛滋", "爱滋", "艾滋", "愛滋病", "HIV", "PrEP", "精神科", "思覺失調", "思觉失调", "憂鬱症的藥", "忧郁症的药", "抑鬱症的藥", "抑郁症的药", "美沙冬", "美沙酮"], "not_followed_by": [], "category": 3, "item_code": 310, "red_flag": false, "negatable": false, "emergency": null, "sensitive": true},
+
+    {"id": "dialysis", "keywords": ["洗腎", "洗肾", "洗身", "透析", "血液透析", "腹膜透析"], "not_followed_by": [], "category": 2, "item_code": 201, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+    {"id": "oxygen", "keywords": ["氧氣", "氧气", "養氣", "氧氣瓶", "氧气瓶", "氧氣筒", "氧气筒", "氧氣鋼瓶"], "not_followed_by": [], "category": 2, "item_code": 202, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+    {"id": "powered_device", "keywords": ["製氧機", "制氧机", "製氧器", "制氧器", "氧氣機", "氧气机", "呼吸器", "呼吸機", "呼吸机", "抽痰機", "抽痰机", "抽痰器"], "not_followed_by": [], "category": 2, "item_code": 203, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+    {"id": "device_power", "keywords": ["醫療器材用電", "医疗器材用电", "用電的醫療器材", "用电的医疗器材", "醫療器材", "医疗器材", "電動醫材", "电动医材", "電動床", "电动床", "氣墊床", "气垫床"], "not_followed_by": [], "category": 2, "item_code": 204, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+
+    {"id": "insulin", "keywords": ["胰島素", "胰岛素", "一島素", "胰導素", "移島素", "遺島素", "遺導素", "遗岛素"], "not_followed_by": [], "category": 3, "item_code": 301, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+    {"id": "anticoagulant", "keywords": ["抗凝血劑", "抗凝血剂", "抗凝血藥", "抗凝血药", "抗凝血", "華法林", "华法林", "可邁丁", "可迈丁", "拜瑞妥", "血液稀釋劑", "血液稀释剂"], "not_followed_by": [], "category": 3, "item_code": 302, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+    {"id": "antiepileptic", "keywords": ["抗癲癇藥", "抗癫痫药", "抗癲癇", "抗癫痫", "癲癇藥", "癫痫药", "癲癇的藥", "癫痫的药"], "not_followed_by": [], "category": 3, "item_code": 303, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+    {"id": "transplant", "keywords": ["器官移植抗排斥藥", "抗排斥藥", "抗排斥药", "抗排斥", "移植的藥", "移植的药"], "not_followed_by": [], "category": 3, "item_code": 304, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+    {"id": "heart_med", "keywords": ["心臟病藥", "心脏病药", "心臟病的藥", "心脏病的药", "心臟的藥", "心脏的药", "心臟藥", "心脏药", "硝化甘油", "舌下含片"], "not_followed_by": [], "category": 3, "item_code": 305, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+    {"id": "bp_med", "keywords": ["降血壓藥", "降血压药", "降血壓要", "降血压要", "血壓藥", "血压药", "高血壓藥", "高血压药", "高血壓的藥", "高血压的药", "血壓的藥", "血压的药", "降壓藥", "降压药"], "not_followed_by": [], "category": 3, "item_code": 306, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+    {"id": "chronic_med", "keywords": ["慢性處方箋", "慢性处方笺", "慢性處方藥", "慢性处方药", "慢箋", "慢笺", "慢性病藥", "慢性病的藥", "慢性病的药", "慢性藥", "處方藥", "处方药", "處方箋", "处方笺"], "not_followed_by": [], "category": 3, "item_code": 307, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+    {"id": "med_cold", "keywords": ["藥品冷藏", "药品冷藏", "冷藏藥品", "冷藏药品", "藥要冰", "药要冰", "藥要冷藏", "药要冷藏", "要冰的藥", "冰藥"], "not_followed_by": [], "category": 3, "item_code": 308, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+    {"id": "diabetes_med", "keywords": ["降血糖藥", "降血糖药", "糖尿病藥", "糖尿病药", "糖尿病的藥", "糖尿病的药", "血糖藥", "血糖药"], "not_followed_by": [], "category": 3, "item_code": 309, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+    {"id": "generic_med", "keywords": ["吃的藥", "吃的药", "藥品", "药品", "藥物", "药物", "藥", "药"], "not_followed_by": ["局", "房", "妝", "妆", "師", "师"], "category": 3, "item_code": 310, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+
+    {"id": "wheelchair", "keywords": ["輪椅", "轮椅"], "not_followed_by": [], "category": 5, "item_code": 501, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+    {"id": "walker", "keywords": ["助行器", "拐杖", "柺杖", "枴杖", "四腳拐", "四脚拐"], "not_followed_by": [], "category": 5, "item_code": 502, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+    {"id": "mobility", "keywords": ["行動不便", "行动不便", "走不動", "走不动", "不能走路", "沒辦法走路", "没办法走路", "需要人扶", "行動協助", "行动协助", "腳不方便", "脚不方便"], "not_followed_by": [], "category": 5, "item_code": 503, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+
+    {"id": "formula", "keywords": ["嬰兒奶粉", "婴儿奶粉", "奶粉", "配方奶"], "not_followed_by": [], "category": 6, "item_code": 601, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+    {"id": "baby_diaper", "keywords": ["嬰兒尿布", "婴儿尿布", "嬰兒紙尿褲", "婴儿纸尿裤", "尿布", "尿片"], "not_followed_by": [], "category": 6, "item_code": 602, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+    {"id": "baby_items", "keywords": ["奶瓶", "奶嘴", "嬰兒用品", "婴儿用品", "溫奶器", "温奶器", "嬰兒床", "婴儿床"], "not_followed_by": [], "category": 6, "item_code": 603, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+
+    {"id": "water", "keywords": ["飲用水", "饮用水", "喝的水", "礦泉水", "矿泉水", "開水", "开水", "瓶裝水", "瓶装水", "沒水喝", "没水喝", "喝水", "要水", "需要水", "熱水", "热水", "泡奶的水"], "not_followed_by": [], "category": 7, "item_code": 701, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+    {"id": "food", "keywords": ["一般食物", "食物", "吃的", "便當", "便当", "餅乾", "饼干", "泡麵", "泡面", "方便麵", "方便面", "麵包", "面包", "乾糧", "干粮", "肚子餓", "肚子饿", "很餓", "很饿", "罐頭", "罐头"], "not_followed_by": [], "category": 7, "item_code": 702, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+    {"id": "special_diet", "keywords": ["特殊飲食", "特殊饮食", "素食", "吃素", "糖尿病餐", "流質", "流质", "軟的食物", "软的食物", "低鹽", "低盐", "清真", "食物過敏", "食物过敏"], "not_followed_by": [], "category": 7, "item_code": 703, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+
+    {"id": "blanket", "keywords": ["毛毯", "毯子", "棉被", "被子", "睡袋", "被單", "被单", "毯"], "not_followed_by": [], "category": 8, "item_code": 801, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+    {"id": "clothing", "keywords": ["衣物", "衣服", "換洗衣物", "换洗衣物", "外套", "襪子", "袜子", "內衣", "内衣", "褲子", "裤子", "雨衣"], "not_followed_by": [], "category": 8, "item_code": 802, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+    {"id": "pads", "keywords": ["衛生棉", "卫生棉", "衛生巾", "卫生巾", "生理用品"], "not_followed_by": [], "category": 8, "item_code": 803, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+    {"id": "adult_diaper", "keywords": ["成人紙尿褲", "成人纸尿裤", "成人尿布", "老人尿布", "紙尿褲", "纸尿裤", "看護墊", "看护垫"], "not_followed_by": [], "category": 8, "item_code": 804, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+    {"id": "toiletries", "keywords": ["盥洗用品", "牙刷", "牙膏", "毛巾", "肥皂", "沐浴乳", "洗髮精", "洗发精", "衛生紙", "卫生纸"], "not_followed_by": [], "category": 8, "item_code": 805, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+
+    {"id": "emotional_support", "keywords": ["心理支持", "心理諮商", "心理咨询", "心理輔導", "心理辅导", "很害怕", "好害怕", "睡不著", "睡不着", "一直哭", "心情不好", "焦慮", "焦虑", "恐慌", "壓力很大", "压力很大", "很難過", "很难过"], "not_followed_by": [], "category": 9, "item_code": 901, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+
+    {"id": "phone_charge", "keywords": ["手機充電", "手机充电", "手機沒電", "手机没电", "手機沒有電", "手机没有电", "充電器", "充电器", "充電線", "充电线", "行動電源", "移动电源", "充電", "充电"], "not_followed_by": [], "category": 10, "item_code": 1001, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+    {"id": "contact_family", "keywords": ["聯絡家人", "联络家人", "報平安", "报平安", "打電話", "打电话", "借手機", "借手机", "聯絡", "联络", "聯繫", "联系"], "not_followed_by": [], "category": 10, "item_code": 1002, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+    {"id": "hearing_aid", "keywords": ["助聽器電池", "助听器电池", "助聽器", "助听器"], "not_followed_by": [], "category": 10, "item_code": 1003, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+    {"id": "interpreter", "keywords": ["手語", "手语", "翻譯", "翻译", "通譯", "通译", "聽不懂國語", "听不懂国语", "聽不懂中文", "听不懂中文", "不會說國語", "不会说国语"], "not_followed_by": [], "category": 10, "item_code": 1004, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+
+    {"id": "pet_food", "keywords": ["寵物食品", "宠物食品", "飼料", "饲料", "狗糧", "狗粮", "貓糧", "猫粮", "貓砂", "猫砂", "狗食", "貓食"], "not_followed_by": [], "category": 11, "item_code": 1101, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+    {"id": "pet", "keywords": ["寵物", "宠物", "狗狗", "貓咪", "猫咪", "小狗", "小貓", "小猫", "狗", "貓", "猫"], "not_followed_by": [], "category": 11, "item_code": 1102, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+
+    {"id": "road", "keywords": ["道路中斷", "道路中断", "路斷了", "路断了", "路斷", "路断", "橋斷了", "桥断了", "路不通", "封路"], "not_followed_by": [], "category": 12, "item_code": 1201, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+    {"id": "landslide", "keywords": ["坍方", "土石流", "山崩", "落石", "走山", "崩塌"], "not_followed_by": [], "category": 12, "item_code": 1202, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+    {"id": "power_out", "keywords": ["停電", "停电", "斷電", "断电", "跳電", "跳电", "沒有電", "没有电"], "not_followed_by": [], "category": 12, "item_code": 1203, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false},
+    {"id": "water_out", "keywords": ["停水", "斷水", "断水", "沒有自來水", "没有自来水", "沒自來水", "没自来水"], "not_followed_by": [], "category": 12, "item_code": 1204, "red_flag": false, "negatable": false, "emergency": null, "sensitive": false}
+  ],
+  "patterns": {
+    "negation_regex": "(沒有|沒|没有|没|不會|不会|不是|不|未|無|无)(有|是|在|再|會|会)?$",
+    "doubt_words": ["會不會", "会不会", "是不是", "有沒有", "有没有", "不知道"],
+    "past_words": ["上次", "以前", "之前", "去年", "曾經", "曾经"],
+    "present_words": ["現在", "现在", "突然", "剛剛", "刚刚", "剛才", "刚才", "今天", "又"],
+    "ran_out_words": ["沒帶", "没带", "留在", "沒", "没", "無", "无", "完", "光", "忘", "斷", "断"],
+    "ran_out_blockers": ["快", "剩", "還有", "还有", "才", "會用完", "会用完", "會沒", "会没", "要用完", "將用完", "将用完"],
+    "ran_out_categories": [2, 3, 5, 6, 7, 8, 10, 11],
+    "clause_connectives": ["還有", "还有", "另外", "然後", "然后"],
+    "connective_keep_before": "[0-9零〇一二兩两三四五六七八九十百半幾几多]|一點|一点|一些|剩|多久|多少",
+    "askback_negated": "確認：現在有{keyword}嗎？",
+    "subject_words": {
+      "阿嬤": "elderly", "阿嬷": "elderly", "阿公": "elderly", "奶奶": "elderly", "爺爺": "elderly", "爷爷": "elderly",
+      "老人家": "elderly", "外婆": "elderly", "外公": "elderly", "長輩": "elderly", "长辈": "elderly", "阿祖": "elderly", "老人": "elderly",
+      "寶寶": "infant", "宝宝": "infant", "嬰兒": "infant", "婴儿": "infant", "小嬰兒": "infant", "新生兒": "infant", "新生儿": "infant",
+      "小孩": "child", "孩子": "child", "小朋友": "child", "兒童": "child", "儿童": "child",
+      "孕婦": "pregnant", "孕妇": "pregnant", "懷孕": "pregnant", "怀孕": "pregnant",
+      "坐輪椅": "disabled", "坐轮椅": "disabled", "身障": "disabled", "聽障": "disabled", "听障": "disabled", "視障": "disabled", "视障": "disabled", "身心障礙": "disabled", "身心障碍": "disabled"
+    },
+    "person_words": ["爸爸", "媽媽", "妈妈", "爸", "媽", "妈", "先生", "太太", "老公", "老婆", "兒子", "儿子", "女兒", "女儿",
+                     "哥哥", "姊姊", "姐姐", "弟弟", "妹妹", "孫子", "孙子", "孫女", "孙女", "鄰居", "邻居", "朋友", "叔叔", "阿姨", "伯伯", "舅舅"],
+    "time_phrases": {
+      "now": ["現在", "现在", "馬上", "马上", "立刻", "立即"],
+      "soon_12h": ["快沒了", "快没了", "快沒有了", "快没有了", "快沒有", "快没有", "快用完", "快吃完", "剩一點", "剩一点", "剩不多", "快不夠", "快不够"],
+      "today": ["今天晚上", "今天", "今晚", "今日", "今夜"],
+      "tomorrow_morning": ["明天早上", "明天上午", "明天一早", "明天清晨", "明早"],
+      "tomorrow": ["明天中午", "明天下午", "明天晚上", "明天", "明日"],
+      "day_after": ["後天", "后天"],
+      "hour_units": ["個小時", "个小时", "個鐘頭", "个钟头", "小時", "小时", "鐘頭", "钟头"],
+      "minute_units": ["分鐘", "分钟"],
+      "day_units": ["天"],
+      "week_prefixes": ["星期", "禮拜", "礼拜", "週", "周"],
+      "weekday_chars": {"一": 0, "二": 1, "三": 2, "四": 3, "五": 4, "六": 5, "日": 6, "天": 6},
+      "next_week_prefix": ["下個", "下个", "下"],
+      "elapsed_prefixes": ["已經", "已经", "過了", "过了"],
+      "elapsed_suffixes": ["以前", "之前", "前", "沒", "没"],
+      "not_deadline": ["昨天", "前天"]
+    }
+  }
+}
