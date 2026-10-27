@@ -316,6 +316,23 @@ class DeskFlowWireTest(unittest.TestCase):
                 self.assertNotIn(w, printed, f"{w} in the print view: {text}")
                 self.assertNotIn(w, csv_text, f"{w} in the CSV")
 
+    def test_rescue_with_protection_life_first(self):
+        """Rescue plus protection in one sentence: the rescue goes out with only its location and 受困人員; the
+        protection part goes out as the generic protection message."""
+        for text in ("我先生一直打我，我女兒還被困在中正路三巷", "家暴，我女兒還被困在中正路三巷"):
+            j = self.intake(text)
+            self.confirm_all(j["seqs"])
+            sent = [self.sent(s) for s in j["seqs"]]
+            prot = [x for x in sent if x[2]["category"] == codebook.PROTECTION]
+            rescue = [x for x in sent if x[2]["category"] == 4 and x[2]["priority"] == 1]
+            self.assertEqual((len(prot), len(rescue)), (1, 1), (text, [x[2]["summary"] for x in sent]))
+            self.assertEqual(prot[0][2]["summary"], "保護個案，請社工聯絡B站", text)
+            self.assertEqual((prot[0][2]["item_code"], prot[0][2]["quantity"], prot[0][2]["zone"]), (0, 0, 0), text)
+            self.assertEqual(rescue[0][2]["summary"], "中正路三巷 受困人員", text)
+            self.assertEqual(rescue[0][2]["zone"], codebook.ZONE_EXTERNAL, text)
+            for w in ("打", "家暴", "保護", "先生", "女兒", "社工"):
+                self.assertNotIn(w.encode("utf-8"), rescue[0][1], f"{w} in the rescue ticket's bytes: {text}")
+
 
 if __name__ == "__main__":
     unittest.main()
