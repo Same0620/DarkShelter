@@ -25,11 +25,11 @@
   },
   "latency_ms": {
    "rules_p50": 0.12,
-   "rules_p95": 0.21,
+   "rules_p95": 0.22,
    "llm_p50": null,
    "llm_p95": null,
    "total_p50": 0.12,
-   "total_p95": 0.21
+   "total_p95": 0.22
   },
   "llm_errors": 0,
   "llm_fields": 0,
@@ -66,7 +66,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 24.0,
+   "rules_ms": 27.58,
    "llm": null
   },
   {
@@ -97,7 +97,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.2,
+   "rules_ms": 0.31,
    "llm": null
   },
   {
@@ -128,7 +128,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.14,
+   "rules_ms": 0.17,
    "llm": null
   },
   {
@@ -159,7 +159,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.14,
+   "rules_ms": 0.15,
    "llm": null
   },
   {
@@ -190,7 +190,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.13,
+   "rules_ms": 0.15,
    "llm": null
   },
   {
@@ -221,7 +221,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.14,
+   "rules_ms": 0.15,
    "llm": null
   },
   {
@@ -314,7 +314,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.42,
+   "rules_ms": 0.47,
    "llm": null
   },
   {
@@ -345,7 +345,7 @@
     "emergency": "rescue",
     "dup_of": null
    },
-   "rules_ms": 0.16,
+   "rules_ms": 0.18,
    "llm": null
   },
   {
@@ -376,7 +376,7 @@
     "emergency": "rescue",
     "dup_of": null
    },
-   "rules_ms": 0.13,
+   "rules_ms": 0.15,
    "llm": null
   },
   {
@@ -407,7 +407,7 @@
     "emergency": "rescue",
     "dup_of": null
    },
-   "rules_ms": 0.29,
+   "rules_ms": 0.32,
    "llm": null
   },
   {
@@ -454,7 +454,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.44,
+   "rules_ms": 0.5,
    "llm": null
   },
   {
@@ -485,7 +485,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.14,
+   "rules_ms": 0.15,
    "llm": null
   },
   {
@@ -518,7 +518,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.19,
+   "rules_ms": 0.2,
    "llm": null
   },
   {
@@ -551,7 +551,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.12,
+   "rules_ms": 0.14,
    "llm": null
   },
   {
@@ -584,7 +584,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.2,
+   "rules_ms": 0.21,
    "llm": null
   },
   {
@@ -617,7 +617,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.19,
+   "rules_ms": 0.21,
    "llm": null
   },
   {
@@ -683,7 +683,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.19,
+   "rules_ms": 0.21,
    "llm": null
   },
   {
@@ -716,7 +716,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.18,
+   "rules_ms": 0.19,
    "llm": null
   },
   {
@@ -747,7 +747,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.2,
+   "rules_ms": 0.21,
    "llm": null
   },
   {
@@ -809,7 +809,7 @@
     "emergency": "rescue",
     "dup_of": null
    },
-   "rules_ms": 0.21,
+   "rules_ms": 0.22,
    "llm": null
   },
   {
@@ -934,7 +934,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.35,
+   "rules_ms": 0.37,
    "llm": null
   },
   {
@@ -965,7 +965,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.19,
+   "rules_ms": 0.2,
    "llm": null
   },
   {
@@ -1122,7 +1122,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.32,
+   "rules_ms": 0.19,
    "llm": null
   },
   {
@@ -1155,7 +1155,7 @@
     "emergency": "suicide",
     "dup_of": null
    },
-   "rules_ms": 0.15,
+   "rules_ms": 0.12,
    "llm": null
   },
   {
@@ -1264,7 +1264,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.21,
+   "rules_ms": 0.22,
    "llm": null
   },
   {
@@ -1419,7 +1419,7 @@
     "emergency": "rescue",
     "dup_of": null
    },
-   "rules_ms": 0.13,
+   "rules_ms": 0.14,
    "llm": null
   },
   {
@@ -1450,7 +1450,7 @@
     "emergency": "rescue",
     "dup_of": null
    },
-   "rules_ms": 0.12,
+   "rules_ms": 0.17,
    "llm": null
   },
   {
@@ -1512,7 +1512,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.12,
+   "rules_ms": 0.13,
    "llm": null
   },
   {
@@ -1574,7 +1574,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.11,
+   "rules_ms": 0.1,
    "llm": null
   },
   {
@@ -1605,7 +1605,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.1,
+   "rules_ms": 0.11,
    "llm": null
   },
   {
@@ -1873,7 +1873,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.15,
+   "rules_ms": 0.14,
    "llm": null
   },
   {
@@ -1951,7 +1951,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.12,
+   "rules_ms": 0.13,
    "llm": null
   },
   {
@@ -2044,7 +2044,7 @@
     "emergency": null,
     "dup_of": "dup1a"
    },
-   "rules_ms": 0.12,
+   "rules_ms": 0.11,
    "llm": null
   },
   {
@@ -2230,7 +2230,7 @@
     "emergency": "rescue",
     "dup_of": "dup4a"
    },
-   "rules_ms": 0.17,
+   "rules_ms": 0.18,
    "llm": null
   },
   {
@@ -2261,7 +2261,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.12,
+   "rules_ms": 0.13,
    "llm": null
   },
   {
@@ -2292,7 +2292,7 @@
     "emergency": null,
     "dup_of": "dup5a"
    },
-   "rules_ms": 0.19,
+   "rules_ms": 0.2,
    "llm": null
   },
   {
@@ -2354,7 +2354,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.11,
+   "rules_ms": 0.1,
    "llm": null
   },
   {
@@ -2478,7 +2478,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.14,
+   "rules_ms": 0.15,
    "llm": null
   },
   {
@@ -2602,7 +2602,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.12,
+   "rules_ms": 0.13,
    "llm": null
   },
   {
@@ -2666,7 +2666,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.11,
+   "rules_ms": 0.12,
    "llm": null
   },
   {
@@ -2697,7 +2697,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.11,
+   "rules_ms": 0.12,
    "llm": null
   },
   {
@@ -2728,7 +2728,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.12,
+   "rules_ms": 0.13,
    "llm": null
   },
   {
@@ -2790,7 +2790,7 @@
     "emergency": "rescue",
     "dup_of": null
    },
-   "rules_ms": 0.1,
+   "rules_ms": 0.11,
    "llm": null
   },
   {
@@ -2821,7 +2821,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.12,
+   "rules_ms": 0.1,
    "llm": null
   },
   {
@@ -2852,7 +2852,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.11,
+   "rules_ms": 0.12,
    "llm": null
   },
   {
@@ -2945,7 +2945,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.12,
+   "rules_ms": 0.13,
    "llm": null
   },
   {
@@ -3007,7 +3007,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.12,
+   "rules_ms": 0.13,
    "llm": null
   },
   {
@@ -3131,7 +3131,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.11,
+   "rules_ms": 0.12,
    "llm": null
   },
   {
@@ -3162,7 +3162,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.13,
+   "rules_ms": 0.15,
    "llm": null
   },
   {
@@ -3286,7 +3286,7 @@
     "emergency": "rescue",
     "dup_of": null
    },
-   "rules_ms": 0.19,
+   "rules_ms": 0.2,
    "llm": null
   },
   {
@@ -3534,7 +3534,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.12,
+   "rules_ms": 0.13,
    "llm": null
   },
   {
@@ -3596,7 +3596,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.15,
+   "rules_ms": 0.16,
    "llm": null
   },
   {
@@ -3627,7 +3627,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.09,
+   "rules_ms": 0.1,
    "llm": null
   },
   {
@@ -3674,7 +3674,7 @@
     "emergency": "rescue",
     "dup_of": null
    },
-   "rules_ms": 0.24,
+   "rules_ms": 0.25,
    "llm": null
   },
   {
@@ -3721,7 +3721,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.22,
+   "rules_ms": 0.23,
    "llm": null
   },
   {
@@ -3815,7 +3815,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.19,
+   "rules_ms": 0.2,
    "llm": null
   },
   {
@@ -3846,7 +3846,7 @@
     "emergency": "rescue",
     "dup_of": null
    },
-   "rules_ms": 0.13,
+   "rules_ms": 0.14,
    "llm": null
   },
   {
@@ -3970,7 +3970,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.1,
+   "rules_ms": 0.12,
    "llm": null
   },
   {
@@ -4063,7 +4063,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.12,
+   "rules_ms": 0.13,
    "llm": null
   },
   {
@@ -4094,7 +4094,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.12,
+   "rules_ms": 0.13,
    "llm": null
   },
   {
@@ -4156,7 +4156,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.1,
+   "rules_ms": 0.11,
    "llm": null
   },
   {
@@ -4218,7 +4218,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.09,
+   "rules_ms": 0.1,
    "llm": null
   },
   {
@@ -4249,7 +4249,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.08,
+   "rules_ms": 0.09,
    "llm": null
   },
   {
@@ -4280,7 +4280,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.08,
+   "rules_ms": 0.09,
    "llm": null
   },
   {
@@ -4342,7 +4342,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.08,
+   "rules_ms": 0.09,
    "llm": null
   },
   {
@@ -4559,7 +4559,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.16,
+   "rules_ms": 0.09,
    "llm": null
   },
   {
@@ -4590,7 +4590,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.13,
+   "rules_ms": 0.09,
    "llm": null
   },
   {
@@ -4652,7 +4652,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.1,
+   "rules_ms": 0.09,
    "llm": null
   },
   {
@@ -4683,7 +4683,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.09,
+   "rules_ms": 0.1,
    "llm": null
   },
   {
@@ -4714,7 +4714,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.13,
+   "rules_ms": 0.12,
    "llm": null
   },
   {
@@ -4776,7 +4776,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.12,
+   "rules_ms": 0.11,
    "llm": null
   },
   {
@@ -4838,7 +4838,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.1,
+   "rules_ms": 0.11,
    "llm": null
   },
   {
@@ -4869,7 +4869,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.08,
+   "rules_ms": 0.09,
    "llm": null
   },
   {
@@ -5055,7 +5055,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.09,
+   "rules_ms": 0.1,
    "llm": null
   },
   {
@@ -5086,7 +5086,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.09,
+   "rules_ms": 0.1,
    "llm": null
   },
   {
@@ -5117,7 +5117,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.08,
+   "rules_ms": 0.09,
    "llm": null
   },
   {
@@ -5179,7 +5179,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.08,
+   "rules_ms": 0.09,
    "llm": null
   },
   {
@@ -5303,7 +5303,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.09,
+   "rules_ms": 0.08,
    "llm": null
   },
   {
@@ -5551,7 +5551,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.13,
+   "rules_ms": 0.14,
    "llm": null
   },
   {
@@ -5861,7 +5861,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.11,
+   "rules_ms": 0.12,
    "llm": null
   },
   {
@@ -5923,7 +5923,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.09,
+   "rules_ms": 0.1,
    "llm": null
   },
   {
@@ -6109,7 +6109,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.11,
+   "rules_ms": 0.12,
    "llm": null
   },
   {
@@ -6140,7 +6140,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.14,
+   "rules_ms": 0.15,
    "llm": null
   },
   {
@@ -6202,7 +6202,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.11,
+   "rules_ms": 0.13,
    "llm": null
   },
   {
@@ -6264,7 +6264,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.11,
+   "rules_ms": 0.13,
    "llm": null
   },
   {
@@ -6295,7 +6295,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.09,
+   "rules_ms": 0.1,
    "llm": null
   },
   {
@@ -6357,7 +6357,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.13,
+   "rules_ms": 0.14,
    "llm": null
   },
   {
@@ -6388,7 +6388,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.11,
+   "rules_ms": 0.13,
    "llm": null
   },
   {
@@ -6419,7 +6419,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.13,
+   "rules_ms": 0.14,
    "llm": null
   },
   {
@@ -6450,7 +6450,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.12,
+   "rules_ms": 0.14,
    "llm": null
   },
   {
@@ -6543,7 +6543,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.13,
+   "rules_ms": 0.14,
    "llm": null
   },
   {
@@ -6729,7 +6729,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.11,
+   "rules_ms": 0.12,
    "llm": null
   },
   {
@@ -6791,7 +6791,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.13,
+   "rules_ms": 0.14,
    "llm": null
   },
   {
@@ -6822,7 +6822,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.1,
+   "rules_ms": 0.11,
    "llm": null
   },
   {
@@ -6978,7 +6978,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.15,
+   "rules_ms": 0.16,
    "llm": null
   },
   {
@@ -7009,7 +7009,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.09,
+   "rules_ms": 0.1,
    "llm": null
   },
   {
@@ -7288,7 +7288,7 @@
     "emergency": "rescue",
     "dup_of": null
    },
-   "rules_ms": 0.11,
+   "rules_ms": 0.12,
    "llm": null
   },
   {
@@ -7505,7 +7505,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.11,
+   "rules_ms": 0.12,
    "llm": null
   },
   {
@@ -7536,7 +7536,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.16,
+   "rules_ms": 0.12,
    "llm": null
   },
   {
@@ -7567,7 +7567,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.12,
+   "rules_ms": 0.11,
    "llm": null
   },
   {
@@ -7676,7 +7676,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.12,
+   "rules_ms": 0.13,
    "llm": null
   },
   {
@@ -7738,7 +7738,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.12,
+   "rules_ms": 0.13,
    "llm": null
   },
   {
@@ -7831,7 +7831,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.1,
+   "rules_ms": 0.11,
    "llm": null
   },
   {
@@ -7956,7 +7956,7 @@
     "emergency": "protection,rescue",
     "dup_of": null
    },
-   "rules_ms": 0.21,
+   "rules_ms": 0.22,
    "llm": null
   },
   {
@@ -7987,7 +7987,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.09,
+   "rules_ms": 0.1,
    "llm": null
   },
   {
@@ -8080,7 +8080,7 @@
     "emergency": "protection",
     "dup_of": null
    },
-   "rules_ms": 0.1,
+   "rules_ms": 0.09,
    "llm": null
   },
   {
@@ -8158,7 +8158,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.31,
+   "rules_ms": 0.32,
    "llm": null
   },
   {
@@ -8189,7 +8189,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.14,
+   "rules_ms": 0.15,
    "llm": null
   },
   {
@@ -8313,7 +8313,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.1,
+   "rules_ms": 0.15,
    "llm": null
   }
  ]

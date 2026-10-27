@@ -1,6 +1,6 @@
 # Text evaluation (--llm none)
 
-Generated 2026-10-28 07:03 on 258 labelled cases (C:\Users\Tony\Desktop\ASUS_Hackathon\darkshelter\eval\text_cases.jsonl).
+Generated 2026-10-28 07:10 on 258 labelled cases (C:\Users\Tony\Desktop\ASUS_Hackathon\darkshelter\eval\text_cases.jsonl).
 
 | Metric | Value |
 |---|---|
@@ -17,7 +17,7 @@ Generated 2026-10-28 07:03 on 258 labelled cases (C:\Users\Tony\Desktop\ASUS_Hac
 | dedupe_precision | 100.0 % |
 | dedupe_recall | 100.0 % |
 | hallucination_rate | n/a |
-| latency rules p50 / p95 | 0.12 / 0.21 ms |
+| latency rules p50 / p95 | 0.12 / 0.22 ms |
 
 Gold P1 needs: 186, predicted P1 needs: 186. Dedupe pool: {'tp': 5, 'fp': 0, 'fn': 0}.
 

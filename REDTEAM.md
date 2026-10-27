@@ -86,6 +86,56 @@ Each fix should be followed by the full §13 suite, which takes about 15 minutes
 6. **Before any deployment on two machines (H1).** Add a per-install id to the ticket identity, and require a
    unique `desk_id` for each desk.
 
+## Round 2 (06:45–07:30): only what changed today, plus a real-model dress rehearsal
+
+Starting point: tag `known-good-1` (`368fe34`). Each change is a separate commit.
+
+**Request guard (agent G2).**
+- **Bypasses: none.** G2 sent 42 raw requests with Chrome's exact headers: a null Origin, cross-site form and
+  text/plain POSTs, multipart, method overrides, HEAD and OPTIONS, Host tricks (a trailing dot, `127.1`,
+  `0x7f000001`, `[::ffff:127.0.0.1]`, userinfo, wrong or doubled ports) and DNS rebinding.
+- **False blocks: none.**
+- **Fixed:** the pages could be framed by another site, which could steer a clerk's click. Both apps now send
+  `X-Frame-Options: DENY` and `frame-ancestors 'none'`.
+- **Real Chrome 155:** confirm → EOC → 已派遣 → desk works at both `http://127.0.0.1` and `http://localhost`.
+  Chrome sent `Origin` set to the page's own origin and `Sec-Fetch-Site: same-origin`, and none of the 8 writes was
+  refused.
+- **Left open (not changed today):** the link emulator's control port (`:9100/profile?name=…`) has no guard. Any
+  web page open in the same browser could switch the demo's link with an `<img>` tag. It is a demo-only component.
+  Don't browse other sites in the demo browser.
+
+**The new emergency phrases (agent P).**
+- **Everyday exaggeration:** 「X死了」 idioms (熱死了, 累死了, 笑死…) were already P3.
+- **救命 next to a complaint** (「救命喔，排隊排好久」) and "almost" before a soft symptom (「我快中暑了」) keep P1 and add
+  the ask-back 「確認：是真的緊急狀況嗎？」. Urgency is never dropped.
+- **Missed emergencies:** 45 of 75 probes weren't P1; now 3 aren't, and all 3 are over-alarm on the safe side.
+  Newly P1: stroke, shock, burns, bites, poisoning, pregnancy bleeding, low blood sugar and more.
+- **Domestic violence:** 「我先生打我」-style phrasing now opens a protection ticket.
+- **Eval:** 125 new cases.
+
+**Team decisions, implemented.**
+- **Self-harm** goes out like psychiatric details: 「機密醫療需求，請聯絡B站」 on the wire, in the CSV and in the print
+  view, keeping P1, the emergency flag and the real category. A wire-audit test proves that 自殺 and 自傷 never
+  appear in any of the three.
+- **Rescue plus protection** in one sentence: the rescue goes out as exactly 「中正路三巷 受困人員」, and the
+  protection part as the generic protection message. Both are tested.
+
+**Real-model dress rehearsal** (Whisper small + Qwen on the CPU; zh-TW TTS voice as 16 kHz WAVs; typed and audio).
+Typed input gave the right result for every demo sentence. Audio found four problems:
+
+| Whisper heard | Effect | Now |
+|---|---|---|
+| B區十二床 → 避區/必趨十二床 | zone lost (wire said 「12床」) | **Fixed:** a sound-alike letter right before a bed number becomes B區/C區/A區 |
+| 中正路三巷 → 中正路三項 | wire said 「中正路 受困人員」 | **Fixed:** 項 after a road number becomes 巷 |
+| 胸痛 → 兇統 | rules missed it; **Qwen guessed 家暴 → P2 protection** | **Fixed:** 兇統 and similar sound-alikes count as 胸痛 (P1), and the ask-back names 胸痛 |
+| the desk died at start-up: `OpenBLAS error: Memory allocation still failed` (1.2 GB of commit left) | no real-model desk at all | **Fixed:** `run_demo` limits OpenBLAS to one thread |
+
+**Left alone:**
+- For the daughter's repeat, Qwen's location 「十二床」 replaced the rules' 「B區十二床」. That ticket is merged into the
+  first one in the demo and is never sent.
+- Persistent vomiting comes out P1 where P2 would be right (3 eval cases, tagged `known_gap`).
+- 「撞到頭，現在沒事」 and 「我有低血糖」 come out P1 (over-alarm, like the 中暑 case below).
+
 ## Findings, most severe first
 
 ### Critical
