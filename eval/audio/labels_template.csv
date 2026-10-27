@@ -1,0 +1,4 @@
+file,case_id,condition,gold_transcript
+v1_clerk_case01.wav,case01,clerk_repeat,阿嬤明天早上要洗腎，她的胰島素今天也用完了
+v1_direct_case01.wav,case01,resident_direct,阿嬤明天早上要洗腎，她的胰島素今天也用完了
+v2_noisy_case02.wav,case02,noisy,我爸還在中正路三巷的家裡沒出來

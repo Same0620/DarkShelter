@@ -487,17 +487,15 @@ class _Ctx:
                     continue
                 code, cat = _adjust_item(h, self.clauses, cl.idx)
                 self.item_clauses.setdefault(code if code else ("cat", cat), set()).add(cl.idx)
-        self.clause_numbers = []
-        for cl in self.clauses:
-            nums = set()
-            for m in _NUM_TOKEN.finditer(cl.text):
-                v, _ = parse_cn_number(m.group(0))
-                if v is not None:
-                    nums.add(int(v))
-            for q in cl.quantities:
-                nums.add(q[0])
-            self.clause_numbers.append(nums)
+        # counts: a number followed by a counting unit (個/位/人/包/瓶...) — 「剩兩天」 is a duration,
+        # 「E區1床」 a bed: the 1.5B model turns those into quantities
+        self.clause_numbers = [{q[0] for q in cl.quantities} for cl in self.clauses]
         self.numbers = set().union(*self.clause_numbers) if self.clause_numbers else set()
+        self.any_numbers = set()
+        for m in _NUM_TOKEN.finditer(self.norm):
+            v, _ = parse_cn_number(m.group(0))
+            if v is not None:
+                self.any_numbers.add(int(v))
         self.lex = lex
 
 
@@ -538,6 +536,18 @@ def _nval(v):
     return normalize(str(v)).strip("「」『』\"' ") if v is not None else ""
 
 
+_PRONOUN_PREFIX = re.compile(r"^(我們的|我们的|我的|他的|她的|我們|我们|我|他|她|你)")
+
+
+def _person_only(vn, lex):
+    """True when the text is only a person (我爸, 阿嬤, 她) with nothing else."""
+    s = _PRONOUN_PREFIX.sub("", vn or "")
+    if not s:
+        return bool(vn)
+    covered = sum(e - st for _w, _g, st, e in lex.find_subjects(s))
+    return covered >= len(s)
+
+
 def grounded(field_name, value, transcript, ctx=None):
     """Was `value` for `field_name` actually said? (normalized substring; items via any keyword of
     their lexicon entry; quantities via digits or Chinese numerals; zones via parsed equality)."""
@@ -546,7 +556,7 @@ def grounded(field_name, value, transcript, ctx=None):
     if value is None or value == "" or value == 0:
         return False
     lex = ctx.lex
-    if field_name == "quantity":
+    if field_name == "quantity":   # only a number said with a counting unit grounds a quantity
         try:
             return int(value) in ctx.numbers
         except (TypeError, ValueError):
@@ -566,6 +576,8 @@ def grounded(field_name, value, transcript, ctx=None):
         return z in ctx.zones
     if field_name == "item":
         vn = _nval(value)
+        if _person_only(vn, lex):
+            return False   # real qwen puts the person in 'item' (「我爸」): a person is never an item
         if vn and vn.lower() in ctx.low:
             return True
         for h in lex.find_hits(vn):
@@ -675,7 +687,10 @@ def _apply_llm_fields(m, d, ctx, now, src, ev, flags, own=frozenset(), other=fro
             if not z:
                 continue   # 「明天早上」 is not a place: treat as not said (no flag)
         rv = getattr(m, f)
-        if grounded(f, lv, None, ctx):
+        g = grounded(f, lv, None, ctx)
+        if f == "quantity" and not g and int(lv) in ctx.any_numbers:
+            continue   # the number was said, but as a duration / bed / age: not a quantity
+        if g:
             if not _owned_ok(f, lv, ctx, own, other):
                 continue   # said, but in another need's clause: never steal it
             if lv != rv:
@@ -725,7 +740,7 @@ def _merge_one(rn, d, info, ctx, now, own=frozenset(), other=frozenset()):
                     src["category"] = "llm_ungrounded"
                     flags.append("ungrounded:category")
         if m.category == 0 and info["cat"] != 0:
-            g = item_g or grounded("category", info["cat"], None, ctx)
+            g = _category_grounded(info["cat"], info, item_g, ctx)
             m.category = info["cat"]
             src["category"] = "llm" if g else "llm_ungrounded"
             ev["category"] = d["item"] or d["category"]
@@ -740,12 +755,27 @@ def _merge_one(rn, d, info, ctx, now, own=frozenset(), other=frozenset()):
     return m
 
 
+def _category_grounded(cat, info, item_g, ctx):
+    """A category is 'said' when a lexicon hit of that category was heard, or the grounded LLM item
+    maps to it. A grounded but unmapped item (「頭暈」) does not ground the LLM's category."""
+    if not cat:
+        return False
+    if grounded("category", cat, None, ctx):
+        return True
+    hit = info.get("hit")
+    return bool(item_g and hit is not None and hit.entry["category"] == cat)
+
+
 def _from_llm(d, info, ctx, now, other=frozenset()):
+    """An LLM-only need, or None when it carries no evidence (no grounded item and an OTHER or
+    ungrounded category): such needs only add a useless draft."""
     m = Need(category=info["cat"], item_code=info["item_code"])
     m.item = (codebook.item(m.item_code) or {}).get("zh", "") or d["item"]
     src, ev, flags = {}, {}, ["ai_only"]
     item_g = bool(d["item"]) and grounded("item", d["item"], None, ctx)
-    cat_g = item_g or grounded("category", m.category, None, ctx)
+    cat_g = _category_grounded(m.category, info, item_g, ctx)
+    if not item_g and not cat_g:
+        return None
     if d["item"]:
         src["item"] = "llm" if item_g else "llm_ungrounded"
         ev["item"] = d["item"] if item_g else ""
@@ -810,7 +840,9 @@ def merge_llm(rules_needs, llm_needs, transcript, now, _ctx=None):
     for k in keys:
         all_owned |= ctx.item_clauses.get(k, set())
     for d, info in extra:
-        out.append(_from_llm(d, info, ctx, now, all_owned))
+        m = _from_llm(d, info, ctx, now, all_owned)
+        if m is not None:
+            out.append(m)
     return out
 
 
@@ -876,6 +908,11 @@ def _suppressed_match(m, ctx):
         if e["category"] == m.category and e["category"] not in ctx.active_categories \
                 and (hit is None or hit.entry["category"] == m.category) and not m.red_flags:
             return kw
+    # the speaker denied a symptom and the AI put an urgent category on the utterance that nothing
+    # said supports (real qwen: 「我沒有昏倒，只是頭暈」 -> PERSON_AT_RISK): treat it as the denied symptom
+    if not m.red_flags and m.category and m.category not in ctx.active_categories \
+            and m.field_sources.get("category") in ("llm", "llm_ungrounded"):
+        return next(iter(ctx.suppressed.values()))
     return None
 
 

@@ -199,6 +199,46 @@ class MergeInvariants(unittest.TestCase):
         r_ins = [n for n in rules if n.item_code == 301][0]
         self.assertEqual((insulin.priority, insulin.deadline_at), (r_ins.priority, r_ins.deadline_at))
 
+    def test_duration_is_not_a_quantity(self):
+        # real qwen: 「剩兩天」 / 「兩天沒洗腎」 -> quantity 2
+        self.assertFalse(grounded("quantity", 2, "阿公的降血壓藥剩兩天"))
+        self.assertTrue(grounded("quantity", 2, "阿公要兩包尿布"))
+        for text, cat, item in (("阿公的降血壓藥剩兩天", "MEDICATION", "降血壓藥"),
+                                ("阿公已經兩天沒洗腎了", "LIFE_SUSTAINING", "洗腎"),
+                                ("E區1床需要毛毯", "SUPPLIES", "毛毯")):
+            rules, out = run(text, [llm_need(cat, item, quantity=2 if "兩" in text else 1)])
+            self.assertIsNone(out[0].quantity, text)
+            self.assertNotIn("ungrounded:quantity", out[0].flags, text)
+
+    def test_evidence_free_ai_only_needs_are_dropped(self):
+        # real qwen added an OTHER need (no item) and a PERSON_AT_RISK need (no item) next to a real P1
+        rules, out = run("不是胸痛，是胸口很悶",
+                         [llm_need("MEDICAL_EMERGENCY", "胸口很悶"), llm_need("OTHER", None, subject="他")])
+        self.assertFalse([n for n in out if n.rules_index is None])
+        rules, out = run("我爸心臟不舒服",
+                         [llm_need("MEDICAL_EMERGENCY", "心臟不舒服"), llm_need("PERSON_AT_RISK", None, subject="我爸")])
+        self.assertEqual([(n.item_code, n.priority) for n in out], [(101, 1)])
+        self.assertFalse([n for n in out if n.category == 4])
+        # exactly what qwen2.5:1.5b returned: the person in 'item'
+        rules, out = run("我爸心臟不舒服", [llm_need("PERSON_AT_RISK", "我爸", subject="我爸", summary="我爸心臟不舒服")])
+        self.assertEqual([(n.item_code, n.priority, n.emergency) for n in out], [(101, 1, "medical")])
+        rules, out = run("我爸聯絡不上", [llm_need("COMMUNICATION", "我爸", subject="我", summary="我父親聯絡不上")])
+        self.assertEqual([(n.item_code, n.priority) for n in out], [(402, 1)])
+        self.assertFalse(grounded("item", "我爸", "我爸聯絡不上"))
+        self.assertTrue(grounded("item", "老花眼鏡", "需要老花眼鏡"))
+
+    def test_denied_symptom_with_unsupported_urgent_category(self):
+        # real qwen: 「我沒有昏倒，只是頭暈」 -> PERSON_AT_RISK, item 頭暈
+        rules, out = run("我沒有昏倒，只是頭暈", [llm_need("PERSON_AT_RISK", "頭暈")])
+        self.assertFalse([n for n in out if n.priority == 1 or n.emergency])
+        self.assertTrue(any("確認：現在有昏倒嗎？" in n.ask_back for n in out))
+
+    def test_grounded_unmapped_item_does_not_ground_category(self):
+        rules, out = run("他頭很暈", [llm_need("MEDICAL_EMERGENCY", "頭很暈")])
+        self.assertIn("ungrounded:category", out[0].flags)
+        self.assertIn("raised_by_ai_guess", out[0].flags)   # may raise, flagged, with an ask-back
+        self.assertTrue(any("AI推測" in q for q in out[0].ask_back))
+
     def test_none_fields_accepted(self):
         rules, out = run("阿嬤要洗腎", [llm_need("LIFE_SUSTAINING", None)])
         self.assertEqual(out[0].item_code, 201)

@@ -1,0 +1,219 @@
+{
+  "meta": {
+    "asr": "real",
+    "model": "small",
+    "llm": "none",
+    "labels": "C:\\Users\\Tony\\AppData\\Local\\Temp\\ds_audio_eval_bg3hs72o\\labels.csv",
+    "tts_demo": true,
+    "when": "2026-10-28 02:15:21"
+  },
+  "summary": {
+    "clerk_repeat": {
+      "n": 8,
+      "rejected": 0,
+      "cer_mean": 0.0417,
+      "p1_recall": "4/4",
+      "false_p1": 0,
+      "asr_p50": 1.344,
+      "asr_p95": 1.625,
+      "llm_p50": null,
+      "llm_p95": null,
+      "e2e_p50": 1.344,
+      "e2e_p95": 1.641
+    }
+  },
+  "results": [
+    {
+      "file": "tts01.wav",
+      "case_id": "tts01",
+      "condition": "clerk_repeat",
+      "gold": "阿嬤明天早上要洗腎，她的胰島素今天也用完了",
+      "gold_p1": true,
+      "check": {
+        "ok": true,
+        "reason": null,
+        "warnings": [],
+        "duration_s": 5.517,
+        "rms_dbfs": -20.4,
+        "clip_ratio": 0.0
+      },
+      "text": "阿嬤明天早上要洗腎,他的遺島素今天也用完了。",
+      "asr_s": 1.563,
+      "low_conf": false,
+      "cer": 0.1,
+      "audio_s": 5.52,
+      "priority": 1,
+      "needs": 1,
+      "llm_s": null,
+      "e2e_s": 1.641
+    },
+    {
+      "file": "tts02.wav",
+      "case_id": "tts02",
+      "condition": "clerk_repeat",
+      "gold": "我爸還在中正路三巷的家裡沒出來",
+      "gold_p1": true,
+      "check": {
+        "ok": true,
+        "reason": null,
+        "warnings": [],
+        "duration_s": 4.234,
+        "rms_dbfs": -20.6,
+        "clip_ratio": 0.0
+      },
+      "text": "我爸還在中正路三項的家裡沒出來。",
+      "asr_s": 1.422,
+      "low_conf": false,
+      "cer": 0.0667,
+      "audio_s": 4.23,
+      "priority": 1,
+      "needs": 1,
+      "llm_s": null,
+      "e2e_s": 1.422
+    },
+    {
+      "file": "tts03.wav",
+      "case_id": "tts03",
+      "condition": "clerk_repeat",
+      "gold": "寶寶沒奶粉了",
+      "gold_p1": true,
+      "check": {
+        "ok": true,
+        "reason": null,
+        "warnings": [],
+        "duration_s": 2.116,
+        "rms_dbfs": -21.4,
+        "clip_ratio": 0.0
+      },
+      "text": "寶寶沒奶粉了。",
+      "asr_s": 1.265,
+      "low_conf": false,
+      "cer": 0.0,
+      "audio_s": 2.12,
+      "priority": 1,
+      "needs": 1,
+      "llm_s": null,
+      "e2e_s": 1.265
+    },
+    {
+      "file": "tts04.wav",
+      "case_id": "tts04",
+      "condition": "clerk_repeat",
+      "gold": "阿公已經兩天沒洗腎了",
+      "gold_p1": true,
+      "check": {
+        "ok": true,
+        "reason": null,
+        "warnings": [],
+        "duration_s": 3.077,
+        "rms_dbfs": -22.0,
+        "clip_ratio": 0.0
+      },
+      "text": "阿公已經兩天沒洗腎了。",
+      "asr_s": 1.328,
+      "low_conf": false,
+      "cer": 0.0,
+      "audio_s": 3.08,
+      "priority": 1,
+      "needs": 1,
+      "llm_s": null,
+      "e2e_s": 1.344
+    },
+    {
+      "file": "tts05.wav",
+      "case_id": "tts05",
+      "condition": "clerk_repeat",
+      "gold": "我沒有胸痛，只是有點累",
+      "gold_p1": false,
+      "check": {
+        "ok": true,
+        "reason": null,
+        "warnings": [],
+        "duration_s": 3.217,
+        "rms_dbfs": -24.6,
+        "clip_ratio": 0.0
+      },
+      "text": "我沒有胸痛﹑只是有點累。",
+      "asr_s": 1.344,
+      "low_conf": false,
+      "cer": 0.0,
+      "audio_s": 3.22,
+      "priority": 3,
+      "needs": 1,
+      "llm_s": null,
+      "e2e_s": 1.344
+    },
+    {
+      "file": "tts06.wav",
+      "case_id": "tts06",
+      "condition": "clerk_repeat",
+      "gold": "我們家四個人需要毛毯",
+      "gold_p1": false,
+      "check": {
+        "ok": true,
+        "reason": null,
+        "warnings": [],
+        "duration_s": 3.016,
+        "rms_dbfs": -21.6,
+        "clip_ratio": 0.0
+      },
+      "text": "我們家四個人需要毛毯。",
+      "asr_s": 1.218,
+      "low_conf": false,
+      "cer": 0.0,
+      "audio_s": 3.02,
+      "priority": 3,
+      "needs": 1,
+      "llm_s": null,
+      "e2e_s": 1.234
+    },
+    {
+      "file": "tts07.wav",
+      "case_id": "tts07",
+      "condition": "clerk_repeat",
+      "gold": "阿公的降血壓藥只剩兩天份，他在B區5床",
+      "gold_p1": false,
+      "check": {
+        "ok": true,
+        "reason": null,
+        "warnings": [],
+        "duration_s": 5.29,
+        "rms_dbfs": -20.3,
+        "clip_ratio": 0.0
+      },
+      "text": "阿公的降血壓要只剩兩天份，他在地區舞床。",
+      "asr_s": 1.625,
+      "low_conf": false,
+      "cer": 0.1667,
+      "audio_s": 5.29,
+      "priority": 3,
+      "needs": 1,
+      "llm_s": null,
+      "e2e_s": 1.641
+    },
+    {
+      "file": "tts08.wav",
+      "case_id": "tts08",
+      "condition": "clerk_repeat",
+      "gold": "我的手機沒電了，想聯絡家人",
+      "gold_p1": false,
+      "check": {
+        "ok": true,
+        "reason": null,
+        "warnings": [],
+        "duration_s": 3.726,
+        "rms_dbfs": -23.4,
+        "clip_ratio": 0.0
+      },
+      "text": "我的手機沒電了,想聯絡家人。",
+      "asr_s": 1.391,
+      "low_conf": false,
+      "cer": 0.0,
+      "audio_s": 3.73,
+      "priority": 3,
+      "needs": 1,
+      "llm_s": null,
+      "e2e_s": 1.406
+    }
+  ]
+}

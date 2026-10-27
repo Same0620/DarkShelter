@@ -1,0 +1,2606 @@
+{
+ "summary": {
+  "llm": "mock",
+  "cases": 72,
+  "needs_gold": 78,
+  "needs_pred": 78,
+  "need_precision": 100.0,
+  "need_recall": 100.0,
+  "category_recall": 100.0,
+  "item_accuracy": 100.0,
+  "quantity_accuracy": 100.0,
+  "zone_accuracy": 100.0,
+  "priority_accuracy": 100.0,
+  "emergency_accuracy": 100.0,
+  "p1_recall": 100.0,
+  "p1_precision": 100.0,
+  "gold_p1": 43,
+  "pred_p1": 43,
+  "dedupe_precision": 100.0,
+  "dedupe_recall": 100.0,
+  "dedupe_counts": {
+   "tp": 5,
+   "fp": 0,
+   "fn": 0
+  },
+  "latency_ms": {
+   "rules_p50": 0.13,
+   "rules_p95": 0.3,
+   "llm_p50": 0.38,
+   "llm_p95": 0.75,
+   "total_p50": 0.51,
+   "total_p95": 0.98
+  },
+  "llm_errors": 0,
+  "llm_fields": 73,
+  "ungrounded_fields": 0,
+  "hallucination_rate": 0.0,
+  "must_case_failures": []
+ },
+ "cases": [
+  {
+   "id": "p1_dialysis_two_days",
+   "text": "阿公已經兩天沒洗腎了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "LIFE_SUSTAINING",
+     "item_code": 201,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "LIFE_SUSTAINING",
+      "item_code": 201,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 26.43,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "p1_insulin_gone",
+   "text": "胰島素沒了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICATION",
+     "item_code": 301,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICATION",
+      "item_code": 301,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.17,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "p1_insulin_left",
+   "text": "胰島素沒帶出來",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICATION",
+     "item_code": 301,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICATION",
+      "item_code": 301,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.13,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "p1_formula_gone",
+   "text": "寶寶沒奶粉了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "INFANT_CHILD",
+     "item_code": 601,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "INFANT_CHILD",
+      "item_code": 601,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "p1_not_breathing",
+   "text": "他沒有呼吸了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 107,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 107,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.12,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "p1_doubt_stroke",
+   "text": "會不會是中風",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 106,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 106,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.13,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "p1_doubt_chest",
+   "text": "不知道是不是胸痛",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 101,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 101,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.24,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "p1_sudden_chest",
+   "text": "之前都好好的現在突然胸痛",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 101,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 101,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.25,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "p1_oxygen_battery",
+   "text": "製氧機電池還有兩小時",
+   "ok": true,
+   "pred": [
+    {
+     "category": "LIFE_SUSTAINING",
+     "item_code": 203,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "LIFE_SUSTAINING",
+      "item_code": 203,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.15,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "p1_lost_child",
+   "text": "我的小孩不見了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "PERSON_AT_RISK",
+     "item_code": 403,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "rescue",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "PERSON_AT_RISK",
+      "item_code": 403,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "rescue",
+    "dup_of": null
+   },
+   "rules_ms": 0.12,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "p1_wandering_elder",
+   "text": "我阿公失智走失了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "PERSON_AT_RISK",
+     "item_code": 404,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "rescue",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "PERSON_AT_RISK",
+      "item_code": 404,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "rescue",
+    "dup_of": null
+   },
+   "rules_ms": 0.09,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "p1_proxy_rescue",
+   "text": "我爸還在中正路三巷的家裡沒出來",
+   "ok": true,
+   "pred": [
+    {
+     "category": "PERSON_AT_RISK",
+     "item_code": 401,
+     "priority": 1,
+     "quantity": null,
+     "zone": 65535,
+     "emergency": "rescue",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "PERSON_AT_RISK",
+      "item_code": 401,
+      "quantity": null,
+      "zone": 65535,
+      "priority": 1
+     }
+    ],
+    "emergency": "rescue",
+    "dup_of": null
+   },
+   "rules_ms": 0.36,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "p1_dialysis_after_bp",
+   "text": "降血壓藥星期一才用完，另外阿嬤要洗腎",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICATION",
+     "item_code": 306,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    },
+    {
+     "category": "LIFE_SUSTAINING",
+     "item_code": 201,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICATION",
+      "item_code": 306,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     },
+     {
+      "category": "LIFE_SUSTAINING",
+      "item_code": 201,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.54,
+   "llm": {
+    "needs": 2,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "p1_dialysis_7am",
+   "text": "阿嬤明天早上要洗腎",
+   "ok": true,
+   "pred": [
+    {
+     "category": "LIFE_SUSTAINING",
+     "item_code": 201,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "LIFE_SUSTAINING",
+      "item_code": 201,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.13,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "np_denied_chest",
+   "text": "我沒有胸痛，只是有點累",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": [
+      "negated"
+     ]
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.17,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "np_denied_chest_simplified",
+   "text": "我没有胸痛",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": [
+      "negated"
+     ]
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.18,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "np_past_stroke",
+   "text": "上次中風過，現在要拿降血壓藥",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICATION",
+     "item_code": 306,
+     "priority": 2,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": [
+      "negated"
+     ]
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICATION",
+      "item_code": 306,
+      "quantity": null,
+      "zone": 0,
+      "priority": 2
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.21,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "np_denied_dyspnea",
+   "text": "我沒有呼吸困難，只是咳嗽",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": [
+      "negated"
+     ]
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.16,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "np_denied_seizure",
+   "text": "她沒有抽搐",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": [
+      "negated"
+     ]
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "np_past_stroke_wheelchair",
+   "text": "以前中風過，現在需要輪椅",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MOBILITY",
+     "item_code": 501,
+     "priority": 2,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": [
+      "negated"
+     ]
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MOBILITY",
+      "item_code": 501,
+      "quantity": null,
+      "zone": 0,
+      "priority": 2
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.17,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "np_denied_faint",
+   "text": "我沒有昏倒，只是頭暈",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": [
+      "negated"
+     ]
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.25,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "head_injury_not_protection",
+   "text": "被東西打到頭，流很多血",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 102,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 102,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.24,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "night_rule",
+   "text": "阿嬤明天早上要洗腎",
+   "ok": true,
+   "pred": [
+    {
+     "category": "LIFE_SUSTAINING",
+     "item_code": 201,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "LIFE_SUSTAINING",
+      "item_code": 201,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "address_not_bed",
+   "text": "我家在中正路28號，還有人受困",
+   "ok": true,
+   "pred": [
+    {
+     "category": "PERSON_AT_RISK",
+     "item_code": 401,
+     "priority": 1,
+     "quantity": null,
+     "zone": 65535,
+     "emergency": "rescue",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "PERSON_AT_RISK",
+      "item_code": 401,
+      "quantity": null,
+      "zone": 65535,
+      "priority": 1
+     }
+    ],
+    "emergency": "rescue",
+    "dup_of": null
+   },
+   "rules_ms": 0.18,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "bed_not_address",
+   "text": "B區12號的阿公需要輪椅",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MOBILITY",
+     "item_code": 501,
+     "priority": 2,
+     "quantity": null,
+     "zone": 524,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MOBILITY",
+      "item_code": 501,
+      "quantity": null,
+      "zone": 524,
+      "priority": 2
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.12,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "fewshot_one",
+   "text": "我阿嬤在B區12床，她明天早上要洗腎，然後她的胰島素今天就用完了。",
+   "ok": true,
+   "pred": [
+    {
+     "category": "LIFE_SUSTAINING",
+     "item_code": 201,
+     "priority": 1,
+     "quantity": null,
+     "zone": 524,
+     "emergency": null,
+     "flags": []
+    },
+    {
+     "category": "MEDICATION",
+     "item_code": 301,
+     "priority": 1,
+     "quantity": null,
+     "zone": 524,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "LIFE_SUSTAINING",
+      "item_code": 201,
+      "quantity": null,
+      "zone": 524,
+      "priority": 1
+     },
+     {
+      "category": "MEDICATION",
+      "item_code": 301,
+      "quantity": null,
+      "zone": 524,
+      "priority": 1
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.3,
+   "llm": {
+    "needs": 2,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "fewshot_two",
+   "text": "我們家四個人需要毛毯，還有我兒子手機沒電了，想聯絡他爸爸。",
+   "ok": true,
+   "pred": [
+    {
+     "category": "SUPPLIES",
+     "item_code": 801,
+     "priority": 3,
+     "quantity": 4,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    },
+    {
+     "category": "COMMUNICATION",
+     "item_code": 1001,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "SUPPLIES",
+      "item_code": 801,
+      "quantity": 4,
+      "zone": 0,
+      "priority": 3
+     },
+     {
+      "category": "COMMUNICATION",
+      "item_code": 1001,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.42,
+   "llm": {
+    "needs": 2,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "downplay_insulin",
+   "text": "沒什麼啦，胰島素昨天就用完了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICATION",
+     "item_code": 301,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICATION",
+      "item_code": 301,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.19,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "charger_p3",
+   "text": "我手機沒電了，需要充電器",
+   "ok": true,
+   "pred": [
+    {
+     "category": "COMMUNICATION",
+     "item_code": 1001,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "COMMUNICATION",
+      "item_code": 1001,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.15,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "vague_medicine",
+   "text": "我需要藥",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICATION",
+     "item_code": 310,
+     "priority": 2,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICATION",
+      "item_code": 310,
+      "quantity": null,
+      "zone": 0,
+      "priority": 2
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.08,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "sensitive_medicine",
+   "text": "我需要愛滋的藥",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICATION",
+     "item_code": 310,
+     "priority": 2,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": [
+      "sensitive"
+     ]
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICATION",
+      "item_code": 310,
+      "quantity": null,
+      "zone": 0,
+      "priority": 2
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "protection_case",
+   "text": "我先生家暴，我不敢回家",
+   "ok": true,
+   "pred": [
+    {
+     "category": "PROTECTION",
+     "item_code": 1301,
+     "priority": 2,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "protection",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "PROTECTION",
+      "item_code": 1301,
+      "quantity": null,
+      "zone": 0,
+      "priority": 2
+     }
+    ],
+    "emergency": "protection",
+    "dup_of": null
+   },
+   "rules_ms": 0.17,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "id_scrubbed",
+   "text": "我的身分證是A123456789，需要毛毯",
+   "ok": true,
+   "pred": [
+    {
+     "category": "SUPPLIES",
+     "item_code": 801,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "SUPPLIES",
+      "item_code": 801,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.16,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "suicide",
+   "text": "我真的不想活了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MENTAL_HEALTH",
+     "item_code": 902,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "suicide",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MENTAL_HEALTH",
+      "item_code": 902,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "suicide",
+    "dup_of": null
+   },
+   "rules_ms": 0.12,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "mental_support",
+   "text": "我晚上一直睡不著很害怕",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MENTAL_HEALTH",
+     "item_code": 901,
+     "priority": 2,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MENTAL_HEALTH",
+      "item_code": 901,
+      "quantity": null,
+      "zone": 0,
+      "priority": 2
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.13,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "pet_food",
+   "text": "我的狗需要飼料",
+   "ok": true,
+   "pred": [
+    {
+     "category": "PET",
+     "item_code": 1101,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "PET",
+      "item_code": 1101,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "landslide_road",
+   "text": "中正路那邊坍方了，路斷了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "INFRASTRUCTURE",
+     "item_code": 1202,
+     "priority": 2,
+     "quantity": null,
+     "zone": 65535,
+     "emergency": null,
+     "flags": []
+    },
+    {
+     "category": "INFRASTRUCTURE",
+     "item_code": 1201,
+     "priority": 2,
+     "quantity": null,
+     "zone": 65535,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "INFRASTRUCTURE",
+      "item_code": 1202,
+      "quantity": null,
+      "zone": 65535,
+      "priority": 2
+     },
+     {
+      "category": "INFRASTRUCTURE",
+      "item_code": 1201,
+      "quantity": null,
+      "zone": 65535,
+      "priority": 2
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.19,
+   "llm": {
+    "needs": 2,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "interpreter",
+   "text": "他聽不懂國語，需要翻譯",
+   "ok": true,
+   "pred": [
+    {
+     "category": "COMMUNICATION",
+     "item_code": 1004,
+     "priority": 2,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "COMMUNICATION",
+      "item_code": 1004,
+      "quantity": null,
+      "zone": 0,
+      "priority": 2
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.17,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "water_boxes",
+   "text": "我們需要五箱飲用水",
+   "ok": true,
+   "pred": [
+    {
+     "category": "FOOD_WATER",
+     "item_code": 701,
+     "priority": 3,
+     "quantity": 5,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "FOOD_WATER",
+      "item_code": 701,
+      "quantity": 5,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.23,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "labour",
+   "text": "她懷孕了，快生了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 103,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 103,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.18,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "concentrator_dead",
+   "text": "製氧機沒電了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "LIFE_SUSTAINING",
+     "item_code": 203,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "LIFE_SUSTAINING",
+      "item_code": 203,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "unaccompanied_child",
+   "text": "這個小孩沒有大人陪",
+   "ok": true,
+   "pred": [
+    {
+     "category": "PERSON_AT_RISK",
+     "item_code": 406,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "rescue",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "PERSON_AT_RISK",
+      "item_code": 406,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "rescue",
+    "dup_of": null
+   },
+   "rules_ms": 0.12,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "grandma_missing",
+   "text": "阿嬤找不到了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "PERSON_AT_RISK",
+     "item_code": 404,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "rescue",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "PERSON_AT_RISK",
+      "item_code": 404,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "rescue",
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "dad_unreachable",
+   "text": "我爸聯絡不上",
+   "ok": true,
+   "pred": [
+    {
+     "category": "PERSON_AT_RISK",
+     "item_code": 402,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "rescue",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "PERSON_AT_RISK",
+      "item_code": 402,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "rescue",
+    "dup_of": null
+   },
+   "rules_ms": 0.08,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "family_tracing",
+   "text": "有沒有人可以幫忙找家人",
+   "ok": true,
+   "pred": [
+    {
+     "category": "PERSON_AT_RISK",
+     "item_code": 405,
+     "priority": 2,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "PERSON_AT_RISK",
+      "item_code": 405,
+      "quantity": null,
+      "zone": 0,
+      "priority": 2
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.12,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "simplified_dialysis",
+   "text": "我阿嬷明天早上要洗肾",
+   "ok": true,
+   "pred": [
+    {
+     "category": "LIFE_SUSTAINING",
+     "item_code": 201,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "LIFE_SUSTAINING",
+      "item_code": 201,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.24,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "mishearing_insulin",
+   "text": "一島素沒了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICATION",
+     "item_code": 301,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICATION",
+      "item_code": 301,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.13,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "mishearing_dialysis",
+   "text": "阿公要洗身",
+   "ok": true,
+   "pred": [
+    {
+     "category": "LIFE_SUSTAINING",
+     "item_code": 201,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "LIFE_SUSTAINING",
+      "item_code": 201,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.08,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "tightness_not_pain",
+   "text": "不是胸痛，是胸口很悶",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 101,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": [
+      "negated"
+     ]
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 101,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.17,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "formula_and_diapers",
+   "text": "兩包奶粉和三包尿布",
+   "ok": true,
+   "pred": [
+    {
+     "category": "INFANT_CHILD",
+     "item_code": 601,
+     "priority": 2,
+     "quantity": 2,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    },
+    {
+     "category": "INFANT_CHILD",
+     "item_code": 602,
+     "priority": 2,
+     "quantity": 3,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "INFANT_CHILD",
+      "item_code": 601,
+      "quantity": 2,
+      "zone": 0,
+      "priority": 2
+     },
+     {
+      "category": "INFANT_CHILD",
+      "item_code": 602,
+      "quantity": 3,
+      "zone": 0,
+      "priority": 2
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.17,
+   "llm": {
+    "needs": 2,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "approx_people",
+   "text": "十幾個人需要便當",
+   "ok": true,
+   "pred": [
+    {
+     "category": "FOOD_WATER",
+     "item_code": 702,
+     "priority": 3,
+     "quantity": 15,
+     "zone": 0,
+     "emergency": null,
+     "flags": [
+      "approx"
+     ]
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "FOOD_WATER",
+      "item_code": 702,
+      "quantity": 15,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.13,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "insulin_soon",
+   "text": "胰島素快沒了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICATION",
+     "item_code": 301,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICATION",
+      "item_code": 301,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.14,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "insulin_three_days",
+   "text": "胰島素還有三天",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICATION",
+     "item_code": 301,
+     "priority": 2,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICATION",
+      "item_code": 301,
+      "quantity": null,
+      "zone": 0,
+      "priority": 2
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "adult_diapers_elder",
+   "text": "阿公需要成人尿布，他在C區5床",
+   "ok": true,
+   "pred": [
+    {
+     "category": "SUPPLIES",
+     "item_code": 804,
+     "priority": 2,
+     "quantity": null,
+     "zone": 773,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "SUPPLIES",
+      "item_code": 804,
+      "quantity": null,
+      "zone": 773,
+      "priority": 2
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.19,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "heart_discomfort",
+   "text": "我爸心臟不舒服",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 101,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 101,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "anticoagulant_forgotten",
+   "text": "我太太的抗凝血劑忘在家裡",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICATION",
+     "item_code": 302,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICATION",
+      "item_code": 302,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.13,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "outage_concentrator",
+   "text": "停電了，阿嬤的製氧機只能撐四小時",
+   "ok": true,
+   "pred": [
+    {
+     "category": "INFRASTRUCTURE",
+     "item_code": 1203,
+     "priority": 2,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    },
+    {
+     "category": "LIFE_SUSTAINING",
+     "item_code": 203,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "INFRASTRUCTURE",
+      "item_code": 1203,
+      "quantity": null,
+      "zone": 0,
+      "priority": 2
+     },
+     {
+      "category": "LIFE_SUSTAINING",
+      "item_code": 203,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.19,
+   "llm": {
+    "needs": 2,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "baby_diapers_bed",
+   "text": "B區3床需要嬰兒尿布兩包",
+   "ok": true,
+   "pred": [
+    {
+     "category": "INFANT_CHILD",
+     "item_code": 602,
+     "priority": 2,
+     "quantity": 2,
+     "zone": 515,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "INFANT_CHILD",
+      "item_code": 602,
+      "quantity": 2,
+      "zone": 515,
+      "priority": 2
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "husband_missing",
+   "text": "我老公失聯兩天了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "PERSON_AT_RISK",
+     "item_code": 402,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "rescue",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "PERSON_AT_RISK",
+      "item_code": 402,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "rescue",
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "dup1a",
+   "text": "阿嬤在B區12床，明天早上要洗腎",
+   "ok": true,
+   "pred": [
+    {
+     "category": "LIFE_SUSTAINING",
+     "item_code": 201,
+     "priority": 1,
+     "quantity": null,
+     "zone": 524,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "LIFE_SUSTAINING",
+      "item_code": 201,
+      "quantity": null,
+      "zone": 524,
+      "priority": 1
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.23,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "dup1b",
+   "text": "B區12床的阿嬤要洗腎",
+   "ok": true,
+   "pred": [
+    {
+     "category": "LIFE_SUSTAINING",
+     "item_code": 201,
+     "priority": 1,
+     "quantity": null,
+     "zone": 524,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "LIFE_SUSTAINING",
+      "item_code": 201,
+      "quantity": null,
+      "zone": 524,
+      "priority": 1
+     }
+    ],
+    "emergency": null,
+    "dup_of": "dup1a"
+   },
+   "rules_ms": 0.1,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "dup2a",
+   "text": "C區5床的阿公需要輪椅",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MOBILITY",
+     "item_code": 501,
+     "priority": 2,
+     "quantity": null,
+     "zone": 773,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MOBILITY",
+      "item_code": 501,
+      "quantity": null,
+      "zone": 773,
+      "priority": 2
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.09,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "dup2b",
+   "text": "C區5床要一台輪椅",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MOBILITY",
+     "item_code": 501,
+     "priority": 2,
+     "quantity": 1,
+     "zone": 773,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MOBILITY",
+      "item_code": 501,
+      "quantity": 1,
+      "zone": 773,
+      "priority": 2
+     }
+    ],
+    "emergency": null,
+    "dup_of": "dup2a"
+   },
+   "rules_ms": 0.09,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "dup3a",
+   "text": "A區3床的寶寶沒有奶粉了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "INFANT_CHILD",
+     "item_code": 601,
+     "priority": 1,
+     "quantity": null,
+     "zone": 259,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "INFANT_CHILD",
+      "item_code": 601,
+      "quantity": null,
+      "zone": 259,
+      "priority": 1
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "dup3b",
+   "text": "A區3床寶寶的奶粉沒了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "INFANT_CHILD",
+     "item_code": 601,
+     "priority": 1,
+     "quantity": null,
+     "zone": 259,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "INFANT_CHILD",
+      "item_code": 601,
+      "quantity": null,
+      "zone": 259,
+      "priority": 1
+     }
+    ],
+    "emergency": null,
+    "dup_of": "dup3a"
+   },
+   "rules_ms": 0.09,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "dup4a",
+   "text": "中正路三巷有人被困在家裡",
+   "ok": true,
+   "pred": [
+    {
+     "category": "PERSON_AT_RISK",
+     "item_code": 401,
+     "priority": 1,
+     "quantity": null,
+     "zone": 65535,
+     "emergency": "rescue",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "PERSON_AT_RISK",
+      "item_code": 401,
+      "quantity": null,
+      "zone": 65535,
+      "priority": 1
+     }
+    ],
+    "emergency": "rescue",
+    "dup_of": null
+   },
+   "rules_ms": 0.19,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "dup4b",
+   "text": "中正路三巷還有人受困",
+   "ok": true,
+   "pred": [
+    {
+     "category": "PERSON_AT_RISK",
+     "item_code": 401,
+     "priority": 1,
+     "quantity": null,
+     "zone": 65535,
+     "emergency": "rescue",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "PERSON_AT_RISK",
+      "item_code": 401,
+      "quantity": null,
+      "zone": 65535,
+      "priority": 1
+     }
+    ],
+    "emergency": "rescue",
+    "dup_of": "dup4a"
+   },
+   "rules_ms": 0.15,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "dup5a",
+   "text": "B區8床阿嬤的胰島素沒了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICATION",
+     "item_code": 301,
+     "priority": 1,
+     "quantity": null,
+     "zone": 520,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICATION",
+      "item_code": 301,
+      "quantity": null,
+      "zone": 520,
+      "priority": 1
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.12,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "dup5b",
+   "text": "阿嬤的胰島素用完了，在B區8床",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICATION",
+     "item_code": 301,
+     "priority": 1,
+     "quantity": null,
+     "zone": 520,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICATION",
+      "item_code": 301,
+      "quantity": null,
+      "zone": 520,
+      "priority": 1
+     }
+    ],
+    "emergency": null,
+    "dup_of": "dup5a"
+   },
+   "rules_ms": 0.16,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "dupx_wheelchair_other",
+   "text": "D區2床的孕婦需要輪椅",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MOBILITY",
+     "item_code": 501,
+     "priority": 2,
+     "quantity": null,
+     "zone": 1026,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MOBILITY",
+      "item_code": 501,
+      "quantity": null,
+      "zone": 1026,
+      "priority": 2
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.13,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "dupx_blanket_e1",
+   "text": "E區1床需要毛毯",
+   "ok": true,
+   "pred": [
+    {
+     "category": "SUPPLIES",
+     "item_code": 801,
+     "priority": 3,
+     "quantity": null,
+     "zone": 1281,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "SUPPLIES",
+      "item_code": 801,
+      "quantity": null,
+      "zone": 1281,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.12,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  },
+  {
+   "id": "dupx_blanket_f2",
+   "text": "F區2床也需要毛毯",
+   "ok": true,
+   "pred": [
+    {
+     "category": "SUPPLIES",
+     "item_code": 801,
+     "priority": 3,
+     "quantity": null,
+     "zone": 1538,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "SUPPLIES",
+      "item_code": 801,
+      "quantity": null,
+      "zone": 1538,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": {
+    "needs": 1,
+    "tokens_per_s": 99.0
+   }
+  }
+ ]
+}
