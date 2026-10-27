@@ -8,11 +8,11 @@ AMD Ryzen AI 7 350, 31 GB RAM, NVIDIA RTX 5070 Laptop GPU). Hard stop: 07:35.
 | Checkpoint | Time | State |
 |---|---|---|
 | Setup (venv, models, git) | 01:35–01:50 | done |
-| C1 core | — | in progress |
-| C2 network | — | in progress |
-| C3 AI | — | in progress |
-| C4-lite / C4 rest | — | in progress |
-| C5 | — | — |
+| C1 core | 02:28 | verified + committed (`491e2c2`): 181 tests, text eval rules-only P1 recall/precision 100 %, UI flow in Chromium |
+| C2 network | 02:29 | acceptance check 2 passes (`eval/demo_check.py`, ALL PASS); **stop-the-line gate (T+2 h = 03:35) cleared at 02:30**, nothing cut |
+| C3 AI | 02:30 | adapters + stub tests (59), selftest exit 0 with real Whisper small/base + real qwen2.5:1.5b |
+| C4-lite | 02:35 | kill real Ollama → FAST → restart → FULL; hard-kill desk → restarted, 「已復原 2 筆草稿，1 筆待送」, queue delivered; unconfirmed P1 → content-free alert (unit test) |
+| C4 rest / C5 | — | in progress |
 
 ## Decisions and disagreements (noted per CLAUDE.md)
 

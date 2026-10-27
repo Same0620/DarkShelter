@@ -94,6 +94,8 @@ python run_demo.py --config my.json
 | **Speech model not found offline** | Run `python scripts/download_models.py` once while online. The desk never downloads at runtime (`local_files_only=True`). |
 | **UnicodeDecodeError / 亂碼 on zh-TW Windows (cp950)** | All files are read and written as UTF-8 and child processes get `PYTHONUTF8=1`. If you run a module by hand and see encoding errors, set `$env:PYTHONUTF8=1` (PowerShell) first. Use UTF-8 when editing `config.json`. |
 | **Whisper too slow** | Run `python scripts/selftest.py` and set `asr.model` to `base` if recommended. FAST mode also switches to `base` automatically when 3+ recordings queue up. |
+| **Ollama returns HTTP 500 / `ptxas fatal` / `PTX JIT compilation failed`** | Its GPU (CUDA) path is broken on some laptops. Run it CPU-only (Windows PowerShell): `$env:CUDA_VISIBLE_DEVICES="-1"; $env:OLLAMA_VULKAN="0"; $env:GGML_VK_VISIBLE_DEVICES="-1"; ollama serve`. qwen2.5:1.5b does ~35–40 tokens/s on a modern laptop CPU. |
+| **`mkl_malloc: failed to allocate memory`, mode TYPED/FAST "記憶體不足"** | The laptop is out of memory (often dozens of browser tabs). Close Chrome/Edge tabs and other apps, then restart `run_demo.py`. The desk keeps working meanwhile: it falls back to the smaller speech model or to typing, and retries the AI every minute. Whisper small + qwen2.5:1.5b need about 3 GB free together. |
 | **The EOC shows nothing** | The link starts **DOWN** on purpose. Pick a profile (正常 GOOD / LoRa中繼) in the desk's network panel. |
 
 ## 4. Tests and evaluation
@@ -105,6 +107,9 @@ python eval/run_text_eval.py --llm none       # rules only; also --llm mock / --
 python eval/net_experiment.py                 # every link profile → eval/results/net_experiment.md
 python eval/chaos.py                          # kill/restart sender and EOC ≥ 5 times each
 python eval/run_audio_eval.py                 # needs eval/audio/*.wav + labels.csv (see eval/audio/README.md)
+python eval/run_audio_eval.py --tts-demo      # no recordings yet: synthesise clips with the OS voice (not real voices)
+python eval/demo_check.py                     # acceptance check 2 against a running `run_demo.py --mock --no-browser --reset`
+python scripts/selftest.py --skip-llm         # (or --skip-whisper / --json) partial self-tests
 ```
 The UI smoke test needs `pip install playwright && python -m playwright install chromium` (dev only).
 
