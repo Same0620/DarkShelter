@@ -1,21 +1,21 @@
 {
  "summary": {
   "llm": "none",
-  "cases": 127,
-  "needs_gold": 137,
-  "needs_pred": 137,
-  "need_precision": 100.0,
-  "need_recall": 100.0,
-  "category_recall": 100.0,
+  "cases": 258,
+  "needs_gold": 274,
+  "needs_pred": 274,
+  "need_precision": 98.9,
+  "need_recall": 98.9,
+  "category_recall": 98.9,
   "item_accuracy": 100.0,
   "quantity_accuracy": 100.0,
   "zone_accuracy": 100.0,
   "priority_accuracy": 100.0,
-  "emergency_accuracy": 100.0,
+  "emergency_accuracy": 98.8,
   "p1_recall": 100.0,
   "p1_precision": 100.0,
-  "gold_p1": 91,
-  "pred_p1": 91,
+  "gold_p1": 186,
+  "pred_p1": 186,
   "dedupe_precision": 100.0,
   "dedupe_recall": 100.0,
   "dedupe_counts": {
@@ -25,11 +25,11 @@
   },
   "latency_ms": {
    "rules_p50": 0.12,
-   "rules_p95": 0.24,
+   "rules_p95": 0.21,
    "llm_p50": null,
    "llm_p95": null,
    "total_p50": 0.12,
-   "total_p95": 0.24
+   "total_p95": 0.21
   },
   "llm_errors": 0,
   "llm_fields": 0,
@@ -66,7 +66,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 26.41,
+   "rules_ms": 24.0,
    "llm": null
   },
   {
@@ -97,7 +97,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.21,
+   "rules_ms": 0.2,
    "llm": null
   },
   {
@@ -252,7 +252,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.13,
+   "rules_ms": 0.14,
    "llm": null
   },
   {
@@ -314,7 +314,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.46,
+   "rules_ms": 0.42,
    "llm": null
   },
   {
@@ -407,7 +407,7 @@
     "emergency": "rescue",
     "dup_of": null
    },
-   "rules_ms": 0.31,
+   "rules_ms": 0.29,
    "llm": null
   },
   {
@@ -454,7 +454,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.47,
+   "rules_ms": 0.44,
    "llm": null
   },
   {
@@ -485,7 +485,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.13,
+   "rules_ms": 0.14,
    "llm": null
   },
   {
@@ -518,7 +518,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.18,
+   "rules_ms": 0.19,
    "llm": null
   },
   {
@@ -887,7 +887,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.38,
+   "rules_ms": 0.33,
    "llm": null
   },
   {
@@ -934,7 +934,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.39,
+   "rules_ms": 0.35,
    "llm": null
   },
   {
@@ -965,7 +965,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.2,
+   "rules_ms": 0.19,
    "llm": null
   },
   {
@@ -1027,7 +1027,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.09,
+   "rules_ms": 0.1,
    "llm": null
   },
   {
@@ -1122,7 +1122,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.19,
+   "rules_ms": 0.32,
    "llm": null
   },
   {
@@ -1137,7 +1137,9 @@
      "quantity": null,
      "zone": 0,
      "emergency": "suicide",
-     "flags": []
+     "flags": [
+      "sensitive"
+     ]
     }
    ],
    "gold": {
@@ -1153,7 +1155,7 @@
     "emergency": "suicide",
     "dup_of": null
    },
-   "rules_ms": 0.11,
+   "rules_ms": 0.15,
    "llm": null
   },
   {
@@ -1184,7 +1186,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.13,
+   "rules_ms": 0.14,
    "llm": null
   },
   {
@@ -1215,7 +1217,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.11,
+   "rules_ms": 0.12,
    "llm": null
   },
   {
@@ -1293,7 +1295,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.19,
+   "rules_ms": 0.2,
    "llm": null
   },
   {
@@ -1355,7 +1357,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.18,
+   "rules_ms": 0.19,
    "llm": null
   },
   {
@@ -1479,7 +1481,7 @@
     "emergency": "rescue",
     "dup_of": null
    },
-   "rules_ms": 0.1,
+   "rules_ms": 0.11,
    "llm": null
   },
   {
@@ -1541,7 +1543,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.21,
+   "rules_ms": 0.18,
    "llm": null
   },
   {
@@ -1572,7 +1574,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.1,
+   "rules_ms": 0.11,
    "llm": null
   },
   {
@@ -1636,7 +1638,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.18,
+   "rules_ms": 0.19,
    "llm": null
   },
   {
@@ -1809,7 +1811,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.19,
+   "rules_ms": 0.2,
    "llm": null
   },
   {
@@ -1871,7 +1873,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.14,
+   "rules_ms": 0.15,
    "llm": null
   },
   {
@@ -1980,7 +1982,7 @@
     "emergency": "rescue",
     "dup_of": null
    },
-   "rules_ms": 0.12,
+   "rules_ms": 0.13,
    "llm": null
   },
   {
@@ -2011,7 +2013,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.23,
+   "rules_ms": 0.19,
    "llm": null
   },
   {
@@ -2042,7 +2044,7 @@
     "emergency": null,
     "dup_of": "dup1a"
    },
-   "rules_ms": 0.11,
+   "rules_ms": 0.12,
    "llm": null
   },
   {
@@ -2073,7 +2075,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.11,
+   "rules_ms": 0.12,
    "llm": null
   },
   {
@@ -2104,7 +2106,7 @@
     "emergency": null,
     "dup_of": "dup2a"
    },
-   "rules_ms": 0.1,
+   "rules_ms": 0.11,
    "llm": null
   },
   {
@@ -2166,7 +2168,7 @@
     "emergency": null,
     "dup_of": "dup3a"
    },
-   "rules_ms": 0.11,
+   "rules_ms": 0.12,
    "llm": null
   },
   {
@@ -2228,7 +2230,7 @@
     "emergency": "rescue",
     "dup_of": "dup4a"
    },
-   "rules_ms": 0.16,
+   "rules_ms": 0.17,
    "llm": null
   },
   {
@@ -2321,7 +2323,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.11,
+   "rules_ms": 0.12,
    "llm": null
   },
   {
@@ -2352,7 +2354,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.1,
+   "rules_ms": 0.11,
    "llm": null
   },
   {
@@ -2383,7 +2385,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.1,
+   "rules_ms": 0.11,
    "llm": null
   },
   {
@@ -2414,7 +2416,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.1,
+   "rules_ms": 0.11,
    "llm": null
   },
   {
@@ -2538,7 +2540,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.11,
+   "rules_ms": 0.12,
    "llm": null
   },
   {
@@ -2569,7 +2571,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.1,
+   "rules_ms": 0.11,
    "llm": null
   },
   {
@@ -2615,7 +2617,9 @@
      "quantity": null,
      "zone": 0,
      "emergency": "suicide",
-     "flags": []
+     "flags": [
+      "sensitive"
+     ]
     }
    ],
    "gold": {
@@ -2631,7 +2635,7 @@
     "emergency": "suicide",
     "dup_of": null
    },
-   "rules_ms": 0.1,
+   "rules_ms": 0.11,
    "llm": null
   },
   {
@@ -2693,7 +2697,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.1,
+   "rules_ms": 0.11,
    "llm": null
   },
   {
@@ -2817,7 +2821,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.1,
+   "rules_ms": 0.12,
    "llm": null
   },
   {
@@ -2848,7 +2852,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.1,
+   "rules_ms": 0.11,
    "llm": null
   },
   {
@@ -2879,7 +2883,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.1,
+   "rules_ms": 0.11,
    "llm": null
   },
   {
@@ -2910,7 +2914,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.11,
+   "rules_ms": 0.12,
    "llm": null
   },
   {
@@ -3096,7 +3100,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.11,
+   "rules_ms": 0.12,
    "llm": null
   },
   {
@@ -3189,7 +3193,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.12,
+   "rules_ms": 0.13,
    "llm": null
   },
   {
@@ -3251,7 +3255,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.09,
+   "rules_ms": 0.1,
    "llm": null
   },
   {
@@ -3282,7 +3286,7 @@
     "emergency": "rescue",
     "dup_of": null
    },
-   "rules_ms": 0.18,
+   "rules_ms": 0.19,
    "llm": null
   },
   {
@@ -3344,7 +3348,7 @@
     "emergency": "rescue",
     "dup_of": null
    },
-   "rules_ms": 0.11,
+   "rules_ms": 0.12,
    "llm": null
   },
   {
@@ -3406,7 +3410,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.1,
+   "rules_ms": 0.11,
    "llm": null
   },
   {
@@ -3468,7 +3472,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.1,
+   "rules_ms": 0.11,
    "llm": null
   },
   {
@@ -3561,7 +3565,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.1,
+   "rules_ms": 0.11,
    "llm": null
   },
   {
@@ -3592,7 +3596,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.1,
+   "rules_ms": 0.15,
    "llm": null
   },
   {
@@ -3623,7 +3627,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.08,
+   "rules_ms": 0.09,
    "llm": null
   },
   {
@@ -3717,7 +3721,7 @@
     "emergency": "medical",
     "dup_of": null
    },
-   "rules_ms": 0.21,
+   "rules_ms": 0.22,
    "llm": null
   },
   {
@@ -3764,7 +3768,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.21,
+   "rules_ms": 0.22,
    "llm": null
   },
   {
@@ -3873,7 +3877,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.17,
+   "rules_ms": 0.18,
    "llm": null
   },
   {
@@ -3997,7 +4001,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.1,
+   "rules_ms": 0.11,
    "llm": null
   },
   {
@@ -4028,7 +4032,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.09,
+   "rules_ms": 0.1,
    "llm": null
   },
   {
@@ -4121,7 +4125,7 @@
     "emergency": null,
     "dup_of": null
    },
-   "rules_ms": 0.1,
+   "rules_ms": 0.11,
    "llm": null
   },
   {
@@ -4147,6 +4151,4163 @@
       "quantity": null,
       "zone": 65535,
       "priority": 2
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_001",
+   "text": "熱死了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_002",
+   "text": "今天熱死了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.09,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_003",
+   "text": "累死了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.08,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_004",
+   "text": "我累死了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.08,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_005",
+   "text": "笑死",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.09,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_006",
+   "text": "笑死我了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.08,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_007",
+   "text": "救命喔，排隊排好久",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 0,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.19,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_008",
+   "text": "救命喔排隊排好久",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 0,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_009",
+   "text": "餓死了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.09,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_010",
+   "text": "我快餓死了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.09,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_011",
+   "text": "嚇死我了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.09,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_012",
+   "text": "氣死我了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.08,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_013",
+   "text": "冷死了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.16,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_014",
+   "text": "渴死了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.13,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_015",
+   "text": "煩死了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.09,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_016",
+   "text": "吵死了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_017",
+   "text": "擠死了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.09,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_018",
+   "text": "救命啊這也太難吃了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 0,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.13,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_019",
+   "text": "我快中暑了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 0,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_020",
+   "text": "快窒息了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 101,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 101,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.12,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_021",
+   "text": "這裡好擠快窒息了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 101,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 101,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_022",
+   "text": "心臟快跳出來了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_023",
+   "text": "痛死了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.08,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_024",
+   "text": "我腳痛死了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.09,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_025",
+   "text": "热死了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_026",
+   "text": "累死了啦",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.08,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_027",
+   "text": "笑死人了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.08,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_028",
+   "text": "救命，好無聊",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 0,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.17,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_029",
+   "text": "救命喔",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 0,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.09,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_030",
+   "text": "天啊救命",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 0,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.09,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_031",
+   "text": "悶死了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.08,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_032",
+   "text": "熱到快中暑",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 0,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_033",
+   "text": "忙死了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.08,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_034",
+   "text": "臭死了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.09,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_035",
+   "text": "這麼多人，快被擠死了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.16,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_036",
+   "text": "我快被你氣死了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_037",
+   "text": "嚇死人了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.09,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_038",
+   "text": "等到快死掉了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_039",
+   "text": "餓到快昏倒",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 104,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 104,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_040",
+   "text": "累到快昏倒了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 104,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 104,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_041",
+   "text": "我快瘋了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.09,
+   "llm": null
+  },
+  {
+   "id": "rt2_exag_042",
+   "text": "我快不能呼吸了，太好笑了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 101,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 101,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.17,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_043",
+   "text": "阿公半邊身體沒力",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 106,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 106,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.13,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_044",
+   "text": "阿公半边身体没力",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 106,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 106,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.15,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_045",
+   "text": "我爸突然講話不清楚",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 106,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 106,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.13,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_046",
+   "text": "我爸突然讲话不清楚",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 106,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 106,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.16,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_047",
+   "text": "阿嬤嘴歪了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 106,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 106,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_048",
+   "text": "阿嬷嘴歪了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 106,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 106,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.13,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_049",
+   "text": "他臉色發白一直冒冷汗",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 0,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.14,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_050",
+   "text": "他脸色发白一直冒冷汗",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 0,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.15,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_051",
+   "text": "有人昏倒了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 104,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 104,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_052",
+   "text": "有人昏倒了啦",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 104,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 104,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_053",
+   "text": "我媽昏過去了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 104,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 104,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_054",
+   "text": "我妈昏过去了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 104,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 104,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.13,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_055",
+   "text": "小孩癲癇發作",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 105,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 105,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_056",
+   "text": "小孩癫痫发作",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 105,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 105,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.13,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_057",
+   "text": "他在抽搐",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 105,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 105,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.09,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_058",
+   "text": "血流不止",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 102,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 102,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_059",
+   "text": "血流不止啦",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 102,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 102,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.09,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_060",
+   "text": "腳的血一直流停不下來",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 102,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 102,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_061",
+   "text": "骨頭露出來了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 102,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 102,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_062",
+   "text": "骨头露出来了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 102,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 102,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.12,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_063",
+   "text": "手被燙傷了很嚴重",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 102,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 102,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_064",
+   "text": "手被烫伤了很严重",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 102,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 102,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.14,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_065",
+   "text": "燒燙傷",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 102,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 102,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_066",
+   "text": "烧烫伤",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 102,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 102,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_067",
+   "text": "被熱水燙到起水泡",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 102,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 102,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_068",
+   "text": "被狗咬了流很多血",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 102,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 102,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_069",
+   "text": "被狗咬了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 102,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 102,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.09,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_070",
+   "text": "被蛇咬了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 0,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_071",
+   "text": "被蛇咬了怎么办",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 0,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.13,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_072",
+   "text": "小孩吞了電池",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 0,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_073",
+   "text": "小孩吞了电池",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 0,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.13,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_074",
+   "text": "小孩吞了硬幣",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 0,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.12,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_075",
+   "text": "小孩吞了硬币",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 0,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.13,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_076",
+   "text": "嬰兒沒有反應",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 107,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 107,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.12,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_077",
+   "text": "婴儿没有反应",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 107,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 107,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.13,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_078",
+   "text": "寶寶叫不醒",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 104,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 104,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_079",
+   "text": "孕婦肚子很痛在流血",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 103,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 103,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.12,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_080",
+   "text": "孕妇肚子很痛在流血",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 103,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 103,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.15,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_081",
+   "text": "我太太懷孕肚子痛流血",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 103,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 103,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.12,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_082",
+   "text": "低血糖昏昏的",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 0,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_083",
+   "text": "他低血糖頭暈冒冷汗",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 0,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_084",
+   "text": "氧氣機沒電了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "LIFE_SUSTAINING",
+     "item_code": 203,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "LIFE_SUSTAINING",
+      "item_code": 203,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_085",
+   "text": "氧气机没电了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "LIFE_SUSTAINING",
+     "item_code": 203,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "LIFE_SUSTAINING",
+      "item_code": 203,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.13,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_086",
+   "text": "呼吸器沒電",
+   "ok": true,
+   "pred": [
+    {
+     "category": "LIFE_SUSTAINING",
+     "item_code": 203,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "LIFE_SUSTAINING",
+      "item_code": 203,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_087",
+   "text": "呼吸器没电",
+   "ok": true,
+   "pred": [
+    {
+     "category": "LIFE_SUSTAINING",
+     "item_code": 203,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "LIFE_SUSTAINING",
+      "item_code": 203,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.12,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_088",
+   "text": "製氧機停了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "LIFE_SUSTAINING",
+     "item_code": 203,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "LIFE_SUSTAINING",
+      "item_code": 203,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_089",
+   "text": "洗腎的阿公很喘",
+   "ok": true,
+   "pred": [
+    {
+     "category": "LIFE_SUSTAINING",
+     "item_code": 201,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    },
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 101,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "LIFE_SUSTAINING",
+      "item_code": 201,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     },
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 101,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.13,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_090",
+   "text": "洗肾的阿公很喘",
+   "ok": true,
+   "pred": [
+    {
+     "category": "LIFE_SUSTAINING",
+     "item_code": 201,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    },
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 101,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "LIFE_SUSTAINING",
+      "item_code": 201,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     },
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 101,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.15,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_091",
+   "text": "一直吐停不下來",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 2
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.09,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_092",
+   "text": "一直吐停不下来",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 2
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.12,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_093",
+   "text": "一直拉肚子吐到虛脫",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 104,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 104,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.12,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_094",
+   "text": "小孩一直吐還發燒",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 2
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.09,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_095",
+   "text": "阿公中風了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 106,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 106,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_096",
+   "text": "阿公中风了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 106,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 106,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.13,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_097",
+   "text": "他好像中風",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 106,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 106,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_098",
+   "text": "心跳很快胸口悶",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 101,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 101,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_099",
+   "text": "胸口悶喘不過氣",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 101,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 101,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_100",
+   "text": "被壓在下面出不來",
+   "ok": true,
+   "pred": [
+    {
+     "category": "PERSON_AT_RISK",
+     "item_code": 401,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "rescue",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "PERSON_AT_RISK",
+      "item_code": 401,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "rescue",
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_101",
+   "text": "腿被壓住了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "PERSON_AT_RISK",
+     "item_code": 401,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "rescue",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "PERSON_AT_RISK",
+      "item_code": 401,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "rescue",
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_102",
+   "text": "有人被埋住了",
+   "ok": true,
+   "pred": [
+    {
+     "category": "PERSON_AT_RISK",
+     "item_code": 401,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "rescue",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "PERSON_AT_RISK",
+      "item_code": 401,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "rescue",
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_103",
+   "text": "房子倒了有人在裡面",
+   "ok": true,
+   "pred": [
+    {
+     "category": "PERSON_AT_RISK",
+     "item_code": 401,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "rescue",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "PERSON_AT_RISK",
+      "item_code": 401,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "rescue",
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_104",
+   "text": "有人觸電倒地",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 0,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_105",
+   "text": "他喝酒喝到叫不醒",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 104,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 104,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_106",
+   "text": "他吸毒過量",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 0,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_107",
+   "text": "吃錯藥了昏昏沉沉",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 0,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_108",
+   "text": "小孩誤食清潔劑",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 0,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.16,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_109",
+   "text": "小孩喝到漂白水",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 0,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.12,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_110",
+   "text": "被蜂螫到全身腫",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 0,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    },
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 101,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     },
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 101,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.14,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_111",
+   "text": "過敏全身起疹子喘",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 101,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 101,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_112",
+   "text": "眼睛被噴到化學藥劑",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 0,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.12,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_113",
+   "text": "頭被撞到一直吐",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 102,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 102,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_114",
+   "text": "從樓梯摔下來不能動",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 102,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 102,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.12,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_115",
+   "text": "脖子不能動",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 102,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 102,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_116",
+   "text": "孩子發燒到四十度",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 0,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.12,
+   "llm": null
+  },
+  {
+   "id": "rt2_miss_117",
+   "text": "阿嬤發燒抽筋",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 105,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 105,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": null
+  },
+  {
+   "id": "rt2_prot_118",
+   "text": "我先生打我",
+   "ok": true,
+   "pred": [
+    {
+     "category": "PROTECTION",
+     "item_code": 1301,
+     "priority": 2,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "protection",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "PROTECTION",
+      "item_code": 1301,
+      "quantity": null,
+      "zone": 0,
+      "priority": 2
+     }
+    ],
+    "emergency": "protection",
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": null
+  },
+  {
+   "id": "rt2_prot_119",
+   "text": "我先生一直打我，我女兒還被困在中正路三巷",
+   "ok": true,
+   "pred": [
+    {
+     "category": "PROTECTION",
+     "item_code": 1301,
+     "priority": 2,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "protection",
+     "flags": []
+    },
+    {
+     "category": "PERSON_AT_RISK",
+     "item_code": 401,
+     "priority": 1,
+     "quantity": null,
+     "zone": 65535,
+     "emergency": "rescue",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "PROTECTION",
+      "item_code": 1301,
+      "quantity": null,
+      "zone": 0,
+      "priority": 2
+     },
+     {
+      "category": "PERSON_AT_RISK",
+      "item_code": 401,
+      "quantity": null,
+      "zone": 65535,
+      "priority": 1
+     }
+    ],
+    "emergency": "protection,rescue",
+    "dup_of": null
+   },
+   "rules_ms": 0.23,
+   "llm": null
+  },
+  {
+   "id": "rt2_prot_120",
+   "text": "我被我先生打，女兒還困在中正路三巷",
+   "ok": true,
+   "pred": [
+    {
+     "category": "PROTECTION",
+     "item_code": 1301,
+     "priority": 2,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "protection",
+     "flags": []
+    },
+    {
+     "category": "PERSON_AT_RISK",
+     "item_code": 401,
+     "priority": 1,
+     "quantity": null,
+     "zone": 65535,
+     "emergency": "rescue",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "PROTECTION",
+      "item_code": 1301,
+      "quantity": null,
+      "zone": 0,
+      "priority": 2
+     },
+     {
+      "category": "PERSON_AT_RISK",
+      "item_code": 401,
+      "quantity": null,
+      "zone": 65535,
+      "priority": 1
+     }
+    ],
+    "emergency": "protection,rescue",
+    "dup_of": null
+   },
+   "rules_ms": 0.21,
+   "llm": null
+  },
+  {
+   "id": "rt2_prot_121",
+   "text": "老公打我電話",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.09,
+   "llm": null
+  },
+  {
+   "id": "rt2_prot_122",
+   "text": "我老公打我手機都沒人接",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": null
+  },
+  {
+   "id": "rt2_prot_123",
+   "text": "我男友打我",
+   "ok": true,
+   "pred": [
+    {
+     "category": "PROTECTION",
+     "item_code": 1301,
+     "priority": 2,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "protection",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "PROTECTION",
+      "item_code": 1301,
+      "quantity": null,
+      "zone": 0,
+      "priority": 2
+     }
+    ],
+    "emergency": "protection",
+    "dup_of": null
+   },
+   "rules_ms": 0.11,
+   "llm": null
+  },
+  {
+   "id": "rt2_prot_124",
+   "text": "我被老公打",
+   "ok": true,
+   "pred": [
+    {
+     "category": "PROTECTION",
+     "item_code": 1301,
+     "priority": 2,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "protection",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "PROTECTION",
+      "item_code": 1301,
+      "quantity": null,
+      "zone": 0,
+      "priority": 2
+     }
+    ],
+    "emergency": "protection",
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": null
+  },
+  {
+   "id": "rt2_prot_125",
+   "text": "我爸打我",
+   "ok": true,
+   "pred": [
+    {
+     "category": "PROTECTION",
+     "item_code": 1301,
+     "priority": 2,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "protection",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "PROTECTION",
+      "item_code": 1301,
+      "quantity": null,
+      "zone": 0,
+      "priority": 2
+     }
+    ],
+    "emergency": "protection",
+    "dup_of": null
+   },
+   "rules_ms": 0.09,
+   "llm": null
+  },
+  {
+   "id": "asr_b_zone_dialysis_insulin",
+   "text": "阿嬤在避區十二床,明天早上要洗腎,他的遺島素今天也用完了。",
+   "ok": true,
+   "pred": [
+    {
+     "category": "LIFE_SUSTAINING",
+     "item_code": 201,
+     "priority": 1,
+     "quantity": null,
+     "zone": 524,
+     "emergency": null,
+     "flags": []
+    },
+    {
+     "category": "MEDICATION",
+     "item_code": 301,
+     "priority": 1,
+     "quantity": null,
+     "zone": 524,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "LIFE_SUSTAINING",
+      "item_code": 201,
+      "quantity": null,
+      "zone": 524,
+      "priority": 1
+     },
+     {
+      "category": "MEDICATION",
+      "item_code": 301,
+      "quantity": null,
+      "zone": 524,
+      "priority": 1
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.31,
+   "llm": null
+  },
+  {
+   "id": "asr_b_zone_repeat",
+   "text": "我阿嬤必趨十二床明天早上要洗腎。",
+   "ok": true,
+   "pred": [
+    {
+     "category": "LIFE_SUSTAINING",
+     "item_code": 201,
+     "priority": 1,
+     "quantity": null,
+     "zone": 524,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "LIFE_SUSTAINING",
+      "item_code": 201,
+      "quantity": null,
+      "zone": 524,
+      "priority": 1
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.14,
+   "llm": null
+  },
+  {
+   "id": "asr_lane_rescue",
+   "text": "我爸還在中正路三項的家裡沒出來。",
+   "ok": true,
+   "pred": [
+    {
+     "category": "PERSON_AT_RISK",
+     "item_code": 401,
+     "priority": 1,
+     "quantity": null,
+     "zone": 65535,
+     "emergency": "rescue",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "PERSON_AT_RISK",
+      "item_code": 401,
+      "quantity": null,
+      "zone": 65535,
+      "priority": 1
+     }
+    ],
+    "emergency": "rescue",
+    "dup_of": null
+   },
+   "rules_ms": 0.14,
+   "llm": null
+  },
+  {
+   "id": "asr_chest_pain_soundalike",
+   "text": "不知道是不是兇統。",
+   "ok": true,
+   "pred": [
+    {
+     "category": "MEDICAL_EMERGENCY",
+     "item_code": 101,
+     "priority": 1,
+     "quantity": null,
+     "zone": 0,
+     "emergency": "medical",
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "MEDICAL_EMERGENCY",
+      "item_code": 101,
+      "quantity": null,
+      "zone": 0,
+      "priority": 1
+     }
+    ],
+    "emergency": "medical",
+    "dup_of": null
+   },
+   "rules_ms": 0.12,
+   "llm": null
+  },
+  {
+   "id": "asr_not_zone_project",
+   "text": "這個項目很多",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
+     }
+    ],
+    "emergency": null,
+    "dup_of": null
+   },
+   "rules_ms": 0.1,
+   "llm": null
+  },
+  {
+   "id": "asr_not_zone_shelter_area",
+   "text": "避難所的區域",
+   "ok": true,
+   "pred": [
+    {
+     "category": "OTHER",
+     "item_code": 0,
+     "priority": 3,
+     "quantity": null,
+     "zone": 0,
+     "emergency": null,
+     "flags": []
+    }
+   ],
+   "gold": {
+    "needs": [
+     {
+      "category": "OTHER",
+      "item_code": 0,
+      "quantity": null,
+      "zone": 0,
+      "priority": 3
      }
     ],
     "emergency": null,

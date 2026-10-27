@@ -77,8 +77,27 @@ def strip_format_chars(s):
     return "".join(ch for ch in str(s) if unicodedata.category(ch) != "Cf")
 
 
+# Whisper's sound-alike errors for words the desk depends on (heard in the real-model rehearsal): 「B區12床」 came
+# back as 避區/必趨十二床 and 「中正路三巷」 as 中正路三項. Each is repaired only where the misheard form can't be a
+# real word: a zone letter right before a bed number, a lane right after a road/street/section number.
+_BED_AHEAD = r"(?=[0-9一二三四五六七八九十兩]+號?床)"
+_ASR_REPAIRS = [
+    (re.compile(r"(?:避|必|逼|比|筆|畢|閉|蔽)(?:區|趨|驅|曲)" + _BED_AHEAD), "B區"),
+    (re.compile(r"(?:西|吸|希|溪|稀)(?:區|趨|驅|曲)" + _BED_AHEAD), "C區"),
+    (re.compile(r"(?:欸|誒|埃)(?:區|趨|驅|曲)" + _BED_AHEAD), "A區"),
+    (re.compile(r"(?<=[路街段])([0-9一二三四五六七八九十百兩]+)(?:項|象|向)(?!目)"), r"\1巷"),
+]
+
+
+def repair_asr(s):
+    """Fix the misheard zone letters and lanes above (already normalized text)."""
+    for pat, rep in _ASR_REPAIRS:
+        s = pat.sub(rep, s)
+    return s
+
+
 def normalize(s):
-    """Cf removal + to_traditional + NFKC width folding + whitespace/punctuation cleanup."""
+    """Cf removal + to_traditional + NFKC width folding + whitespace/punctuation cleanup + ASR repairs."""
     if not s:
         return ""
     s = to_traditional(strip_format_chars(str(s)))
@@ -90,7 +109,7 @@ def normalize(s):
     s = re.sub(r"\s+(?=[" + _CJK + "])", "", s)
     s = re.sub(r"(?<=[" + _CJK + r"])\s+", "", s)
     s = re.sub(r"\s+", " ", s).strip()
-    return s
+    return repair_asr(s)
 
 
 _DIG = {"零": 0, "〇": 0, "一": 1, "壹": 1, "二": 2, "兩": 2, "两": 2, "貳": 2, "三": 3, "參": 3,

@@ -1,25 +1,25 @@
 # Text evaluation (--llm none)
 
-Generated 2026-10-28 05:53 on 127 labelled cases (C:\Users\Tony\Desktop\ASUS_Hackathon\darkshelter\eval\text_cases.jsonl).
+Generated 2026-10-28 07:03 on 258 labelled cases (C:\Users\Tony\Desktop\ASUS_Hackathon\darkshelter\eval\text_cases.jsonl).
 
 | Metric | Value |
 |---|---|
-| need_precision | 100.0 % |
-| need_recall | 100.0 % |
-| category_recall | 100.0 % |
+| need_precision | 98.9 % |
+| need_recall | 98.9 % |
+| category_recall | 98.9 % |
 | item_accuracy | 100.0 % |
 | quantity_accuracy | 100.0 % |
 | zone_accuracy | 100.0 % |
 | priority_accuracy | 100.0 % |
-| emergency_accuracy | 100.0 % |
+| emergency_accuracy | 98.8 % |
 | p1_recall | 100.0 % |
 | p1_precision | 100.0 % |
 | dedupe_precision | 100.0 % |
 | dedupe_recall | 100.0 % |
 | hallucination_rate | n/a |
-| latency rules p50 / p95 | 0.12 / 0.24 ms |
+| latency rules p50 / p95 | 0.12 / 0.21 ms |
 
-Gold P1 needs: 91, predicted P1 needs: 91. Dedupe pool: {'tp': 5, 'fp': 0, 'fn': 0}.
+Gold P1 needs: 186, predicted P1 needs: 186. Dedupe pool: {'tp': 5, 'fp': 0, 'fn': 0}.
 
 All must-be-P1 and must-not-be-P1 cases pass.
 
@@ -154,3 +154,134 @@ All must-be-P1 and must-not-be-P1 cases pass.
 | rt_h4_lin_grandma | ✓ | LIFE_SUSTAINING/201/P1 |
 | rt2_internet_not_road | ✓ | COMMUNICATION/1002/P3 |
 | rt2_road_still_road | ✓ | INFRASTRUCTURE/1201/P2 |
+| rt2_exag_001 | ✓ | OTHER/0/P3 |
+| rt2_exag_002 | ✓ | OTHER/0/P3 |
+| rt2_exag_003 | ✓ | OTHER/0/P3 |
+| rt2_exag_004 | ✓ | OTHER/0/P3 |
+| rt2_exag_005 | ✓ | OTHER/0/P3 |
+| rt2_exag_006 | ✓ | OTHER/0/P3 |
+| rt2_exag_007 | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt2_exag_008 | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt2_exag_009 | ✓ | OTHER/0/P3 |
+| rt2_exag_010 | ✓ | OTHER/0/P3 |
+| rt2_exag_011 | ✓ | OTHER/0/P3 |
+| rt2_exag_012 | ✓ | OTHER/0/P3 |
+| rt2_exag_013 | ✓ | OTHER/0/P3 |
+| rt2_exag_014 | ✓ | OTHER/0/P3 |
+| rt2_exag_015 | ✓ | OTHER/0/P3 |
+| rt2_exag_016 | ✓ | OTHER/0/P3 |
+| rt2_exag_017 | ✓ | OTHER/0/P3 |
+| rt2_exag_018 | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt2_exag_019 | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt2_exag_020 | ✓ | MEDICAL_EMERGENCY/101/P1 |
+| rt2_exag_021 | ✓ | MEDICAL_EMERGENCY/101/P1 |
+| rt2_exag_022 | ✓ | OTHER/0/P3 |
+| rt2_exag_023 | ✓ | OTHER/0/P3 |
+| rt2_exag_024 | ✓ | OTHER/0/P3 |
+| rt2_exag_025 | ✓ | OTHER/0/P3 |
+| rt2_exag_026 | ✓ | OTHER/0/P3 |
+| rt2_exag_027 | ✓ | OTHER/0/P3 |
+| rt2_exag_028 | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt2_exag_029 | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt2_exag_030 | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt2_exag_031 | ✓ | OTHER/0/P3 |
+| rt2_exag_032 | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt2_exag_033 | ✓ | OTHER/0/P3 |
+| rt2_exag_034 | ✓ | OTHER/0/P3 |
+| rt2_exag_035 | ✓ | OTHER/0/P3 |
+| rt2_exag_036 | ✓ | OTHER/0/P3 |
+| rt2_exag_037 | ✓ | OTHER/0/P3 |
+| rt2_exag_038 | ✓ | OTHER/0/P3 |
+| rt2_exag_039 | ✓ | MEDICAL_EMERGENCY/104/P1 |
+| rt2_exag_040 | ✓ | MEDICAL_EMERGENCY/104/P1 |
+| rt2_exag_041 | ✓ | OTHER/0/P3 |
+| rt2_exag_042 | ✓ | MEDICAL_EMERGENCY/101/P1 |
+| rt2_miss_043 | ✓ | MEDICAL_EMERGENCY/106/P1 |
+| rt2_miss_044 | ✓ | MEDICAL_EMERGENCY/106/P1 |
+| rt2_miss_045 | ✓ | MEDICAL_EMERGENCY/106/P1 |
+| rt2_miss_046 | ✓ | MEDICAL_EMERGENCY/106/P1 |
+| rt2_miss_047 | ✓ | MEDICAL_EMERGENCY/106/P1 |
+| rt2_miss_048 | ✓ | MEDICAL_EMERGENCY/106/P1 |
+| rt2_miss_049 | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt2_miss_050 | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt2_miss_051 | ✓ | MEDICAL_EMERGENCY/104/P1 |
+| rt2_miss_052 | ✓ | MEDICAL_EMERGENCY/104/P1 |
+| rt2_miss_053 | ✓ | MEDICAL_EMERGENCY/104/P1 |
+| rt2_miss_054 | ✓ | MEDICAL_EMERGENCY/104/P1 |
+| rt2_miss_055 | ✓ | MEDICAL_EMERGENCY/105/P1 |
+| rt2_miss_056 | ✓ | MEDICAL_EMERGENCY/105/P1 |
+| rt2_miss_057 | ✓ | MEDICAL_EMERGENCY/105/P1 |
+| rt2_miss_058 | ✓ | MEDICAL_EMERGENCY/102/P1 |
+| rt2_miss_059 | ✓ | MEDICAL_EMERGENCY/102/P1 |
+| rt2_miss_060 | ✓ | MEDICAL_EMERGENCY/102/P1 |
+| rt2_miss_061 | ✓ | MEDICAL_EMERGENCY/102/P1 |
+| rt2_miss_062 | ✓ | MEDICAL_EMERGENCY/102/P1 |
+| rt2_miss_063 | ✓ | MEDICAL_EMERGENCY/102/P1 |
+| rt2_miss_064 | ✓ | MEDICAL_EMERGENCY/102/P1 |
+| rt2_miss_065 | ✓ | MEDICAL_EMERGENCY/102/P1 |
+| rt2_miss_066 | ✓ | MEDICAL_EMERGENCY/102/P1 |
+| rt2_miss_067 | ✓ | MEDICAL_EMERGENCY/102/P1 |
+| rt2_miss_068 | ✓ | MEDICAL_EMERGENCY/102/P1 |
+| rt2_miss_069 | ✓ | MEDICAL_EMERGENCY/102/P1 |
+| rt2_miss_070 | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt2_miss_071 | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt2_miss_072 | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt2_miss_073 | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt2_miss_074 | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt2_miss_075 | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt2_miss_076 | ✓ | MEDICAL_EMERGENCY/107/P1 |
+| rt2_miss_077 | ✓ | MEDICAL_EMERGENCY/107/P1 |
+| rt2_miss_078 | ✓ | MEDICAL_EMERGENCY/104/P1 |
+| rt2_miss_079 | ✓ | MEDICAL_EMERGENCY/103/P1 |
+| rt2_miss_080 | ✓ | MEDICAL_EMERGENCY/103/P1 |
+| rt2_miss_081 | ✓ | MEDICAL_EMERGENCY/103/P1 |
+| rt2_miss_082 | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt2_miss_083 | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt2_miss_084 | ✓ | LIFE_SUSTAINING/203/P1 |
+| rt2_miss_085 | ✓ | LIFE_SUSTAINING/203/P1 |
+| rt2_miss_086 | ✓ | LIFE_SUSTAINING/203/P1 |
+| rt2_miss_087 | ✓ | LIFE_SUSTAINING/203/P1 |
+| rt2_miss_088 | ✓ | LIFE_SUSTAINING/203/P1 |
+| rt2_miss_089 | ✓ | LIFE_SUSTAINING/201/P1, MEDICAL_EMERGENCY/101/P1 |
+| rt2_miss_090 | ✓ | LIFE_SUSTAINING/201/P1, MEDICAL_EMERGENCY/101/P1 |
+| rt2_miss_091 | ✓ | OTHER/0/P3 |
+| rt2_miss_092 | ✓ | OTHER/0/P3 |
+| rt2_miss_093 | ✓ | MEDICAL_EMERGENCY/104/P1 |
+| rt2_miss_094 | ✓ | OTHER/0/P3 |
+| rt2_miss_095 | ✓ | MEDICAL_EMERGENCY/106/P1 |
+| rt2_miss_096 | ✓ | MEDICAL_EMERGENCY/106/P1 |
+| rt2_miss_097 | ✓ | MEDICAL_EMERGENCY/106/P1 |
+| rt2_miss_098 | ✓ | MEDICAL_EMERGENCY/101/P1 |
+| rt2_miss_099 | ✓ | MEDICAL_EMERGENCY/101/P1 |
+| rt2_miss_100 | ✓ | PERSON_AT_RISK/401/P1 |
+| rt2_miss_101 | ✓ | PERSON_AT_RISK/401/P1 |
+| rt2_miss_102 | ✓ | PERSON_AT_RISK/401/P1 |
+| rt2_miss_103 | ✓ | PERSON_AT_RISK/401/P1 |
+| rt2_miss_104 | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt2_miss_105 | ✓ | MEDICAL_EMERGENCY/104/P1 |
+| rt2_miss_106 | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt2_miss_107 | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt2_miss_108 | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt2_miss_109 | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt2_miss_110 | ✓ | MEDICAL_EMERGENCY/0/P1, MEDICAL_EMERGENCY/101/P1 |
+| rt2_miss_111 | ✓ | MEDICAL_EMERGENCY/101/P1 |
+| rt2_miss_112 | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt2_miss_113 | ✓ | MEDICAL_EMERGENCY/102/P1 |
+| rt2_miss_114 | ✓ | MEDICAL_EMERGENCY/102/P1 |
+| rt2_miss_115 | ✓ | MEDICAL_EMERGENCY/102/P1 |
+| rt2_miss_116 | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt2_miss_117 | ✓ | MEDICAL_EMERGENCY/105/P1 |
+| rt2_prot_118 | ✓ | PROTECTION/1301/P2 |
+| rt2_prot_119 | ✓ | PROTECTION/1301/P2, PERSON_AT_RISK/401/P1 |
+| rt2_prot_120 | ✓ | PROTECTION/1301/P2, PERSON_AT_RISK/401/P1 |
+| rt2_prot_121 | ✓ | OTHER/0/P3 |
+| rt2_prot_122 | ✓ | OTHER/0/P3 |
+| rt2_prot_123 | ✓ | PROTECTION/1301/P2 |
+| rt2_prot_124 | ✓ | PROTECTION/1301/P2 |
+| rt2_prot_125 | ✓ | PROTECTION/1301/P2 |
+| asr_b_zone_dialysis_insulin | ✓ | LIFE_SUSTAINING/201/P1, MEDICATION/301/P1 |
+| asr_b_zone_repeat | ✓ | LIFE_SUSTAINING/201/P1 |
+| asr_lane_rescue | ✓ | PERSON_AT_RISK/401/P1 |
+| asr_chest_pain_soundalike | ✓ | MEDICAL_EMERGENCY/101/P1 |
+| asr_not_zone_project | ✓ | OTHER/0/P3 |
+| asr_not_zone_shelter_area | ✓ | OTHER/0/P3 |

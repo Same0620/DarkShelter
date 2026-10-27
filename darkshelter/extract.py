@@ -74,7 +74,13 @@ FIELD_ZH = {"category": "類別", "item": "物品", "quantity": "數量", "subje
             "subject_group": "對象類型", "location": "地點", "time_phrase": "時間"}
 
 
+# Whisper's sound-alikes are matched as keywords, but the clerk is asked about the proper word.
+_SOUNDALIKE_CANON = {"兇統": "胸痛", "兇痛": "胸痛", "凶痛": "胸痛", "凶統": "胸痛", "胸統": "胸痛", "胸通": "胸痛",
+                     "凶统": "胸痛", "胸统": "胸痛", "遺島素": "胰島素", "依島素": "胰島素", "喜腎": "洗腎"}
+
+
 def askback_negated(keyword):
+    keyword = _SOUNDALIKE_CANON.get(keyword, keyword)
     return get_lexicon().patterns["askback_negated"].format(keyword=keyword)
 
 

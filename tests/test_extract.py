@@ -493,5 +493,17 @@ class RedTeamRound2(unittest.TestCase):
         self.assertFalse(any(n.item_code == 103 for n in analyze("我肚子痛")))
 
 
+class SoundalikeAskBack(unittest.TestCase):
+    """A Whisper sound-alike (兇統 for 胸痛) still makes the P1, and the clerk is asked about the proper word."""
+
+    def test_askback_uses_the_proper_word(self):
+        import time as _t
+        needs = analyze("不知道是不是兇統", _t.time())
+        self.assertEqual([(n.priority, n.category) for n in needs], [(1, 1)])
+        asks = " ".join(needs[0].ask_back)
+        self.assertIn("確認：現在有胸痛嗎？", asks)
+        self.assertNotIn("兇統", asks)
+
+
 if __name__ == "__main__":
     unittest.main()

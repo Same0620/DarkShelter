@@ -109,5 +109,23 @@ class RedTeamTextTests(unittest.TestCase):
             self.assertEqual(strip(keep), keep)
 
 
+class AsrRepairTests(unittest.TestCase):
+    """Whisper's sound-alike errors heard in the real-model rehearsal (zh-TW TTS voice)."""
+
+    def test_zone_letters_before_a_bed_number(self):
+        self.assertEqual(normalize("阿嬤在避區十二床"), "阿嬤在B區十二床")
+        self.assertEqual(normalize("我阿嬤必趨十二床"), "我阿嬤B區十二床")
+        self.assertEqual(normalize("我在西區5床"), "我在C區5床")
+        self.assertEqual(normalize("欸區3號床"), "A區3號床")
+
+    def test_lane_after_a_road_number(self):
+        self.assertEqual(normalize("中正路三項的家裡"), "中正路三巷的家裡")
+        self.assertEqual(normalize("中山路二段5項"), "中山路二段5巷")
+
+    def test_real_words_are_left_alone(self):
+        for s in ("這個項目很多", "避難所的區域", "地區十二床", "西區有很多人", "往中正路走三向都塞車", "必須排隊"):
+            self.assertEqual(normalize(s), s)
+
+
 if __name__ == "__main__":
     unittest.main()
