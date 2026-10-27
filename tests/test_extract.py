@@ -428,5 +428,70 @@ class RedTeamRules(unittest.TestCase):
         self.assertNotEqual(extract.subject_key("陳家的阿嬤"), extract.subject_key("林家的阿嬤"))
 
 
+class RedTeamRound2(unittest.TestCase):
+    """Round 2: everyday exaggeration asks back but keeps P1; family violence; emergencies that were missed."""
+    ASK = "是真的緊急狀況"
+
+    def asks(self, needs):
+        return [a for n in needs for a in n.ask_back]
+
+    def test_exaggeration_keeps_p1_and_asks_back(self):
+        for text in ("救命喔，排隊排好久", "救命啊這也太難吃了", "救命，好無聊", "我快中暑了", "熱到快中暑",
+                     "累到快昏倒了", "我快不能呼吸了，太好笑了", "這裡好擠快窒息了"):
+            needs = analyze(text)
+            self.assertTrue(p1(needs), f"{text}: urgency must not be dropped, got {describe(needs)}")
+            self.assertTrue(any(self.ASK in a for a in self.asks(needs)), f"{text}: no ask-back {self.asks(needs)}")
+
+    def test_idioms_are_not_p1(self):
+        for text in ("熱死了", "累死了", "笑死", "笑死我了", "餓死了", "嚇死我了", "氣死我了", "冷死了", "煩死了",
+                     "擠死了", "心臟快跳出來了", "這麼多人，快被擠死了"):
+            self.assertFalse(p1(analyze(text)), f"{text}: {describe(analyze(text))}")
+
+    def test_real_emergency_with_help_is_not_softened(self):
+        # 救命 next to a complaint stays fully active when a real emergency is said too
+        needs = analyze("救命，我爸被困在家裡，等好久都沒人來")
+        self.assertTrue(p1(needs))
+        self.assertFalse(any(self.ASK in a for a in self.asks(needs)), describe(needs))
+        # a bare 救命 is taken at its word
+        needs = analyze("救命喔")
+        self.assertTrue(p1(needs))
+        self.assertFalse(any(self.ASK in a for a in self.asks(needs)))
+
+    def test_family_violence_is_protection(self):
+        for text in ("我先生打我", "我被老公打", "我男友打我", "我爸打我", "我被我先生打"):
+            cats = [n.category for n in analyze(text)]
+            self.assertIn(codebook.PROTECTION, cats, f"{text}: {describe(analyze(text))}")
+        for text in ("老公打我電話", "我老公打我手機都沒人接"):
+            cats = [n.category for n in analyze(text)]
+            self.assertNotIn(codebook.PROTECTION, cats, f"{text}: {describe(analyze(text))}")
+
+    def test_violence_plus_rescue_gives_both(self):
+        needs = analyze("我先生一直打我，我女兒還被困在中正路三巷")
+        cats = {n.category: n for n in needs}
+        self.assertIn(codebook.PROTECTION, cats, describe(needs))
+        rescue = [n for n in needs if n.category == 4]
+        self.assertEqual(len(rescue), 1, describe(needs))
+        self.assertEqual(rescue[0].priority, 1)
+        self.assertEqual(rescue[0].zone_code, codebook.ZONE_EXTERNAL)
+        self.assertIn("中正路三巷", rescue[0].location)
+
+    def test_missed_emergencies_now_p1(self):
+        for text in ("阿公半邊身體沒力", "阿嬤嘴歪了", "我爸突然講話不清楚", "他臉色發白一直冒冷汗", "腳的血一直流停不下來",
+                     "骨頭露出來了", "手被燙傷了很嚴重", "被熱水燙到起水泡", "被蛇咬了", "小孩吞了電池", "孕婦肚子很痛在流血",
+                     "我太太懷孕肚子痛流血", "低血糖昏昏的", "小孩喝到漂白水", "他吸毒過量", "過敏全身起疹子喘",
+                     "從樓梯摔下來不能動", "脖子不能動", "頭被撞到一直吐", "阿嬤發燒抽筋", "房子倒了有人在裡面",
+                     "一直拉肚子吐到虛脫", "半边身体没力", "小孩吞了电池", "孕妇肚子很痛在流血"):
+            self.assertTrue(p1(analyze(text)), f"{text}: {describe(analyze(text))}")
+
+    def test_new_phrases_do_not_misfile(self):
+        # 熱水 in a scald is not drinking water; 狗 in a bite is not a pet request
+        self.assertNotIn(7, [n.category for n in analyze("被熱水燙到起水泡")])
+        self.assertNotIn(11, [n.category for n in analyze("被狗咬了")])
+        # unclear speech is a stroke sign only when said of a person (or 突然), not of a loudspeaker
+        self.assertFalse(p1(analyze("這個廣播講話不清楚")), describe(analyze("這個廣播講話不清楚")))
+        # 肚子痛 alone is not a pregnancy emergency
+        self.assertFalse(any(n.item_code == 103 for n in analyze("我肚子痛")))
+
+
 if __name__ == "__main__":
     unittest.main()

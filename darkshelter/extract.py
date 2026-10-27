@@ -78,6 +78,11 @@ def askback_negated(keyword):
     return get_lexicon().patterns["askback_negated"].format(keyword=keyword)
 
 
+def askback_exaggeration(keyword):
+    p = get_lexicon().patterns
+    return p.get("askback_exaggeration", "確認：是真的緊急狀況嗎？（聽到「{keyword}」）").format(keyword=keyword)
+
+
 def askback_ai_guess(field_name, value):
     return f"確認：{FIELD_ZH.get(field_name, field_name)}是否為「{value}」？（AI推測）"
 
@@ -174,10 +179,41 @@ def _scan(idx, text, now, lex):
     return cl
 
 
+def _mark_exaggeration(norm, clauses, lex):
+    """Everyday exaggeration keeps P1 but asks back, never drops urgency (red-team round 2):
+    - a lone 救命 next to a mundane complaint: 「救命喔，排隊排好久」, 「救命啊這也太難吃了」;
+    - a soft symptom said as "almost" or "so … that": 「我快中暑了」, 「累到快昏倒」, 「嚇到冒冷汗」;
+    - breathing trouble while laughing: 「笑到不能呼吸」.
+    The hit becomes 'doubt' (P1 stays) and the card asks 「確認：是真的緊急狀況嗎？」."""
+    p = lex.patterns
+    cues = p.get("exaggeration_cues") or ()
+    prefixes = tuple(p.get("exaggeration_prefixes") or ())
+    soft_ids = set(p.get("exaggeration_soft_ids") or ())
+    laughing = any(w in norm for w in (p.get("laugh_words") or ()))
+    has_cue = any(c in norm for c in cues)
+    # another real emergency said in the same breath keeps 救命 fully active
+    other_red = any(h.status == "active" and h.entry.get("red_flag") and h.id != "generic_emergency"
+                    for cl in clauses for h in cl.hits)
+    for cl in clauses:
+        for h in cl.hits:
+            if h.status != "active" or not h.entry.get("red_flag"):
+                continue
+            prefix = cl.text[:h.start]
+            interjection = (h.id == "generic_emergency" and h.keyword in ("救命", "救救") and has_cue
+                            and not other_red)
+            softened = h.id in soft_ids and bool(prefixes) and prefix.endswith(prefixes)
+            laughed = h.id == "sym_dyspnea" and laughing
+            if interjection or softened or laughed:
+                h.status = "doubt"
+                h.exaggerated = True
+
+
 def _clauses(text, now):
     lex = get_lexicon()
     norm = scrub_ids(normalize(text or ""))
-    return norm, [_scan(i, c, now, lex) for i, c in enumerate(split_clauses(norm))]
+    clauses = [_scan(i, c, now, lex) for i, c in enumerate(split_clauses(norm))]
+    _mark_exaggeration(norm, clauses, lex)
+    return norm, clauses
 
 
 # ------------------------------------------------------------------ entity pickers
@@ -455,7 +491,8 @@ def _build(text, now):
                 reds.append(h.id)
                 n.evidence.setdefault("red_flag", h.keyword)
             if h.status == "doubt":
-                n.add_ask(askback_negated(h.keyword))
+                n.add_ask(askback_exaggeration(h.keyword) if getattr(h, "exaggerated", False)
+                          else askback_negated(h.keyword))
         n.red_flags = reds
         if g["sensitive"]:
             n.add_flag("sensitive")
