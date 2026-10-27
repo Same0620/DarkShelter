@@ -58,9 +58,9 @@ class Lexicon:
         pre = e.get("preceded_by")
         if pre:
             prefix = low[:start]
-            if prefix.endswith(_LINKERS):
-                prefix = prefix[:-1]
-            if not any(prefix.endswith(p.lower()) for p in pre):
+            stripped = prefix[:-1] if prefix.endswith(_LINKERS) else prefix
+            # 「他倒在地上」: 他 itself may be the required word, so check before stripping the linker too
+            if not any(stripped.endswith(p.lower()) or prefix.endswith(p.lower()) for p in pre):
                 return False
         return True
 

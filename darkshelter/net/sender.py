@@ -83,7 +83,7 @@ class Sender(threading.Thread):
                          "bytes_down": 0, "datagrams_down": 0, "retransmissions": 0, "retransmitted_units": 0,
                          "bad_mac": 0, "bad_datagrams": 0, "socket_errors": 0, "acked_units": 0,
                          "timeouts": 0, "probes_sent": 0, "heartbeats_sent": 0, "pack_failed": 0,
-                         "clock_jumps": 0, "errors": 0}
+                         "clock_jumps": 0, "errors": 0, "seq_conflicts": 0}
         self._tp_bytes = 0
         self._tp_t = time.monotonic()
         self._tp_ewma = 0.0
@@ -103,6 +103,7 @@ class Sender(threading.Thread):
             "boot_id": self.boot_id, "inflight": 0, "pending": 0, "pending_p1": 0, "probes_sent": 0,
             "heartbeats_sent": 0, "timeouts": 0, "consecutive_timeouts": 0, "probe_k": 0, "data_datagrams": 0,
             "pack_failed": 0, "clock_jumps": 0, "errors": 0, "window": self.window, "mtu": self.mtu,
+            "seq_conflicts": 0,
         }
 
     # ------------------------------------------------------------ control (any thread)
@@ -257,8 +258,11 @@ class Sender(threading.Thread):
             if msg.type == codec.ACK:
                 entries = [(r["seq"], r["version"], r["level"], r["eoc_status"]) for r in msg.records]
                 if entries:
-                    self.store.mark_acked_many(entries)
-                    self.counters["acked_units"] += len(entries)
+                    # store.mark_acked_many ignores acks of versions this desk never made and the EOC's
+                    # "not yours" (level 0) and stops sending those tickets; it returns how many.
+                    conflicts = self.store.mark_acked_many(entries) or 0
+                    self.counters["seq_conflicts"] += conflicts
+                    self.counters["acked_units"] += len(entries) - conflicts
                     self.last_ack_wall = time.time()
                 rec = self.inflight.get(msg.msg_seq) if msg.boot_id == self.boot_id else None
                 if rec is not None and rec["kind"] == "data":
@@ -457,6 +461,7 @@ class Sender(threading.Thread):
             "probe_k": self.probe_k, "data_datagrams": self.counters["data_datagrams"],
             "pack_failed": self.counters["pack_failed"], "clock_jumps": self.counters["clock_jumps"],
             "errors": self.counters["errors"], "window": self.window, "mtu": self.mtu,
+            "seq_conflicts": self.counters["seq_conflicts"],
         }
         with self._lock:
             self._snapshot = snap

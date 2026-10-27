@@ -17,7 +17,7 @@ mimetypes.add_type("text/css", ".css")
 
 from flask import Flask, jsonify, request, send_from_directory  # noqa: E402
 
-from . import codebook  # noqa: E402
+from . import codebook, webguard  # noqa: E402
 from .config import db_path, eoc_keys, load_config  # noqa: E402
 from .net.eoc_store import STATUS_NAMES, EocConflict, EocStore  # noqa: E402
 from .net.receiver import Receiver  # noqa: E402
@@ -105,6 +105,8 @@ def create_app(cfg, eoc_store, receiver=None):
         app.json.ensure_ascii = False
     except Exception:
         pass
+    # Loopback Host only, no cross-site writes, JSON bodies only (REDTEAM.md H2, M5).
+    webguard.install(app, lambda: [(cfg.get("ports") or {}).get("eoc_http")])
 
     def _err(error, zh, en, code):
         return jsonify({"error": error, "zh": zh, "en": en}), code
@@ -126,7 +128,11 @@ def create_app(cfg, eoc_store, receiver=None):
 
     @app.post("/api/tickets/<int:desk_id>/<int:seq>/status")
     def set_status(desk_id, seq):
-        body = request.get_json(silent=True) or {}
+        body = request.get_json(silent=True)
+        if body is None:
+            body = {}
+        if not isinstance(body, dict):
+            return _err("bad_body", "請求格式錯誤", "The JSON body must be an object", 400)
         try:
             sseq = eoc_store.set_status(desk_id, seq, body.get("status"))
         except EocConflict as e:

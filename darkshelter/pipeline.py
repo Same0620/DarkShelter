@@ -40,6 +40,8 @@ WARN = {
     "llm_timeout": {"code": "llm_timeout", "zh": "AI 逾時，保留規則草稿", "en": "AI timed out; rule draft kept"},
     "llm_error": {"code": "llm_error", "zh": "AI 錯誤，保留規則草稿", "en": "AI error; rule draft kept"},
     "empty": {"code": "empty", "zh": "沒有內容", "en": "Empty input"},
+    "lost_in_crash": {"code": "lost_in_crash", "zh": "這段錄音在當機時遺失，請重錄",
+                      "en": "This recording was lost in a crash; please record again"},
 }
 
 AI_FIELDS = ("category", "item", "item_code", "quantity", "quantity_approx", "subject", "subject_group",
@@ -64,13 +66,63 @@ class Pipeline:
         self.thread = None
         self._last_error_log = {}
         self.current_job = None
+        self._restored = False
 
     # ------------------------------------------------------------ lifecycle
     def start(self):
+        self._restore_pending()  # first start only: the watchdog's restarts keep the in-memory queue
         self._stop.clear()
         self.thread = threading.Thread(target=self._loop, name="worker", daemon=True)
         self.thread.start()
         return self.thread
+
+    def _restore_pending(self):
+        """Intakes still queued when the desk last stopped (crash): typed ones are requeued under the same
+        job id; recordings were never saved, so their jobs answer 'lost_in_crash' and a banner asks for a
+        re-recording (Timers reads store.lost_intakes)."""
+        if self._restored:
+            return
+        self._restored = True
+        restore = getattr(self.store, "intake_restore", None)
+        if restore is None:
+            return
+        try:
+            requeue, lost = restore()
+        except Exception as e:
+            self._log_error("intake_restore_error", e)
+            return
+        for r in requeue:
+            job = self._new_job("text", r.get("clerk") or "", r.get("household_id"), id=r["job_id"],
+                                created_wall=r.get("created_wall") or self.clock(), restored=True)
+            job["transcript"] = r["text"]
+            self._enqueue(job, {"text": r["text"]})
+        for r in lost:
+            job = self._new_job("audio", r.get("clerk") or "", r.get("household_id"), id=r["job_id"],
+                                created_wall=r.get("created_wall") or self.clock(), restored=True)
+            job["warnings"].append(WARN["lost_in_crash"])
+            job["error"] = "lost_in_crash"
+            job["stage"] = job["status"] = "error"
+
+    def _persist_intake(self, job, kind, text=None):
+        save = getattr(self.store, "intake_save", None)
+        if save is None:
+            return
+        try:
+            save(job["id"], kind, text=text, clerk=job.get("clerk") or "", household_id=job.get("household_id"),
+                 created_wall=job["created_wall"])
+        except Exception as e:  # never refuse an intake because the queue could not be saved
+            self._log_error("intake_save_error", e)
+
+    def _intake_finished(self, job):
+        if job.get("kind") not in ("text", "audio"):
+            return
+        done = getattr(self.store, "intake_done", None)
+        if done is None:
+            return
+        try:
+            done(job["id"])
+        except Exception as e:
+            self._log_error("intake_done_error", e)
 
     def stop(self):
         self._stop.set()
@@ -97,20 +149,23 @@ class Pipeline:
 
     def submit_audio(self, wav_bytes, clerk="", mock_text=None, household_id=None):
         job = self._new_job("audio", clerk, household_id)
+        self._persist_intake(job, "audio")  # a marker only: the audio itself is never written to disk
         return self._enqueue(job, {"wav": wav_bytes, "mock_text": mock_text})
 
     def submit_text(self, text, clerk="", household_id=None):
         job = self._new_job("text", clerk, household_id)
         job["transcript"] = text or ""
+        self._persist_intake(job, "text", text or "")  # saved before the job id is returned (H6)
         return self._enqueue(job, {"text": text or ""})
 
     def submit_refine(self, seq, clerk=""):
         job = self._new_job("refine", clerk, None, target_seq=int(seq))
         return self._enqueue(job, {"seq": int(seq)})
 
-    def submit_warmup(self):
-        job = self._new_job("warmup")
-        return self._enqueue(job, {}, PRIO_WARMUP)
+    def submit_warmup(self, probe=False):
+        """probe=True: a short check (the normal LLM timeout) whether a slow LLM answers in time again."""
+        job = self._new_job("warmup", probe=bool(probe))
+        return self._enqueue(job, {"probe": bool(probe)}, PRIO_WARMUP)
 
     @staticmethod
     def _snapshot(j):
@@ -161,6 +216,7 @@ class Pipeline:
                     self._log_error("worker_error", e)
                 finally:
                     self.current_job = None
+                    self._intake_finished(job)
             except Exception as e:
                 self._log_error("worker_error", e)
 
@@ -204,7 +260,7 @@ class Pipeline:
         job["mode"] = self._mode()
         job["timings"]["queued"] = round(max(0.0, self.clock() - job["created_wall"]), 3)
         if kind == "warmup":
-            self._process_warmup(job)
+            self._process_warmup(job, bool((payload or {}).get("probe")))
         elif kind == "audio":
             self._process_audio(job, payload)
         elif kind == "text":
@@ -212,11 +268,23 @@ class Pipeline:
         elif kind == "refine":
             self._process_refine(job, payload["seq"])
 
-    def _process_warmup(self, job):
+    def _process_warmup(self, job, probe=False):
         self._stage(job, "refining")
         res = {"ok": False, "error": "no_llm"}
         if self.llm is not None:
-            res = self.llm.warmup()
+            if probe:
+                # Probe after timeouts: the normal per-request timeout, so a hung LLM blocks the worker
+                # for ~15 s per minute instead of the 60 s warm-up timeout.
+                t = float(getattr(self.llm, "timeout_s", None) or self.cfg["llm"].get("timeout_s", 15))
+                try:
+                    res = self.llm.warmup(timeout_s=t)
+                except TypeError:
+                    res = self.llm.warmup()
+            else:
+                res = self.llm.warmup()
+            res = dict(res or {})
+            if probe:
+                res["probe"] = True
         job["llm"] = res
         if self.health is not None:
             self.health.on_warmup(res)
@@ -271,10 +339,10 @@ class Pipeline:
         self._process_text(job, text, audio_seconds=float(info.get("duration_s") or 0.0), flags=flags,
                            already_fast=fast)
 
-    def _need_as_ticket(self, need, now):
+    def _need_as_ticket(self, need, now, household_id=None):
         return {"seq": None, "category": need.category, "item_code": need.item_code, "zone_code": need.zone_code,
                 "location": need.location, "subject": need.subject, "summary": need.summary,
-                "created_wall": now, "status": "draft", "quantity": need.quantity}
+                "created_wall": now, "status": "draft", "quantity": need.quantity, "household_id": household_id}
 
     def _process_text(self, job, text, audio_seconds=0.0, flags=None, already_fast=False):
         self._stage(job, "understanding")
@@ -288,7 +356,8 @@ class Pipeline:
         seq_by_index = {}
         for i, need in enumerate(needs):
             try:
-                need.dup_candidates = dedupe.find_candidates(self._need_as_ticket(need, now), open_tickets, now)
+                need.dup_candidates = dedupe.find_candidates(
+                    self._need_as_ticket(need, now, job.get("household_id")), open_tickets, now)
             except Exception as e:
                 self._log_error("dedupe_error", e)
                 need.dup_candidates = []
@@ -299,10 +368,35 @@ class Pipeline:
         # LLM gate: FULL or TYPED, and no FAST condition
         mode = self._mode()
         if self.llm is None or mode not in ("FULL", "TYPED") or already_fast or self._fast():
+            # Second look (red-team C1): FAST only because of the backlog (or the ASR fallback) while the
+            # LLM itself is healthy -> still ask it about text the rules could not place (category 0, or
+            # no need at all), so an emergency the rules miss is not left at P3.
+            if (not needs or any(int(n.category or 0) == 0 for n in needs)) and self._llm_second_look_ok():
+                job["second_look"] = True
+                self._refine_with_llm(job, text, needs, seq_by_index, audio_seconds, flags)
+                return self._finish(job)
             job["llm"] = {"skipped": True, "mode": mode}
             return self._finish(job)
         self._refine_with_llm(job, text, needs, seq_by_index, audio_seconds, flags)
         self._finish(job)
+
+    def _llm_second_look_ok(self):
+        """The LLM is up, warmed and fast, and nobody chose FAST/TYPED/PAPER by hand or by battery."""
+        if self.llm is None:
+            return False
+        h = self.health
+        if h is None:
+            return True
+        if getattr(h, "forced", None):
+            return False
+        if not (getattr(h, "llm_ok", False) and getattr(h, "llm_ready", False)) or getattr(h, "llm_slow", False):
+            return False
+        if self._mode() == "PAPER":
+            return False
+        b = getattr(h, "battery", None)
+        if b and b.get("percent", 100) < 15 and not b.get("plugged"):
+            return False
+        return True
 
     def _refine_with_llm(self, job, text, needs, seq_by_index, audio_seconds=0.0, flags=None):
         self._stage(job, "refining")

@@ -5,6 +5,8 @@ and the board's print view use the same summary builder (hidden categories exclu
 Free-text subject, item and transcript never leave the desk.
 """
 import math
+import time
+from functools import lru_cache
 
 from . import codebook
 from .textnorm import scrub_ids, strip_contact_numbers
@@ -64,11 +66,66 @@ def _deadline_h(t, now):
     return int(max(0, min(254, math.floor((d - now) / 3600.0))))
 
 
+def deadline_label(t):
+    """Deadline text for the wire, always rebuilt from deadline_at ('MM/DD HH:MM').
+
+    The stored deadline_text is never sent: a client could have put anything in it (REDTEAM.md M2).
+    """
+    d = t.get("deadline_at")
+    if d is None or isinstance(d, bool):
+        return ""
+    try:
+        return time.strftime("%m/%d %H:%M", time.localtime(float(d)))
+    except (TypeError, ValueError, OverflowError, OSError):
+        return ""
+
+
+@lru_cache(maxsize=4096)
+def has_protection_cue(text):
+    """True if the text holds a protection (domestic-violence) keyword from the lexicon."""
+    if not text:
+        return False
+    try:
+        from .lexicon import get_lexicon
+        for h in get_lexicon().find_hits(text):
+            e = h.entry
+            if int(e.get("category") or 0) == codebook.PROTECTION or e.get("emergency") == "protection":
+                return True
+    except Exception:
+        return False
+    return False
+
+
+def hides_location(t):
+    """A non-protection ticket from an intake that also named a protection need keeps its location
+    on the desk only (REDTEAM.md M3): otherwise 「B區12床 毛毯」 next to 「保護個案」 places the case.
+    Exception: a P1 at an outside address (a rescue) still sends it, because hiding where to rescue
+    someone could cost a life; it carries no protection wording."""
+    if int(t.get("category") or 0) == codebook.PROTECTION:
+        return False
+    if not has_protection_cue(t.get("transcript") or ""):
+        return False
+    if int(t.get("priority") or 3) == 1 and int(t.get("zone_code") or 0) == codebook.ZONE_EXTERNAL:
+        return False
+    return True
+
+
+def _wire_zone(t):
+    return 0 if hides_location(t) else int(t.get("zone_code") or 0)
+
+
 def location_label(t):
     """Location text for the wire: zone label, or the parsed external address."""
+    if hides_location(t):
+        return ""
     zone = int(t.get("zone_code") or 0)
     if zone == codebook.ZONE_EXTERNAL:
         loc = strip_contact_numbers(scrub_ids(t.get("location") or "")).replace("＊＊＊", "").strip()
+        # A clerk-typed location may still carry a name (「王小明家中正路三巷」): when it parses as an
+        # address, send only the place part (red-team H3). Text that doesn't parse is left as it is.
+        zone2, place, _span = codebook.parse_location(loc) if loc else (0, "", None)
+        if zone2 == codebook.ZONE_EXTERNAL and place:
+            loc = place
         return loc or "外部地點"
     return codebook.zone_label(zone)
 
@@ -99,8 +156,7 @@ def build_summary(t, desk_letter="B"):
     if q:
         unit = "人" if category == 4 else "份"
         parts.append(("約" if t.get("quantity_approx") else "") + f"{int(q)}{unit}")
-    if t.get("deadline_text"):
-        parts.append(str(t["deadline_text"]))
+    parts.append(deadline_label(t))
     return truncate_utf8(" ".join(p for p in parts if p))
 
 
@@ -152,14 +208,14 @@ def wire_view(t, now, desk_letter="B"):
                      zone=0, summary=build_summary(t, desk_letter))
     # 4. sensitive medical need: real category, no item, generic summary
     if "sensitive" in _ticket_flags(t):
-        zone = int(t.get("zone_code") or 0)
+        zone = _wire_zone(t)
         ext_bit = F_EXTERNAL if zone == codebook.ZONE_EXTERNAL else 0
         return _view(t, now, priority=priority, category=category, item_code=0, quantity=0,
                      subject_group=0,
                      flags=F_SENSITIVE | closed_bit | escalated_bit | emergency_bit | multi_bit | ext_bit,
                      zone=zone, summary=build_summary(t, desk_letter))
     # 5. normal
-    zone = int(t.get("zone_code") or 0)
+    zone = _wire_zone(t)
     flags = closed_bit | escalated_bit | emergency_bit | multi_bit
     if t.get("quantity_approx"):
         flags |= F_APPROX
@@ -195,7 +251,7 @@ def export_row(t, now, desk_letter="B"):
         "quantity": "" if sensitive or not t.get("quantity") else int(t["quantity"]),
         "location": location_label(t),
         "summary": build_summary(t, desk_letter),
-        "deadline": t.get("deadline_text") or "",
+        "deadline": deadline_label(t),
         "eoc_status": codebook.eoc_status_zh(t.get("eoc_status") or 0),
         "reports": int(t.get("report_count") or 1),
     }

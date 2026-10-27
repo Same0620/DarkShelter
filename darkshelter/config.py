@@ -33,6 +33,9 @@ DEFAULTS = {
     "net": {"mtu": 200, "window": 2, "rto_initial_s": 3.0, "rto_min_s": 0.5, "rto_max_s": 30,
             "rto_backoff_cap": 2.0, "heartbeat_s": 5, "probe_max_s": 5, "down_after_timeouts": 4,
             "hmac_key_hex": None},
+    # keep_audio and scrub_national_id are SPEC config keys, but the code always takes the safe side:
+    # audio is never written to disk and national IDs are always scrubbed, whatever these say.
+    # privacy_view_default sets the desk page's privacy toggle at load.
     "privacy": {"keep_audio": False, "scrub_national_id": True, "privacy_view_default": True},
     "voice_baseline_bytes_per_s": 2000,
     # Extra desks the EOC accepts: {"<desk_id>": "<hmac hex>"} (optional).

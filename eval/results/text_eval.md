@@ -1,6 +1,6 @@
 # Text evaluation (--llm none)
 
-Generated 2026-10-28 03:01 on 72 labelled cases (C:\Users\Tony\Desktop\ASUS_Hackathon\darkshelter\eval\text_cases.jsonl).
+Generated 2026-10-28 05:53 on 127 labelled cases (C:\Users\Tony\Desktop\ASUS_Hackathon\darkshelter\eval\text_cases.jsonl).
 
 | Metric | Value |
 |---|---|
@@ -17,9 +17,9 @@ Generated 2026-10-28 03:01 on 72 labelled cases (C:\Users\Tony\Desktop\ASUS_Hack
 | dedupe_precision | 100.0 % |
 | dedupe_recall | 100.0 % |
 | hallucination_rate | n/a |
-| latency rules p50 / p95 | 0.12 / 0.28 ms |
+| latency rules p50 / p95 | 0.12 / 0.24 ms |
 
-Gold P1 needs: 43, predicted P1 needs: 43. Dedupe pool: {'tp': 5, 'fp': 0, 'fn': 0}.
+Gold P1 needs: 91, predicted P1 needs: 91. Dedupe pool: {'tp': 5, 'fp': 0, 'fn': 0}.
 
 All must-be-P1 and must-not-be-P1 cases pass.
 
@@ -99,3 +99,58 @@ All must-be-P1 and must-not-be-P1 cases pass.
 | dupx_wheelchair_other | ✓ | MOBILITY/501/P2 |
 | dupx_blanket_e1 | ✓ | SUPPLIES/801/P3 |
 | dupx_blanket_f2 | ✓ | SUPPLIES/801/P3 |
+| rt_c1_help | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt_c1_heart_attack | ✓ | MEDICAL_EMERGENCY/101/P1 |
+| rt_c1_heart_attack_simplified | ✓ | MEDICAL_EMERGENCY/101/P1 |
+| rt_c1_cannot_breathe | ✓ | MEDICAL_EMERGENCY/101/P1 |
+| rt_c1_breath_stopped | ✓ | MEDICAL_EMERGENCY/107/P1 |
+| rt_c1_not_breathing_zai | ✓ | MEDICAL_EMERGENCY/107/P1 |
+| rt_c1_not_breathing_simplified | ✓ | MEDICAL_EMERGENCY/107/P1 |
+| rt_c1_wrist | ✓ | MENTAL_HEALTH/902/P1 |
+| rt_c1_seizure | ✓ | MEDICAL_EMERGENCY/105/P1 |
+| rt_c1_waters | ✓ | MEDICAL_EMERGENCY/103/P1 |
+| rt_c1_head_bleeding | ✓ | MEDICAL_EMERGENCY/102/P1 |
+| rt_c1_massive_bleeding | ✓ | MEDICAL_EMERGENCY/102/P1 |
+| rt_c1_drowning | ✓ | PERSON_AT_RISK/0/P1 |
+| rt_c1_electric | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt_c1_vomit_blood | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt_c1_shock | ✓ | MEDICAL_EMERGENCY/104/P1 |
+| rt_c1_unconscious | ✓ | MEDICAL_EMERGENCY/104/P1 |
+| rt_c1_confused | ✓ | MEDICAL_EMERGENCY/104/P1 |
+| rt_c1_cyanosis | ✓ | MEDICAL_EMERGENCY/101/P1 |
+| rt_c1_anaphylaxis | ✓ | MEDICAL_EMERGENCY/101/P1 |
+| rt_c1_co | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt_c1_heatstroke | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt_c1_fever | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt_c1_collapse | ✓ | MEDICAL_EMERGENCY/104/P1 |
+| rt_c1_injured_address | ✓ | MEDICAL_EMERGENCY/102/P1 |
+| rt_c1_hemoptysis | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt_c1_ambulance | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt_c1_119 | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt_c1_help_with_rescue | ✓ | PERSON_AT_RISK/401/P1 |
+| rt_c1_rescue_requested | ✓ | PERSON_AT_RISK/401/P1 |
+| rt_lost_way_child | ✓ | PERSON_AT_RISK/403/P1 |
+| rt_m7_insulin_homophone | ✓ | MEDICATION/301/P1 |
+| rt_m7_dialysis_homophone | ✓ | LIFE_SUSTAINING/201/P1 |
+| rt_m7_hokkien_kidney | ✓ | LIFE_SUSTAINING/201/P1 |
+| rt_m7_hokkien_breath | ✓ | MEDICAL_EMERGENCY/101/P1 |
+| rt_m7_english_insulin | ✓ | MEDICATION/301/P1 |
+| rt_m7_english_dialysis | ✓ | LIFE_SUSTAINING/201/P1 |
+| rt_m7_english_oxygen | ✓ | LIFE_SUSTAINING/202/P1 |
+| rt_l5_zero_width_space | ✓ | LIFE_SUSTAINING/201/P1 |
+| rt_l5_zero_width_joiner | ✓ | MEDICAL_EMERGENCY/0/P1 |
+| rt_c2_two_children | ✓ | PERSON_AT_RISK/401/P1, PERSON_AT_RISK/401/P1 |
+| rt_c2_two_parents | ✓ | MEDICAL_EMERGENCY/101/P1, MEDICAL_EMERGENCY/101/P1 |
+| rt_c2_two_dialysis | ✓ | LIFE_SUSTAINING/201/P1, LIFE_SUSTAINING/201/P2 |
+| rt_c2_two_beds | ✓ | SUPPLIES/801/P3, SUPPLIES/801/P3 |
+| rt_h3_name_before_address | ✓ | PERSON_AT_RISK/401/P1 |
+| rt_h5_walk_keeps_bed | ✓ | MOBILITY/503/P2 |
+| rt_h5_no_network | ✓ | OTHER/0/P3 |
+| rt_l10_number_bed | ✓ | SUPPLIES/801/P2 |
+| rt_not_rescuers | ✓ | OTHER/0/P3 |
+| rt_not_spill | ✓ | OTHER/0/P3 |
+| rt_not_cramp | ✓ | OTHER/0/P3 |
+| rt_h4_chen_grandma | ✓ | LIFE_SUSTAINING/201/P1 |
+| rt_h4_lin_grandma | ✓ | LIFE_SUSTAINING/201/P1 |
+| rt2_internet_not_road | ✓ | COMMUNICATION/1002/P3 |
+| rt2_road_still_road | ✓ | INFRASTRUCTURE/1201/P2 |

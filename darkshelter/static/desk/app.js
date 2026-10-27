@@ -569,6 +569,12 @@
   }
 
   function render(st) {
+    if (!S.privacyInit && st && st.desk) {
+      // The privacy view starts from the config (privacy.privacy_view_default), once per page load.
+      S.privacyInit = true;
+      S.privacy = st.desk.privacy_view_default !== false;
+      $("privacy-toggle").checked = S.privacy;
+    }
     S.st = st;
     renderTop(st);
     renderBanners(st);
@@ -625,8 +631,11 @@
         btn.innerHTML = "🎙️ 錄音（建議由值班人員複述重點）<small>Record (clerk repeats the key points)</small>";
         bar.style.width = "0%";
         status.textContent = "上傳中… uploading (" + seconds.toFixed(1) + " s)";
-        fetch("/api/intake/audio?clerk=" + encodeURIComponent(S.clerk), {
-          method: "POST", headers: { "Content-Type": "audio/wav" }, body: wav
+        // X-DarkShelter makes a cross-site upload need a CORS preflight, which the desk refuses.
+        fetch("/api/intake/audio?clerk=" + encodeURIComponent(S.clerk || ""), {
+          method: "POST",
+          headers: { "Content-Type": "audio/wav", "X-DarkShelter": "1" },
+          body: wav
         }).then(function (r) { return r.json(); }).then(function (d) {
           status.textContent = "";
           if (d.job_id) { S.lastJobId = d.job_id; pollSoon(); }

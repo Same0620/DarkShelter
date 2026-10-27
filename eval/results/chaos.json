@@ -5,18 +5,18 @@
     "missing": [],
     "mismatched": [],
     "extra": [],
-    "dup_count": 45,
+    "dup_count": 37,
     "desk": 43,
     "eoc": 43
   },
-  "elapsed_s": 77.0,
-  "converge_after_kills_s": 36.0,
+  "elapsed_s": 75.5,
+  "converge_after_kills_s": 34.5,
   "kills": {
     "sender": 5,
     "eoc": 5
   },
   "shown_duplicates": 0,
-  "dup_receptions_suppressed": 45,
+  "dup_receptions_suppressed": 37,
   "tickets_desk": 43,
   "tickets_eoc": 43,
   "changes": {
@@ -45,5 +45,5 @@
   },
   "seed": 13,
   "kills_requested": 5,
-  "started": "2026-10-28 03:07:06"
+  "started": "2026-10-28 05:56:06"
 }

@@ -157,21 +157,130 @@ class ApiTest(unittest.TestCase):
         self.assertEqual(r.status_code, 200, r.get_data(as_text=True))
         self.assertEqual(r.get_json()["ticket"]["status"], "merged")
 
+    AUDIO_HDR = {"X-DarkShelter": "1"}
+
     def test_audio_intake_mock(self):
         r = self.c.post("/api/intake/audio?clerk=A&mock_text=我需要飲用水", data=wav_bytes(1.5),
-                        content_type="audio/wav")
+                        content_type="audio/wav", headers=self.AUDIO_HDR)
         j = self.wait_job(r.get_json()["job_id"])
         self.assertEqual(j["status"], "done")
         self.assertGreaterEqual(j["duration_s"], 1.4)
         self.assertTrue(j["seqs"])
-        silent = self.c.post("/api/intake/audio?clerk=A", data=wav_bytes(1.5, amp=0.0), content_type="audio/wav")
+        silent = self.c.post("/api/intake/audio?clerk=A", data=wav_bytes(1.5, amp=0.0), content_type="audio/wav",
+                             headers=self.AUDIO_HDR)
         js = self.wait_job(silent.get_json()["job_id"])
         self.assertEqual(js["seqs"], [])
         self.assertIn("silent", [w["code"] for w in js["warnings"]])
 
     def test_body_limit(self):
-        r = self.c.post("/api/intake/audio", data=b"0" * (5 * 1024 * 1024 + 10), content_type="audio/wav")
+        r = self.c.post("/api/intake/audio", data=b"0" * (5 * 1024 * 1024 + 10), content_type="audio/wav",
+                        headers=self.AUDIO_HDR)
         self.assertEqual(r.status_code, 413)
+
+    # ------------------------------------------------------------ red-team regressions (REDTEAM.md)
+    def draft_seq(self, text="A區2床需要飲用水三瓶"):
+        return self.drafts_of(self.intake(text))[0]["seq"]
+
+    def test_csrf_simple_requests_refused(self):
+        """H2: cross-site 'simple' requests (form, text/plain, foreign Origin) change nothing."""
+        seq = self.draft_seq()
+        url = f"/api/tickets/{seq}/confirm"
+        r = self.c.post(url + "?clerk=attacker", data="{}", content_type="text/plain")
+        self.assertEqual(r.status_code, 415, r.get_data(as_text=True))
+        r = self.c.post(url, data={"clerk": "attacker"})  # form-encoded
+        self.assertEqual(r.status_code, 415)
+        r = self.c.post(url, json={"clerk": "A"}, headers={"Origin": "http://evil.example"})
+        self.assertEqual(r.status_code, 403)
+        self.assertEqual(r.get_json()["error"], "cross_origin")
+        r = self.c.post(url, json={"clerk": "A"}, headers={"Sec-Fetch-Site": "cross-site"})
+        self.assertEqual(r.status_code, 403)
+        r = self.c.post("/api/mic", data="{}", content_type="text/plain")
+        self.assertEqual(r.status_code, 415)
+        self.assertEqual(self.desk.store.get(seq)["status"], "draft")
+        r = self.c.post("/api/intake/audio", data=wav_bytes(1.0), content_type="audio/wav")  # no X-DarkShelter
+        self.assertEqual(r.status_code, 403)
+        # same-origin JSON still works, and the clerk is never read from the query string
+        r = self.c.post(url + "?clerk=attacker", json={}, headers={"Origin": "http://localhost",
+                                                                   "Sec-Fetch-Site": "same-origin"})
+        self.assertEqual(r.status_code, 200, r.get_data(as_text=True))
+        self.assertEqual(self.desk.store.get(seq)["confirmed_by"], "")
+
+    def test_host_header_checked(self):
+        """M5: DNS rebinding — only loopback names (and this server's port) are served."""
+        self.assertEqual(self.c.get("/api/state", base_url="http://evil.example:8000").status_code, 400)
+        self.assertEqual(self.c.get("/api/state", base_url="http://evil.example").status_code, 400)
+        r = self.c.get("/api/state", base_url="http://127.0.0.1:1234", environ_overrides={"SERVER_PORT": "8000"})
+        self.assertEqual(r.status_code, 400)
+        for base in ("http://127.0.0.1:8000", "http://localhost:8000", "http://[::1]:8000", "http://localhost"):
+            self.assertEqual(self.c.get("/healthz", base_url=base).status_code, 200, base)
+
+    def test_deadline_text_never_from_client(self):
+        """M2: a client-supplied deadline_text is ignored; the text is derived from deadline_at."""
+        seq = self.draft_seq()
+        r = self.c.post(f"/api/tickets/{seq}/update",
+                        json={"fields": {"deadline_text": "王小明 0912 345 678 A 123 456 789"}, "clerk": "A"})
+        self.assertEqual(r.status_code, 200, r.get_data(as_text=True))
+        tv = r.get_json()["ticket"]
+        self.assertNotIn("王小明", tv["deadline_text"] + tv["wire_summary"])
+        self.assertNotIn("0912", tv["wire_summary"])
+        dl = time.time() + 3 * 3600
+        r = self.c.post(f"/api/tickets/{seq}/confirm", json={"fields": {"deadline_at": dl}, "clerk": "A"})
+        self.assertEqual(r.status_code, 200, r.get_data(as_text=True))
+        tv = r.get_json()["ticket"]
+        want = time.strftime("%m/%d %H:%M", time.localtime(dl))
+        self.assertEqual(tv["deadline_text"], want)
+        self.assertIn(want, tv["wire_summary"])
+
+    def test_out_of_range_fields_rejected(self):
+        """M6 + L4: bad codes, ranges and types give 400 (never 200, never 500)."""
+        seq = self.draft_seq()
+        url = f"/api/tickets/{seq}/update"
+        bad = [{"category": 999}, {"category": "1"}, {"item_code": 999999}, {"quantity": -5},
+               {"quantity": 10 ** 12}, {"quantity": 1.5}, {"zone_code": "abc"}, {"zone_code": -1},
+               {"deadline_at": "tomorrow"}, {"subject_group": "alien"}, {"missing_info": "x"}, {"location": 5}]
+        for f in bad:
+            r = self.c.post(url, json={"fields": f, "clerk": "A"})
+            self.assertEqual(r.status_code, 400, f"{f}: {r.status_code} {r.get_data(as_text=True)}")
+            self.assertIn("error", r.get_json())
+        r = self.c.post(url, json={"fields": "abc", "clerk": "A"})
+        self.assertEqual(r.status_code, 400)
+        r = self.c.post(url, json={"fields": {}, "expected_version": "x"})
+        self.assertEqual(r.status_code, 400)
+        r = self.c.post(url, json=["not", "an", "object"])
+        self.assertEqual(r.status_code, 400)
+        for p in ("1", 1.5, True, "abc"):
+            r = self.c.post(f"/api/tickets/{seq}/confirm", json={"priority": p, "clerk": "A"})
+            self.assertEqual(r.status_code, 400, f"priority {p!r}: {r.get_data(as_text=True)}")
+        r = self.c.post(f"/api/tickets/{seq}/merge", json={"target": "x", "clerk": "A"})
+        self.assertEqual(r.status_code, 400)
+        r = self.c.post("/api/intake/text", json={"text": "需要毛毯", "household_id": "abc"})
+        self.assertEqual(r.status_code, 400)
+        r = self.c.post("/api/intake/text", json={"text": ["需要毛毯"]})
+        self.assertEqual(r.status_code, 400)
+        r = self.c.post("/api/checkin", json={"size": 2, "elderly": "abc"})
+        self.assertEqual(r.status_code, 400)
+        self.assertEqual(self.desk.store.get(seq)["status"], "draft")
+        # valid edits still work
+        r = self.c.post(url, json={"fields": {"quantity": 4, "quantity_approx": True}, "clerk": "A"})
+        self.assertEqual(r.status_code, 200, r.get_data(as_text=True))
+        self.assertEqual(r.get_json()["ticket"]["quantity"], 4)
+
+    def test_csv_formula_cells_quoted(self):
+        """L1: a cell that starts with = + - @ is prefixed with ' in /export.csv."""
+        import csv as _csv
+        seq = self.draft_seq("我需要毛毯")
+        payload = '=HYPERLINK("http://evil.example","x")'
+        r = self.c.post(f"/api/tickets/{seq}/confirm",
+                        json={"fields": {"location": payload, "zone_code": 65535}, "clerk": "A"})
+        self.assertEqual(r.status_code, 200, r.get_data(as_text=True))
+        r = self.c.get("/export.csv")
+        text = r.get_data().decode("utf-8-sig")
+        r.close()
+        rows = list(_csv.reader(io.StringIO(text)))
+        self.assertTrue(any(payload in cell for row in rows for cell in row), "payload should still be visible")
+        for row in rows[1:]:
+            for cell in row:
+                self.assertFalse(cell.startswith(("=", "+", "-", "@", "\t", "\r")), cell)
 
     def test_mode_and_mic(self):
         r = self.c.post("/api/mode", json={"mode": "PAPER"})
@@ -180,6 +289,45 @@ class ApiTest(unittest.TestCase):
         r = self.c.post("/api/mic", json={"ok": False})
         self.assertEqual(r.get_json()["mode"], "TYPED")
         self.c.post("/api/mic", json={"ok": True})
+
+    def test_privacy_view_default_in_state(self):
+        """L8: the desk page takes its privacy-view default from the config."""
+        st = self.c.get("/api/state").get_json()
+        self.assertIs(st["desk"]["privacy_view_default"], True)
+        js = self.c.get("/static/desk/app.js")
+        self.assertIn("privacy_view_default", js.get_data(as_text=True))
+        js.close()
+
+
+class EocGuardTest(unittest.TestCase):
+    """H2 + M5 on the EOC app."""
+
+    @classmethod
+    def setUpClass(cls):
+        from darkshelter.eoc_app import create_app as eoc_app
+        from darkshelter.net.eoc_store import EocStore
+        cls.tmp = tempfile.TemporaryDirectory(ignore_cleanup_errors=True)
+        cls.cfg = make_config({"ports": {"eoc_http": 8100}})
+        cls.store = EocStore(os.path.join(cls.tmp.name, "eoc.db"))
+        cls.c = eoc_app(cls.cfg, cls.store).test_client()
+
+    @classmethod
+    def tearDownClass(cls):
+        try:
+            cls.store.close()
+        except Exception:
+            pass
+        cls.tmp.cleanup()
+
+    def test_guards(self):
+        url = "/api/tickets/7/1/status"
+        self.assertEqual(self.c.post(url, data='{"status": 2}', content_type="text/plain").status_code, 415)
+        r = self.c.post(url, json={"status": 2}, headers={"Origin": "http://evil.example"})
+        self.assertEqual(r.status_code, 403)
+        self.assertEqual(self.c.post(url, json=[2]).status_code, 400)
+        self.assertEqual(self.c.post(url, json={"status": 2}).status_code, 404)  # unknown ticket, but allowed
+        self.assertEqual(self.c.get("/api/state", base_url="http://evil.example:8100").status_code, 400)
+        self.assertEqual(self.c.get("/api/state", base_url="http://127.0.0.1:8100").status_code, 200)
 
 
 if __name__ == "__main__":

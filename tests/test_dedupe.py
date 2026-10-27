@@ -11,10 +11,10 @@ EXT = codebook.ZONE_EXTERNAL
 
 
 def t(seq, category=2, item_code=201, zone_code=0, location="", subject="", summary="", age_h=0.0,
-      status="draft"):
+      status="draft", household_id=None):
     return {"seq": seq, "category": category, "item_code": item_code, "zone_code": zone_code,
             "location": location, "subject": subject, "summary": summary,
-            "created_wall": NOW - age_h * 3600, "status": status}
+            "created_wall": NOW - age_h * 3600, "status": status, "household_id": household_id}
 
 
 class DedupeTests(unittest.TestCase):
@@ -40,12 +40,39 @@ class DedupeTests(unittest.TestCase):
                                                location="中山路")], NOW), [])
 
     def test_same_subject(self):
-        out = find_candidates(t(2, subject="阿嬤"), [t(1, subject="阿嬤", zone_code=C5)], NOW)
+        # supplies: the same subject is enough
+        out = find_candidates(t(2, category=8, item_code=801, subject="阿嬤"),
+                              [t(1, category=8, item_code=801, subject="阿嬤", zone_code=C5)], NOW)
+        self.assertEqual(out[0]["reason"], "same_subject")
+        # person-specific: only within the same household (or at the same place)
+        out = find_candidates(t(2, subject="阿嬤", household_id=7), [t(1, subject="阿嬤", zone_code=C5, household_id=7)], NOW)
         self.assertEqual(out[0]["reason"], "same_subject")
 
     def test_similar_summary(self):
-        out = find_candidates(t(2, summary="阿嬤 B區12床 洗腎 明天早上"), [t(1, summary="阿嬤 B區12床 洗腎")], NOW)
+        out = find_candidates(t(2, summary="阿嬤 B區12床 洗腎 明天早上", household_id=3),
+                              [t(1, summary="阿嬤 B區12床 洗腎", household_id=3)], NOW)
         self.assertIn("similar_summary", out[0]["reason"])
+
+    # red-team H4: one wrong merge tap loses a dialysis patient
+    def test_two_families_grandmas_are_not_candidates(self):
+        a = t(2, subject="陳家的阿嬤", summary="陳家的阿嬤 洗腎 明天")
+        b = t(1, subject="林家的阿嬤", summary="林家的阿嬤 洗腎 明天")
+        self.assertEqual(find_candidates(a, [b], NOW), [])
+
+    def test_different_subjects_same_address_are_not_candidates(self):
+        a = t(2, category=4, item_code=401, zone_code=EXT, location="中正路三巷", subject="我爸")
+        b = t(1, category=4, item_code=401, zone_code=EXT, location="中正路三巷", subject="我媽")
+        self.assertEqual(find_candidates(a, [b], NOW), [])
+        # the same kinship word said two ways is the same subject
+        c = t(3, category=4, item_code=401, zone_code=EXT, location="中正路三巷", subject="爸爸")
+        self.assertTrue(find_candidates(c, [a], NOW))
+
+    def test_person_specific_needs_place_or_household(self):
+        a = t(2, subject="阿嬤", summary="阿嬤 洗腎 明天")
+        b = t(1, subject="阿嬤", summary="阿嬤 洗腎 明天")
+        self.assertEqual(find_candidates(a, [b], NOW), [])          # two shelters' 阿嬤
+        a["household_id"] = b["household_id"] = 4
+        self.assertTrue(find_candidates(a, [b], NOW))
 
     def test_person_specific_suggest_supplies_add(self):
         out = find_candidates(t(2, category=8, item_code=801, zone_code=B12),

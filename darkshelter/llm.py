@@ -243,20 +243,21 @@ class OllamaLLM:
         res["seconds"] = round(time.monotonic() - t0, 3)
         return res
 
-    def warmup(self):
-        """extract('測試') twice with warmup_timeout_s.
+    def warmup(self, timeout_s=None):
+        """extract('測試') twice with warmup_timeout_s (or `timeout_s`: the short probe after timeouts).
 
         prefix_cached: the 2nd prompt_eval_count is < half the 1st (SPEC). Ollama >= 0.40
         (llama-server runner) reports the full prompt length even when the prefix is reused,
         so a 2nd prompt_eval_duration < half the 1st also counts as cached.
         """
         t0 = time.monotonic()
-        r1 = self.extract("測試", timeout_s=self.warmup_timeout_s)
+        limit = self.warmup_timeout_s if timeout_s is None else float(timeout_s)
+        r1 = self.extract("測試", timeout_s=limit)
         if r1["error"] in ("timeout", "llm_error"):
             return {"ok": False, "prefix_cached": False, "tokens_per_s": None,
                     "seconds": round(time.monotonic() - t0, 3), "error": r1["error"],
                     "prompt_eval_count": [r1["prompt_eval_count"]]}
-        r2 = self.extract("測試", timeout_s=self.warmup_timeout_s)
+        r2 = self.extract("測試", timeout_s=limit)
         p1, p2 = r1["prompt_eval_count"], r2["prompt_eval_count"]
         d1, d2 = r1.get("prompt_eval_s") or 0.0, r2.get("prompt_eval_s") or 0.0
         by_count = bool(p1) and p2 < p1 / 2.0
@@ -341,7 +342,7 @@ class MockLLM:
     def available(self, force=False):
         return True
 
-    def warmup(self):
+    def warmup(self, timeout_s=None):
         return {"ok": True, "prefix_cached": True, "tokens_per_s": 99.0, "seconds": 0.0, "error": None,
                 "prompt_eval_count": [0, 0]}
 

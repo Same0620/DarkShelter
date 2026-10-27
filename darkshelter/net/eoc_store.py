@@ -5,7 +5,16 @@ DATA (one transaction per datagram, committed BEFORE the ack is sent):
   - a newer version replaces the content and keeps the EOC-owned status
     (a newer version at level 1 sets summary = NULL and level = 1)
   - an equal version at a higher level adds the summary
-  - otherwise dup_count += 1
+  - otherwise dup_count += 1, and the ack carries the version/level the EOC HOLDS. Within one desk
+    database that is never above the desk's own version, so a higher one tells the desk that this
+    ticket number belongs to a different ticket (desk database reset, or two desks sharing a desk_id).
+  - an equal version with different content is the same symptom: ack with level 0 ("not yours"),
+    keep the stored row, count `seq_conflicts` and log one event per ticket.
+  - a priority outside 1-3 (2 wire bits allow 0) is clamped to 1-3 and counted (`bad_priority`).
+HEARTBEAT: the census, boot_id and last_seen change only for a heartbeat newer than the stored one
+  ((boot_id, msg_seq) in serial-number order), so a late or replayed copy cannot roll the census back
+  or make a silent desk look alive. After HB_STALE_GRACE_S without an accepted heartbeat any heartbeat
+  is accepted again (a desk whose database was reset restarts at boot 1).
 Status from the EOC UI: 1 ACKNOWLEDGED, 2 DISPATCHED, 3 RESOLVED, with
 status_seq = 1 + COALESCE(MAX(status_seq), 0) for that desk, inside the same transaction.
 """
@@ -26,7 +35,7 @@ CREATE TABLE IF NOT EXISTS eoc_tickets (
   PRIMARY KEY (desk_id, seq)
 );
 CREATE TABLE IF NOT EXISTS desks (desk_id INTEGER PRIMARY KEY, last_seen REAL, census TEXT, rtt REAL,
-  boot_id INTEGER, heartbeats INTEGER DEFAULT 0, first_seen REAL);
+  boot_id INTEGER, heartbeats INTEGER DEFAULT 0, first_seen REAL, hb_msg_seq INTEGER);
 CREATE TABLE IF NOT EXISTS stats (key TEXT PRIMARY KEY, value REAL);
 CREATE TABLE IF NOT EXISTS rx_log (id INTEGER PRIMARY KEY AUTOINCREMENT, wall REAL, mono REAL, desk_id INTEGER,
   kind TEXT, seq INTEGER, version INTEGER, priority INTEGER, dup INTEGER, boot_id INTEGER, msg_seq INTEGER);
@@ -36,6 +45,24 @@ CREATE INDEX IF NOT EXISTS idx_eoc_status_seq ON eoc_tickets(desk_id, status_seq
 
 STATUS_NAMES = {0: ("未回覆", "no status"), 1: ("已收到", "acknowledged"), 2: ("已派遣", "dispatched"),
                 3: ("已解決", "resolved")}
+
+HB_STALE_GRACE_S = 30.0     # accept a non-newer heartbeat only after this long without an accepted one
+# A "newer version" whose ticket was created this long AFTER the EOC first received that number cannot
+# be the same ticket (a ticket exists before any of its versions arrive; ages overstate by < 1 min + transit).
+NEWER_CREATED_SLACK_S = 1800.0
+
+
+def hb_is_newer(boot_id, msg_seq, stored_boot, stored_msg_seq):
+    """Serial-number order of (boot_id u8, msg_seq u16): True if (boot_id, msg_seq) is newer."""
+    if stored_boot is None:
+        return True
+    db = (int(boot_id) - int(stored_boot)) % 256
+    if db:
+        return db < 128
+    if stored_msg_seq is None:
+        return True
+    dm = (int(msg_seq) - int(stored_msg_seq)) % 65536
+    return 0 < dm < 32768
 
 
 class EocConflict(Exception):
@@ -56,10 +83,14 @@ class EocStore:
         self._conns = []
         self._conns_lock = threading.Lock()
         Path(self.path).parent.mkdir(parents=True, exist_ok=True)
+        self._conflicts_logged = set()
         c = sqlite3.connect(self.path, timeout=5.0)
         try:
             c.execute("PRAGMA journal_mode=WAL")
             c.executescript(SCHEMA)
+            cols = {r[1] for r in c.execute("PRAGMA table_info(desks)").fetchall()}
+            if "hb_msg_seq" not in cols:      # database made before the heartbeat freshness check
+                c.execute("ALTER TABLE desks ADD COLUMN hb_msg_seq INTEGER")
             c.commit()
         finally:
             c.close()
@@ -118,73 +149,122 @@ class EocStore:
                       (self.clock(), etype, json.dumps(data, ensure_ascii=False) if data is not None else None))
 
     # ------------------------------------------------------------ receive path
+    @staticmethod
+    def _content_differs(row, r, prio, lvl):
+        """Same (desk, seq, version) but different content: only possible for a different ticket."""
+        stored = (row["priority"], row["category"], row["item_code"], row["quantity"], row["subject_group"],
+                  row["zone"])
+        got = (prio, int(r.get("category") or 0), int(r.get("item_code") or 0), int(r.get("quantity") or 0),
+               int(r.get("subject_group") or 0), int(r.get("zone") or 0))
+        if tuple(int(x or 0) for x in stored) != got:
+            return True
+        if lvl >= 2 and (row["level"] or 0) >= 2 and row["summary"] is not None:
+            return (r.get("summary") or "") != row["summary"]
+        return False
+
     def apply_records(self, desk_id, boot_id, msg_seq, records, nbytes=0):
         """Apply DATA records in ONE transaction; returns ack entries (seq, version, level, status)."""
         now = self.clock()
         mono = time.monotonic()
         acks = []
         dups = 0
+        conflicts = 0
+        bad_prio = 0
         with self._txn() as c:
             for r in records:
                 seq, ver, lvl = int(r["seq"]), int(r["version"]), int(r.get("level", 2))
-                row = c.execute("SELECT version, level, status FROM eoc_tickets WHERE desk_id=? AND seq=?",
-                                (desk_id, seq)).fetchone()
+                row = c.execute("SELECT version, level, status, priority, category, item_code, quantity, "
+                                "subject_group, zone, summary, first_rx_wall FROM eoc_tickets "
+                                "WHERE desk_id=? AND seq=?", (desk_id, seq)).fetchone()
                 dup = 0
+                kind = "data"
+                prio = int(r.get("priority") or 0)
+                if not 1 <= prio <= 3:            # 2 wire bits allow 0: never sort it above the P1s
+                    bad_prio += 1
+                    prio = 1 if prio < 1 else 3
                 age = int(r.get("age_min") or 0)
                 dh = int(r.get("deadline_h", 255))
                 created_est = now - age * 60.0
                 deadline_est = None if dh == 255 else now + dh * 3600.0
                 summary = r.get("summary") if lvl >= 2 else None
-                content = (ver, lvl, int(r.get("priority") or 0), int(r.get("category") or 0),
+                content = (ver, lvl, prio, int(r.get("category") or 0),
                            int(r.get("item_code") or 0), int(r.get("quantity") or 0),
                            int(r.get("subject_group") or 0), int(r.get("flags") or 0), age, now,
                            created_est, deadline_est, int(r.get("zone") or 0), summary)
+                conflict = row is not None and (
+                    (ver == row["version"] and self._content_differs(row, r, prio, lvl))
+                    or (ver > row["version"]
+                        and created_est > float(row["first_rx_wall"] or now) + NEWER_CREATED_SLACK_S))
                 if row is None:
                     c.execute("INSERT INTO eoc_tickets (version, level, priority, category, item_code, quantity, "
                               "subject_group, flags, age_min_at_rx, rx_wall, created_est_wall, deadline_est_wall, "
                               "zone, summary, desk_id, seq, status, status_seq, dup_count, first_rx_wall) "
                               "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,0,0,?)", (*content, desk_id, seq, now))
-                    status = 0
+                    ack = (seq, ver, lvl, 0)
+                elif conflict:
+                    # Not a copy or an edit of what we hold: a different ticket under the same number. Keep
+                    # the stored row, tell the desk "not yours" (level 0, no status) and log it once.
+                    conflicts += 1
+                    kind = "conflict"
+                    ack = (seq, ver, 0, 0)
+                    if (desk_id, seq) not in self._conflicts_logged:
+                        self._conflicts_logged.add((desk_id, seq))
+                        c.execute("INSERT INTO events (wall, type, data) VALUES (?, ?, ?)",
+                                  (now, "seq_conflict", json.dumps({"desk_id": desk_id, "seq": seq, "version": ver,
+                                                                    "boot_id": boot_id})))
                 elif ver > row["version"]:
                     c.execute("UPDATE eoc_tickets SET version=?, level=?, priority=?, category=?, item_code=?, "
                               "quantity=?, subject_group=?, flags=?, age_min_at_rx=?, rx_wall=?, created_est_wall=?, "
                               "deadline_est_wall=?, zone=?, summary=? WHERE desk_id=? AND seq=?",
                               (*content, desk_id, seq))
-                    status = row["status"] or 0
+                    ack = (seq, ver, lvl, row["status"] or 0)
                 elif ver == row["version"] and lvl > (row["level"] or 0):
                     c.execute("UPDATE eoc_tickets SET level=?, summary=? WHERE desk_id=? AND seq=?",
                               (lvl, summary, desk_id, seq))
-                    status = row["status"] or 0
+                    ack = (seq, ver, lvl, row["status"] or 0)
                 else:
                     c.execute("UPDATE eoc_tickets SET dup_count = dup_count + 1 WHERE desk_id=? AND seq=?",
                               (desk_id, seq))
-                    status = row["status"] or 0
+                    # Ack what we HOLD: the desk can tell when that is a version it never made.
+                    ack = (seq, row["version"], max(int(row["level"] or 0), 1), row["status"] or 0)
                     dup = 1
                     dups += 1
                 c.execute("INSERT INTO rx_log (wall, mono, desk_id, kind, seq, version, priority, dup, boot_id, "
                           "msg_seq) VALUES (?,?,?,?,?,?,?,?,?,?)",
-                          (now, mono, desk_id, "data", seq, ver, int(r.get("priority") or 0), dup, boot_id, msg_seq))
-                acks.append((seq, ver, lvl, status))
+                          (now, mono, desk_id, kind, seq, ver, prio, dup, boot_id, msg_seq))
+                acks.append(ack)
             self._bump(c, "datagrams_rx", 1)
             self._bump(c, "data_datagrams_rx", 1)
             self._bump(c, "bytes_rx", nbytes)
             self._bump(c, "records_rx", len(acks))
             self._bump(c, "duplicates", dups)
+            self._bump(c, "seq_conflicts", conflicts)
+            self._bump(c, "bad_priority", bad_prio)
         return acks
 
     def apply_heartbeat(self, desk_id, boot_id, msg_seq, census, nbytes=0):
+        """Store the census if this heartbeat is newer than the last accepted one. Returns True if stored."""
         now = self.clock()
         with self._txn() as c:
-            c.execute("INSERT INTO desks (desk_id, last_seen, census, boot_id, heartbeats, first_seen) "
-                      "VALUES (?, ?, ?, ?, 1, ?) ON CONFLICT(desk_id) DO UPDATE SET last_seen=excluded.last_seen, "
-                      "census=excluded.census, boot_id=excluded.boot_id, heartbeats=desks.heartbeats + 1",
-                      (desk_id, now, json.dumps(census or {}, ensure_ascii=False), boot_id, now))
+            row = c.execute("SELECT boot_id, hb_msg_seq, last_seen FROM desks WHERE desk_id=?",
+                            (desk_id,)).fetchone()
+            fresh = (row is None or hb_is_newer(boot_id, msg_seq, row["boot_id"], row["hb_msg_seq"])
+                     or now - float(row["last_seen"] or 0.0) >= HB_STALE_GRACE_S)
+            if fresh:
+                c.execute("INSERT INTO desks (desk_id, last_seen, census, boot_id, heartbeats, first_seen, hb_msg_seq) "
+                          "VALUES (?, ?, ?, ?, 1, ?, ?) ON CONFLICT(desk_id) DO UPDATE SET "
+                          "last_seen=excluded.last_seen, census=excluded.census, boot_id=excluded.boot_id, "
+                          "hb_msg_seq=excluded.hb_msg_seq, heartbeats=desks.heartbeats + 1",
+                          (desk_id, now, json.dumps(census or {}, ensure_ascii=False), boot_id, now, msg_seq))
+                self._bump(c, "heartbeats_rx", 1)
+            else:
+                self._bump(c, "stale_heartbeats", 1)
             c.execute("INSERT INTO rx_log (wall, mono, desk_id, kind, seq, version, priority, dup, boot_id, msg_seq) "
-                      "VALUES (?,?,?,?,?,?,?,?,?,?)", (now, time.monotonic(), desk_id, "hb", None, None, None, 0,
-                                                       boot_id, msg_seq))
+                      "VALUES (?,?,?,?,?,?,?,?,?,?)", (now, time.monotonic(), desk_id, "hb" if fresh else "hb_stale",
+                                                       None, None, None, 0 if fresh else 1, boot_id, msg_seq))
             self._bump(c, "datagrams_rx", 1)
-            self._bump(c, "heartbeats_rx", 1)
             self._bump(c, "bytes_rx", nbytes)
+        return fresh
 
     def status_changes(self, desk_id, after_seq, limit=None):
         """[(seq, status, status_seq)] for this desk with status_seq > after_seq, in order."""
@@ -255,7 +335,8 @@ class EocStore:
         out["tickets"] = row[0]
         out["duplicates_suppressed"] = int(row[1])
         for k in ("datagrams_rx", "bytes_rx", "records_rx", "duplicates", "heartbeats_rx", "bad_mac",
-                  "bad_datagrams", "acks_tx", "hb_replies_tx", "bytes_tx"):
+                  "bad_datagrams", "acks_tx", "hb_replies_tx", "bytes_tx", "seq_conflicts", "bad_priority",
+                  "stale_heartbeats"):
             out.setdefault(k, 0)
         return out
 

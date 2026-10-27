@@ -8,6 +8,7 @@ import io
 import json
 import logging
 import mimetypes
+import math
 import threading
 import time
 import urllib.request
@@ -18,21 +19,117 @@ mimetypes.add_type("text/css", ".css")
 
 from flask import Flask, Response, jsonify, request, send_from_directory  # noqa: E402
 
-from . import codebook  # noqa: E402
+from . import codebook, webguard  # noqa: E402
 from .config import load_config, resolve_path  # noqa: E402
 from .health import Health  # noqa: E402
 from .pipeline import Pipeline  # noqa: E402
 from .store import Conflict, Store  # noqa: E402
 from .timers import Timers  # noqa: E402
+from .triage import format_deadline  # noqa: E402
 from .wireview import build_summary, export_row, flag_names, wire_view  # noqa: E402
 
 STATIC = Path(__file__).resolve().parent / "static"
 MAX_BODY = 5 * 1024 * 1024
 PROFILES = ("DOWN", "LORA_RELAY", "LTE_ONE_BAR", "SATELLITE", "GOOD", "FLAPPING")
+WIRE_U16_MAX = 65535                     # quantity and zone are 16-bit on the wire
+_STR_LIMITS = {"item": 100, "subject": 100, "location": 200, "time_phrase": 100, "summary": 200}
+_CSV_RISKY = ("=", "+", "-", "@", "\t", "\r")
 
 
 def err(error, zh, en, status=400):
     return jsonify({"error": error, "zh": zh, "en": en}), status
+
+
+class BadInput(Exception):
+    """A malformed request: HTTP 400 {error, zh, en} (never a 500)."""
+
+    def __init__(self, error, zh, en):
+        super().__init__(en)
+        self.error, self.zh, self.en = error, zh, en
+
+
+def _is_int(v):
+    return isinstance(v, int) and not isinstance(v, bool)
+
+
+def _opt_int(v, error, zh, en, lo=None, hi=None):
+    """None stays None; otherwise a real int in [lo, hi] (no bools, floats or strings)."""
+    if v is None:
+        return None
+    if not _is_int(v) or (lo is not None and v < lo) or (hi is not None and v > hi):
+        raise BadInput(error, zh, en)
+    return v
+
+
+def _opt_str(v, error, zh, en, limit=200):
+    if v is None:
+        return None
+    if not isinstance(v, str) or len(v) > limit:
+        raise BadInput(error, zh, en)
+    return v
+
+
+def validate_fields(fields):
+    """Clerk-editable fields from the API, type- and range-checked (REDTEAM.md M2, M6, L4).
+
+    deadline_text is never taken from the client: it is derived from deadline_at here.
+    Unknown keys are dropped (the store ignores them anyway).
+    """
+    if fields is None:
+        return {}
+    if not isinstance(fields, dict):
+        raise BadInput("bad_fields", "欄位格式錯誤", "fields must be an object")
+    out = {}
+    cats = {int(c["code"]) for c in codebook.load()["categories"]}
+    items = {int(i["code"]) for i in codebook.load()["items"]}
+    groups = {g["key"] for g in codebook.load()["subject_groups"]}
+    for k, v in fields.items():
+        if k == "category":
+            if not _is_int(v) or v not in cats:
+                raise BadInput("bad_category", "不明的類別", f"Unknown category {v!r}")
+            out[k] = v
+        elif k == "item_code":
+            v = 0 if v is None else v
+            if not _is_int(v) or (v != 0 and v not in items):
+                raise BadInput("bad_item", "不明的品項", f"Unknown item code {v!r}")
+            out[k] = v
+        elif k == "quantity":
+            out[k] = _opt_int(v, "bad_quantity", "數量必須是 0 到 65535 的整數",
+                              "Quantity must be an integer from 0 to 65535", 0, WIRE_U16_MAX)
+        elif k == "quantity_approx":
+            if v not in (None, True, False, 0, 1) or isinstance(v, float):
+                raise BadInput("bad_quantity_approx", "約略數量格式錯誤", "quantity_approx must be true/false")
+            out[k] = bool(v)
+        elif k == "zone_code":
+            out[k] = _opt_int(v, "bad_zone", "區域代碼格式錯誤", "zone_code must be an integer from 0 to 65535",
+                              0, WIRE_U16_MAX)
+        elif k == "deadline_at":
+            if v is not None and (not isinstance(v, (int, float)) or isinstance(v, bool)
+                                  or not math.isfinite(v) or not 0 < v < 4102444800):
+                raise BadInput("bad_deadline", "期限格式錯誤", "deadline_at must be a Unix time or null")
+            out[k] = v
+            out["deadline_text"] = format_deadline(v) if v is not None else ""
+        elif k == "deadline_text":
+            continue  # derived from deadline_at, never trusted from the client
+        elif k == "subject_group":
+            if v is not None and v not in groups:
+                raise BadInput("bad_subject_group", "不明的對象類別", f"Unknown subject group {v!r}")
+            out[k] = v
+        elif k == "missing_info":
+            if v is None:
+                v = []
+            if not isinstance(v, list) or not all(isinstance(x, str) and len(x) <= 50 for x in v):
+                raise BadInput("bad_missing_info", "缺漏資訊格式錯誤", "missing_info must be a list of strings")
+            out[k] = v
+        elif k in _STR_LIMITS:
+            s = _opt_str(v, f"bad_{k}", f"{k} 格式錯誤", f"{k} must be text of at most {_STR_LIMITS[k]} characters",
+                         _STR_LIMITS[k])
+            out[k] = "" if s is None else s
+    if "time_phrase" in out and "deadline_at" not in out:
+        from .triage import parse_deadline
+        d_at, d_text = parse_deadline(out["time_phrase"] or "", time.time())
+        out["deadline_at"], out["deadline_text"] = d_at, d_text
+    return out
 
 
 class EmuClient:
@@ -298,10 +395,15 @@ def create_app(cfg, mock=False, desk=None, **kw):
     except Exception:
         pass
     app.desk = desk
+    webguard.install(app, lambda: [cfg["ports"].get("desk_http")], raw_endpoints=("intake_audio",))
 
     @app.errorhandler(Conflict)
     def _conflict(e):
         return jsonify(e.to_dict()), getattr(e, "http_status", 409)
+
+    @app.errorhandler(BadInput)
+    def _bad_input(e):
+        return err(e.error, e.zh, e.en, 400)
 
     @app.errorhandler(413)
     def _too_big(e):
@@ -311,12 +413,23 @@ def create_app(cfg, mock=False, desk=None, **kw):
     def _nf(e):
         return err("not_found", "找不到", "Not found", 404)
 
+    @app.errorhandler(500)
+    def _server_error(e):
+        # Flask has already logged the traceback (desk.log); the client gets no internals.
+        return err("server_error", "伺服器錯誤，請再試一次", "Server error; please try again", 500)
+
     def body():
-        return request.get_json(silent=True) or {}
+        b = request.get_json(silent=True)
+        if b is None:
+            return {}
+        if not isinstance(b, dict):
+            raise BadInput("bad_body", "請求格式錯誤", "The JSON body must be an object")
+        return b
 
     def clerk_of(b=None):
+        """Clerk name from the JSON body only (never the query string: REDTEAM.md H2)."""
         b = b if b is not None else body()
-        return str(b.get("clerk") or request.args.get("clerk") or "")
+        return _opt_str(b.get("clerk"), "bad_clerk", "值班人員格式錯誤", "clerk must be text", 50) or ""
 
     @app.get("/healthz")
     def healthz():
@@ -345,8 +458,20 @@ def create_app(cfg, mock=False, desk=None, **kw):
             return err("bad_size", "人數格式錯誤", "Bad household size")
         if size <= 0:
             return err("bad_size", "請填人數", "Household size is required")
+        if size > 999:
+            return err("bad_size", "人數太大", "Household size too large")
         h = dict(b)
         h["size"] = size
+        for k in ("elderly", "infants", "children", "pregnant", "disabled"):
+            v = h.get(k)
+            if isinstance(v, bool):
+                h[k] = int(v)
+            elif v is not None and not (_is_int(v) and 0 <= v <= 999):
+                return err("bad_household", f"{k} 必須是 0 以上的整數", f"{k} must be a whole number >= 0")
+        for k in ("family_name", "zone", "location"):
+            _opt_str(h.get(k), "bad_household", f"{k} 格式錯誤", f"{k} must be text", 100)
+        if h.get("screening") is not None and not isinstance(h["screening"], dict):
+            return err("bad_household", "篩檢欄位格式錯誤", "screening must be an object")
         hid, seqs = desk.pipeline.checkin(h, clerk_of(b))
         return jsonify({"household_id": hid, "drafts": seqs})
 
@@ -371,20 +496,26 @@ def create_app(cfg, mock=False, desk=None, **kw):
         mock_text = request.args.get("mock_text") or request.headers.get("X-Mock-Text")
         if mock_text and not desk.mock:
             mock_text = None
-        job_id = desk.pipeline.submit_audio(data, clerk_of({}), mock_text=mock_text,
+        # SPEC 9 puts the clerk in this route's query string. That is safe here only because the
+        # route also needs the X-DarkShelter header, which a cross-site page cannot send (webguard).
+        clerk = (request.args.get("clerk") or "")[:50]
+        job_id = desk.pipeline.submit_audio(data, clerk, mock_text=mock_text,
                                             household_id=int(hh) if hh and hh.isdigit() else None)
         return jsonify({"job_id": job_id})
 
     @app.post("/api/intake/text")
     def intake_text():
         b = body()
-        text = str(b.get("text") or "").strip()
+        raw = b.get("text")
+        if raw is not None and not isinstance(raw, str):
+            return err("bad_text", "內容必須是文字", "text must be a string")
+        text = (raw or "").strip()
         if not text:
             return err("empty", "請輸入內容", "Text is empty")
         if len(text) > 2000:
             return err("too_long", "文字太長（上限2000字）", "Text longer than 2000 characters")
-        hid = b.get("household_id")
-        job_id = desk.pipeline.submit_text(text, clerk_of(b), household_id=int(hid) if hid else None)
+        hid = _opt_int(b.get("household_id"), "bad_household_id", "戶號格式錯誤", "household_id must be an integer", 1)
+        job_id = desk.pipeline.submit_text(text, clerk_of(b), household_id=hid)
         return jsonify({"job_id": job_id})
 
     @app.get("/api/jobs/<job_id>")
@@ -401,32 +532,32 @@ def create_app(cfg, mock=False, desk=None, **kw):
         clerk = clerk_of(b)
         s = desk.store
         if action == "update":
-            fields = dict(b.get("fields") or {})
-            if "time_phrase" in fields and "deadline_at" not in fields:
-                from .triage import parse_deadline
-                d_at, d_text = parse_deadline(fields["time_phrase"] or "", time.time())
-                fields["deadline_at"], fields["deadline_text"] = d_at, d_text
-            t = s.update_fields(seq, fields, clerk, b.get("expected_version"))
+            fields = validate_fields(b.get("fields"))
+            ev = _opt_int(b.get("expected_version"), "bad_version", "版本格式錯誤", "expected_version must be an integer", 0)
+            t = s.update_fields(seq, fields, clerk, ev)
         elif action == "confirm":
-            fields = dict(b.get("fields") or {})
-            if "time_phrase" in fields and "deadline_at" not in fields:
-                from .triage import parse_deadline
-                d_at, d_text = parse_deadline(fields["time_phrase"] or "", time.time())
-                fields["deadline_at"], fields["deadline_text"] = d_at, d_text
-            t = s.confirm(seq, fields, b.get("priority"), clerk, b.get("reason"))
+            fields = validate_fields(b.get("fields"))
+            pr = b.get("priority")
+            if pr is not None and not _is_int(pr):
+                return err("bad_priority", "優先等級必須是 1、2 或 3", "Priority must be the integer 1, 2 or 3")
+            reason = _opt_str(b.get("reason"), "bad_reason", "原因格式錯誤", "reason must be text", 200)
+            t = s.confirm(seq, fields, pr, clerk, reason)
         elif action == "worried":
             t = s.raise_worried(seq, clerk)
         elif action == "emergency_action":
-            t = s.log_emergency_action(seq, str(b.get("action") or ""), clerk)
+            t = s.log_emergency_action(seq, _opt_str(b.get("action"), "bad_action", "不明的緊急處置",
+                                                     "action must be text", 50) or "", clerk)
         elif action == "discard":
-            t = s.discard(seq, clerk, b.get("reason"))
+            t = s.discard(seq, clerk, _opt_str(b.get("reason"), "bad_reason", "原因格式錯誤", "reason must be text", 200))
         elif action == "restore":
             t = s.restore(seq, clerk)
         elif action == "merge":
             target = b.get("target")
             if target is None:
                 return err("no_target", "請選擇要合併的單號", "Merge target missing")
-            s.merge(seq, int(target), clerk)
+            if not _is_int(target):
+                return err("bad_target", "合併單號格式錯誤", "Merge target must be a ticket number")
+            s.merge(seq, target, clerk)
             t = s.get(seq)
         elif action == "resolve":
             t = s.resolve(seq, clerk)
@@ -442,7 +573,7 @@ def create_app(cfg, mock=False, desk=None, **kw):
 
     @app.post("/api/link/profile")
     def link_profile():
-        name = str(body().get("name") or "").upper()
+        name = (_opt_str(body().get("name"), "bad_profile", "不明的網路設定", "name must be text", 30) or "").upper()
         if name not in PROFILES:
             return err("bad_profile", "不明的網路設定", f"Unknown profile {name}")
         try:
@@ -458,8 +589,8 @@ def create_app(cfg, mock=False, desk=None, **kw):
 
     @app.post("/api/mode")
     def set_mode():
-        m = body().get("mode")
-        m = None if m in (None, "", "AUTO", "auto") else str(m).upper()
+        m = _opt_str(body().get("mode"), "bad_mode", "不明的模式", "mode must be text", 20)
+        m = None if m in (None, "", "AUTO", "auto") else m.upper()
         try:
             desk.health.set_forced(m)
         except ValueError:
@@ -481,7 +612,8 @@ def create_app(cfg, mock=False, desk=None, **kw):
         w = csv.DictWriter(buf, fieldnames=fields)
         w.writeheader()
         for r in rows:
-            w.writerow(r)
+            # A cell starting with = + - @ (or tab/CR) would run as a formula in Excel: REDTEAM.md L1.
+            w.writerow({k: ("'" + v if isinstance(v, str) and v.startswith(_CSV_RISKY) else v) for k, v in r.items()})
         data = "﻿" + buf.getvalue()  # BOM so Excel on zh-TW Windows reads UTF-8
         fname = time.strftime("darkshelter-%Y%m%d-%H%M.csv")
         return Response(data.encode("utf-8"), mimetype="text/csv; charset=utf-8",

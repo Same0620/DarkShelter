@@ -340,5 +340,93 @@ class OtherCases(unittest.TestCase):
             self.assertEqual(analyze(text)[0].category, CAT[key], text)
 
 
+class RedTeamRules(unittest.TestCase):
+    """REDTEAM.md C1, C2, H3, H5, M7, L5, L10: the rules path on its own (FAST mode skips the LLM)."""
+
+    C1 = ["救命", "心臟病發作", "他不能呼吸", "呼吸好像停了", "阿公沒在呼吸", "有人割腕", "小孩一直抽筋", "羊水破了",
+          "阿公跌倒頭在流血", "大出血", "頭破血流", "溺水", "觸電", "吐血", "休克", "不省人事", "意識不清", "嘴唇發紫",
+          "過敏喉嚨腫起來", "一氧化碳", "中暑", "小孩發高燒", "有人倒在地上", "他倒在地上", "李大同家中正路三巷有人受傷",
+          "B區3床的阿伯有肺結核在咳血", "叫救護車", "快叫119", "需要救援", "我的孩子迷路了",
+          # Simplified (Whisper sometimes writes it)
+          "心脏病发作", "没在呼吸", "头破血流", "触电", "意识不清", "嘴唇发紫", "发高烧", "叫救护车", "喉咙肿起来",
+          # M7: Hokkien, English, homophones
+          "依島素用完了", "阿嬤要喜腎", "阮阿公欲洗腰子", "喘袂過來", "我需要insulin", "INSULIN沒了", "Dialysis",
+          "阿公需要Oxygen",
+          # L5: invisible characters inside the keyword
+          "阿嬤要洗​腎", "救‍命", "胰⁠島素沒了"]
+
+    def test_c1_emergencies_are_p1_without_the_llm(self):
+        for text in self.C1:
+            self.assertTrue(p1(analyze(text)), f"{text}: {describe(analyze(text))}")
+
+    def test_self_harm_is_suicide_p1(self):
+        n = analyze("有人割腕")[0]
+        self.assertEqual((n.priority, n.category, n.item_code, n.emergency), (1, CAT["MENTAL_HEALTH"], 902, "suicide"))
+
+    def test_everyday_words_stay_quiet(self):
+        for text in ["搜救人員已經到了", "水倒在地上了", "我腳抽筋了", "我們一路上都很辛苦", "我迷路了", "東西倒在地上"]:
+            self.assertFalse(p1(analyze(text)), f"{text}: {describe(analyze(text))}")
+
+    def test_help_next_to_an_emergency_is_one_need(self):
+        needs = analyze("救命，我爸被困在家裡")
+        self.assertEqual([(n.item_code, n.priority) for n in needs], [(401, 1)])
+        self.assertIn("generic_emergency", needs[0].red_flags)   # the coverage invariant still sees it
+        self.assertEqual(needs[0].emergency, "rescue")
+
+    def test_c2_two_people_same_item_are_two_needs(self):
+        needs = analyze("我兒子被困在中正路的家裡，我女兒被困在和平國小")
+        self.assertEqual([(n.item_code, n.priority, n.subject) for n in needs], [(401, 1, "兒子"), (401, 1, "女兒")])
+        self.assertEqual(needs[0].location, "中正路")
+        self.assertEqual((needs[1].zone_code, needs[1].location), (0, ""))   # the son's address is not hers
+        needs = analyze("爸爸胸口很痛，媽媽喘不過氣")
+        self.assertEqual([(n.item_code, n.subject) for n in needs], [(101, "爸爸"), (101, "媽媽")])
+        needs = analyze("阿公明天要洗腎，阿嬤後天也要洗腎")
+        self.assertEqual([(n.subject, n.priority) for n in needs], [("阿公", 1), ("阿嬤", 2)])
+        self.assertEqual(needs[0].deadline_at, at(12, d=29))
+        needs = analyze("B區12床要毛毯，C區3床也要毛毯")
+        self.assertEqual([n.zone_code for n in needs], [codebook.zone_code("B", 12), codebook.zone_code("C", 3)])
+
+    def test_c2_same_person_still_one_need(self):
+        needs = analyze("阿嬤明天要洗腎，她今天沒洗腎")
+        self.assertEqual(len(needs), 1)
+        needs = analyze("阿公的藥沒了，阿嬤的胰島素也沒了")
+        self.assertEqual(sorted(n.item_code for n in needs), [301, 310])   # both people kept
+
+    def test_h3_names_never_in_the_address(self):
+        for text, want in [("王小明中正路三巷五號受困需要救援", "中正路三巷五號"), ("我叫陳志明中山路五號需要救援", "中山路五號"),
+                           ("李大同家中正路三巷有人受困", "中正路三巷"), ("陳美麗中正路三巷受困", "中正路三巷"),
+                           ("中山北路有人受困", "中山北路"), ("民族一路123號有人受困", "民族一路123號"),
+                           ("我爸還在中正路三巷的家裡沒出來", "中正路三巷")]:
+            n = analyze(text)[0]
+            self.assertEqual((n.zone_code, n.location), (codebook.ZONE_EXTERNAL, want), text)
+
+    def test_h5_words_with_road_are_not_addresses(self):
+        n = analyze("我在B區12床，阿嬤不能走路")[0]
+        self.assertEqual((n.zone_code, n.location), (codebook.zone_code("B", 12), "B區12床"))
+        for text in ["我的孩子迷路了", "這裡沒有網路", "外面的馬路淹水", "道路中斷了", "我們一路上都很辛苦", "我想去逛街"]:
+            self.assertNotEqual(codebook.parse_location(text)[0], codebook.ZONE_EXTERNAL, text)
+
+    def test_l10_number_hao_bed(self):
+        self.assertEqual(codebook.parse_location("三號床的阿嬤")[:2], (codebook.zone_code(0, 3), "三號床"))
+        self.assertEqual(codebook.parse_location("3號床")[0], codebook.zone_code(0, 3))
+        self.assertEqual(codebook.parse_location("中正路28號")[:2], (codebook.ZONE_EXTERNAL, "中正路28號"))
+
+    def test_llm_pronoun_subject_does_not_replace_the_person(self):
+        text = "我兒子被困在中正路的家裡，我女兒被困在和平國小"
+        rules = analyze(text)
+        llm = [{"category": "PERSON_AT_RISK", "item": "受困", "quantity": None, "subject": "我", "subject_group": "unknown",
+                "location": "中正路", "time_phrase": None, "summary": None},
+               {"category": "PERSON_AT_RISK", "item": "受困", "quantity": None, "subject": "我", "subject_group": "unknown",
+                "location": None, "time_phrase": None, "summary": None}]
+        out = extract.refine(rules, llm, text, NOW)
+        self.assertEqual([(n.priority, n.subject) for n in out], [(1, "兒子"), (1, "女兒")])
+
+    def test_h4_family_qualifier_kept_in_subject(self):
+        self.assertEqual(analyze("陳家的阿嬤明天要洗腎")[0].subject, "陳家的阿嬤")
+        self.assertEqual(analyze("我家阿嬤明天要洗腎")[0].subject, "阿嬤")
+        self.assertEqual(extract.subject_key("爸爸"), extract.subject_key("我爸"))
+        self.assertNotEqual(extract.subject_key("陳家的阿嬤"), extract.subject_key("林家的阿嬤"))
+
+
 if __name__ == "__main__":
     unittest.main()

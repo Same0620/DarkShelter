@@ -278,5 +278,188 @@ class StatusAndCensus(unittest.TestCase):
                 rig.stop()
 
 
+# ---------------------------------------------------------------- red-team fixes (REDTEAM.md H1, M4, L2, L3)
+
+KEY = bytes(range(32))
+
+
+def rt_need(item_code, priority, zone=("B", 12), quantity=None):
+    it = codebook.item(item_code)
+    return {"category": item_code // 100, "item": it["zh"] if it else "", "item_code": item_code,
+            "priority": priority, "rule_priority": priority, "subject_group": "elderly", "quantity": quantity,
+            "emergency": None, "summary": "（測試）", "flags": [], "zone_code": codebook.zone_code(*zone)}
+
+
+def rt_ticket(store, item_code, priority, **kw):
+    seq = store.create_draft(rt_need(item_code, priority, **kw), job_id="rt", transcript="（測試資料）")
+    store.confirm(seq, clerk=CLERK)
+    return seq
+
+
+def rt_deliver(desk, eoc, boot=1, msg_seq=1):
+    """Send every pending unit through the real codec into the EOC; feed the acks back. -> conflicts."""
+    views = desk.pending_units()
+    conflicts = 0
+    while views:
+        data, n = codec.pack_summary(views, 200, KEY, 7, boot, msg_seq)
+        msg = codec.unpack(data, {7: KEY})
+        acks = eoc.apply_records(7, msg.boot_id, msg.msg_seq, msg.records, nbytes=len(data))
+        conflicts += desk.mark_acked_many(acks)
+        views = views[n:]
+        msg_seq += 1
+    return conflicts
+
+
+class RedTeamLinkFixes(unittest.TestCase):
+    def test_h1_desk_db_reset_new_p1_not_swallowed_as_resolved(self):
+        with tmpdir() as tmp:
+            eoc = EocStore(Path(tmp) / "eoc.db")
+            old = Store(Path(tmp) / "old_desk.db")
+            s1 = rt_ticket(old, 801, 3, quantity=1)                  # blankets
+            old.update_fields(s1, {"quantity": 2}, CLERK)
+            old.update_fields(s1, {"quantity": 3}, CLERK)            # v3 at the EOC
+            self.assertEqual(rt_deliver(old, eoc), 0)
+            eoc.set_status(7, s1, 3)                                  # resolved at the EOC
+            new = Store(Path(tmp) / "new_desk.db")                    # desk database reset, EOC's kept
+            p1 = rt_ticket(new, 201, 1)                               # a new dialysis P1, same number
+            self.assertEqual(p1, s1)
+            new.apply_status_many(eoc.status_changes(7, 0))           # first HB_REPLY: old statuses
+            self.assertEqual(rt_deliver(new, eoc), 1)                 # EOC acks v3: not a version we made
+            t = new.get(p1)
+            self.assertIsNone(t["delivered_wall"])                    # NOT delivered ...
+            self.assertEqual(t["eoc_status"], 0)                      # ... and NOT resolved
+            self.assertEqual(new.pending_units(), [])                 # not resent forever / no P1 lock-up
+            new.apply_status_many([(p1, 3, 99)])                      # later statuses for it are not ours
+            self.assertEqual(new.get(p1)["eoc_status"], 0)
+            row = eoc.tickets()[(7, s1)]
+            self.assertEqual((row["version"], row["status"]), (3, 3))  # the EOC row was not overwritten
+            p1b = rt_ticket(new, 201, 1)                              # numbers the EOC never saw work
+            self.assertEqual(rt_deliver(new, eoc), 0)
+            self.assertIsNotNone(new.get(p1b)["delivered_wall"])
+
+    def test_h1_clash_shows_a_backup_channel_banner_at_once(self):
+        from darkshelter.config import make_config
+        from darkshelter.timers import Timers
+        with tmpdir() as tmp:
+            eoc = EocStore(Path(tmp) / "eoc.db")
+            old = Store(Path(tmp) / "old_desk.db")
+            s1 = rt_ticket(old, 801, 3, quantity=1)
+            old.update_fields(s1, {"quantity": 2}, CLERK)
+            old.update_fields(s1, {"quantity": 3}, CLERK)
+            self.assertEqual(rt_deliver(old, eoc), 0)
+            new = Store(Path(tmp) / "new_desk.db")                    # desk database reset, EOC's kept
+            p1 = rt_ticket(new, 201, 1)
+            self.assertEqual(rt_deliver(new, eoc), 1)                 # the clash is detected ...
+            self.assertEqual(new.seq_conflicts(), {p1})
+            banners = Timers(new, make_config()).check()              # ... and shown at once, not after the SLA
+            clash = [b for b in banners if b["kind"] == "seq_conflict"]
+            self.assertEqual([b["seq"] for b in clash], [p1])
+            self.assertTrue(clash[0]["backup"] and clash[0]["print"])
+            self.assertIn("備援", clash[0]["zh"])
+
+    def test_h1_equal_version_different_content_is_not_yours(self):
+        with tmpdir() as tmp:
+            eoc = EocStore(Path(tmp) / "eoc.db")
+            old = Store(Path(tmp) / "old_desk.db")
+            s1 = rt_ticket(old, 801, 3, quantity=2)
+            rt_deliver(old, eoc)
+            eoc.set_status(7, s1, 2)
+            new = Store(Path(tmp) / "new_desk.db")
+            p1 = rt_ticket(new, 201, 1)                               # also version 1, different content
+            self.assertEqual(rt_deliver(new, eoc), 1)
+            t = new.get(p1)
+            self.assertEqual((t["acked_version"], t["eoc_status"]), (0, 0))
+            self.assertIsNone(t["delivered_wall"])
+            self.assertEqual(eoc.stats()["seq_conflicts"], 1)
+            # a real retransmission from the same desk database is still a plain duplicate
+            v = wire_view(old.get(s1), time.time(), "B")
+            data, _ = codec.pack_summary([v], 200, KEY, 7, 1, 77)
+            acks = eoc.apply_records(7, 1, 77, codec.unpack(data, {7: KEY}).records)
+            self.assertEqual(acks, [(s1, 1, 2, 2)])
+            self.assertEqual(eoc.stats()["seq_conflicts"], 1)
+
+    def test_h1_newer_version_created_after_first_rx_is_a_conflict_but_edits_are_not(self):
+        with tmpdir() as tmp:
+            clock = [1_800_000_000.0]
+            eoc = EocStore(Path(tmp) / "eoc.db", clock=lambda: clock[0])
+            old = Store(Path(tmp) / "old_desk.db", clock=lambda: clock[0])
+            s1 = rt_ticket(old, 801, 3, quantity=1)
+            rt_deliver(old, eoc)
+            clock[0] += 7200                                          # two hours later
+            old.update_fields(s1, {"quantity": 5}, CLERK)              # a real edit of the same ticket
+            self.assertEqual(rt_deliver(old, eoc), 0)
+            self.assertEqual(eoc.tickets()[(7, s1)]["quantity"], 5)
+            new = Store(Path(tmp) / "new_desk.db", clock=lambda: clock[0])
+            p1 = rt_ticket(new, 201, 1)
+            for q in (1, 2, 3):                                       # new ticket edited up to v4 > v2
+                new.update_fields(p1, {"quantity": q}, CLERK)
+            self.assertEqual(rt_deliver(new, eoc), 1)
+            self.assertEqual(eoc.tickets()[(7, s1)]["item_code"], 801)  # not overwritten
+            self.assertIsNone(new.get(p1)["delivered_wall"])
+
+    def test_dup_ack_carries_the_version_the_eoc_holds(self):
+        with tmpdir() as tmp:
+            eoc = EocStore(Path(tmp) / "eoc.db")
+            desk = Store(Path(tmp) / "desk.db")
+            s = rt_ticket(desk, 801, 3, quantity=1)
+            v1 = desk.pending_units()
+            desk.update_fields(s, {"quantity": 2}, CLERK)
+            rt_deliver(desk, eoc)                                     # EOC holds v2
+            data, _ = codec.pack_summary(v1, 200, KEY, 7, 1, 50)      # a late copy of v1
+            msg = codec.unpack(data, {7: KEY})
+            acks = eoc.apply_records(7, 1, 50, msg.records)
+            self.assertEqual(acks, [(s, 2, 2, 0)])
+            self.assertEqual(desk.mark_acked_many(acks), 0)           # a version this desk made: fine
+            self.assertEqual(desk.get(s)["acked_version"], 2)
+
+    def test_m4_old_heartbeat_cannot_roll_census_back(self):
+        with tmpdir() as tmp:
+            clock = [1_800_000_000.0]
+            eoc = EocStore(Path(tmp) / "eoc.db", clock=lambda: clock[0])
+            self.assertTrue(eoc.apply_heartbeat(7, 1, 100, {"people": 100, "q_p1": 5}))
+            clock[0] += 5
+            self.assertTrue(eoc.apply_heartbeat(7, 2, 7, {"people": 250, "q_p1": 0}))      # desk restarted
+            clock[0] += 1
+            self.assertFalse(eoc.apply_heartbeat(7, 1, 100, {"people": 100, "q_p1": 5}))   # replayed
+            self.assertFalse(eoc.apply_heartbeat(7, 2, 6, {"people": 90}))                 # late copy
+            d = eoc.desks()[0]
+            self.assertEqual((d["census"]["people"], d["boot_id"], d["last_seen"]), (250, 2, clock[0] - 1))
+            self.assertTrue(eoc.apply_heartbeat(7, 2, 8, {"people": 251}))                 # newer
+            self.assertTrue(eoc.apply_heartbeat(7, 0, 65535, {"people": 252}) is False)
+            self.assertTrue(eoc.apply_heartbeat(7, 3, 0, {"people": 253}))                 # boot wraps fine
+            clock[0] += 31                                                                 # a reset desk
+            self.assertTrue(eoc.apply_heartbeat(7, 1, 5, {"people": 7}))                   # boots at 1 again
+            self.assertEqual(eoc.desks()[0]["census"]["people"], 7)
+            self.assertEqual(eoc.stats()["stale_heartbeats"], 3)
+
+    def test_l2_junk_is_counted_in_memory_and_flushed(self):
+        with tmpdir() as tmp:
+            eoc = EocStore(Path(tmp) / "eoc.db")
+            rx = Receiver(eoc, {7: KEY}, port=0)
+            rng = random.Random(4)
+            t0 = time.perf_counter()
+            for _ in range(300):
+                rx.handle(bytes(rng.randrange(256) for _ in range(40)), ("127.0.0.1", 9))
+            per = (time.perf_counter() - t0) / 300
+            self.assertEqual(eoc.stats()["bad_datagrams"], 0)         # nothing written per datagram
+            rx.flush_counters()
+            st = eoc.stats()
+            self.assertEqual(st["bad_datagrams"], 300)
+            self.assertEqual(st["bytes_rx"], 300 * 40)
+            self.assertLess(per, 0.0005)                              # was ~0.6 ms with one fsync each
+
+    def test_l3_priority_outside_1_to_3_is_clamped(self):
+        with tmpdir() as tmp:
+            eoc = EocStore(Path(tmp) / "eoc.db")
+            base = {"version": 1, "level": 2, "category": 2, "item_code": 201, "quantity": 0, "subject_group": 1,
+                    "flags": 0, "age_min": 0, "deadline_h": 255, "zone": 524, "summary": "x"}
+            eoc.apply_records(7, 1, 1, [dict(base, seq=1, priority=1)])
+            eoc.apply_records(7, 1, 2, [dict(base, seq=2, priority=0)])
+            board = eoc.board()
+            self.assertEqual([r["seq"] for r in board], [1, 2])       # 0 no longer sorts above the P1s
+            self.assertEqual(board[1]["priority"], 1)
+            self.assertEqual(eoc.stats()["bad_priority"], 1)
+
+
 if __name__ == "__main__":
     unittest.main()

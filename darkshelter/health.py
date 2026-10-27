@@ -66,6 +66,8 @@ class Health:
         self.llm_warm_failed = False
         self._warm_pending = False
         self._next_warm = 0.0
+        self._llm_timeouts = 0       # LLM requests that timed out in a row
+        self._slow_probe = False     # llm_slow because of timeouts: a short probe retries every 60 s
         self.asr_fallback = False
         self.battery = None
         self.disk_free_mb = None
@@ -139,6 +141,24 @@ class Health:
 
     def on_warmup(self, res):
         self._warm_pending = False
+        if res.get("probe") and self._slow_probe and (res.get("ok") or res.get("error") == "timeout"):
+            # Probe after timeouts (red-team M8): the model is loaded, only slow. Clear on a timely answer,
+            # otherwise stay FAST/llm_slow and probe again in 60 s.
+            min_tps = float(self.cfg["llm"].get("min_tokens_per_s", 4))
+            tps = res.get("tokens_per_s")
+            if res.get("ok") and (tps is None or tps >= min_tps):
+                self._slow_probe = False
+                self.llm_slow = False
+                self._llm_timeouts = 0
+                if tps:
+                    self.llm_tps = tps
+                self._event("llm_recovered", {"tokens_per_s": tps, "seconds": res.get("seconds")})
+            else:
+                self._next_warm = time.monotonic() + 60.0
+            self.recompute()
+            return
+        self._slow_probe = False
+        self._llm_timeouts = 0
         self.llm_ready = bool(res.get("ok"))
         self.llm_warm_failed = not self.llm_ready
         if not self.llm_ready:
@@ -158,6 +178,18 @@ class Health:
             self.llm_tps = res["tokens_per_s"]
         if res.get("error") in ("llm_error",):
             self.llm_error = res["error"]
+        # Red-team M8: a hung LLM (Ollama stalls while /api/tags still answers) made every queued intake
+        # wait one full timeout. Two timeouts in a row -> FAST (llm_slow); the 60 s probe clears it.
+        if res.get("error") == "timeout":
+            self._llm_timeouts += 1
+            if self._llm_timeouts >= 2 and not self._slow_probe:
+                self._slow_probe = True
+                self.llm_slow = True
+                self._next_warm = time.monotonic() + 60.0
+                self._event("llm_slow", {"timeouts_in_a_row": self._llm_timeouts})
+                self.recompute()
+        else:
+            self._llm_timeouts = 0
 
     def on_asr_error(self, exc):
         self.asr_error = f"{type(exc).__name__}: {exc}"
@@ -290,13 +322,23 @@ class Health:
             self._request_warmup()
         elif ok and not self.llm_ready and not self._warm_pending and time.monotonic() >= self._next_warm:
             self._request_warmup()  # retry a failed warm-up (e.g. not enough memory to load the model)
+        elif ok and self._slow_probe and not self._warm_pending and time.monotonic() >= self._next_warm:
+            self._request_warmup(probe=True)  # slow after timeouts: does it answer in time again?
         if not ok:
-            self.llm_ready = False
+            self.llm_ready = False  # the full warm-up when it is back recomputes llm_slow
+            self._slow_probe = False
+            self._llm_timeouts = 0
 
-    def _request_warmup(self):
+    def _request_warmup(self, probe=False):
         """Warm-up runs as a pipeline job (never on this thread, never overlapping Whisper)."""
         if self.pipeline is not None and not self._warm_pending:
             self._warm_pending = True
+            if probe:
+                try:
+                    self.pipeline.submit_warmup(probe=True)
+                    return
+                except TypeError:  # a pipeline without probes: use the full warm-up
+                    pass
             self.pipeline.submit_warmup()
 
     def _run(self):

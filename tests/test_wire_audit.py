@@ -156,5 +156,81 @@ class WireAuditTest(unittest.TestCase):
         self.assertEqual(self.store.pending_units(), [])
 
 
+class RedTeamWireTest(unittest.TestCase):
+    """Regressions for REDTEAM.md M2 (deadline text) and M3 (protection sibling located by its zone)."""
+
+    B12 = codebook.parse_location("B區12床")[0]
+    BLANKET = codebook.item_by_zh("毛毯")["code"]
+
+    def ticket(self, **kw):
+        t = {"seq": 2, "version": 1, "status": "confirmed", "confirmed_wall": NOW - 60, "created_wall": NOW - 120,
+             "priority": 3, "category": 8, "item_code": self.BLANKET, "quantity": 0, "zone_code": self.B12,
+             "location": "B區12床", "subject_group": "unknown", "transcript": "", "flags": []}
+        t.update(kw)
+        return t
+
+    def test_protection_sibling_hides_location(self):
+        text = "B區12床的王小姐被先生家暴，她也需要毛毯"
+        v = wire_view(self.ticket(transcript=text), NOW, "B")
+        self.assertEqual(v["zone"], 0)
+        self.assertNotIn("B區12床", v["summary"])
+        self.assertIn("毛毯", v["summary"])
+        # the same need without a protection cue keeps its bed
+        v = wire_view(self.ticket(transcript="B區12床的王小姐需要毛毯"), NOW, "B")
+        self.assertEqual(v["zone"], self.B12)
+        self.assertIn("B區12床", v["summary"])
+        # a P1 rescue at an outside address still goes out (life first), with no protection wording
+        v = wire_view(self.ticket(priority=1, category=4, item_code=0, zone_code=codebook.ZONE_EXTERNAL,
+                                  location="中正路三巷", transcript="我先生打我，我女兒還被困在中正路三巷"), NOW, "B")
+        self.assertEqual(v["zone"], codebook.ZONE_EXTERNAL)
+        self.assertIn("中正路三巷", v["summary"])
+        for w in ("打", "家暴", "保護"):
+            self.assertNotIn(w, v["summary"])
+
+    def test_protection_sibling_end_to_end(self):
+        tmp = tempfile.TemporaryDirectory(ignore_cleanup_errors=True)
+        store = Store(os.path.join(tmp.name, "desk.db"), "B")
+        try:
+            text = "B區12床的王小姐被先生家暴，她也需要毛毯"
+            seqs = [store.create_draft(n, job_id="j", transcript=text) for n in analyze(text, NOW)]
+            self.assertGreaterEqual(len(seqs), 2)
+            key = hmac_key(make_config({}))
+            for seq in seqs:
+                store.confirm(seq, clerk="A")
+                v = wire_view(store.get(seq), NOW, "B")
+                data, n = codec.pack_summary([v], 200, key, 7, 1, 1)
+                self.assertEqual(n, 1)
+                self.assertEqual(v["zone"], 0, v)
+                self.assertNotIn("B區12床", v["summary"])
+                self.assertNotIn("B區12床".encode("utf-8"), data)
+        finally:
+            store.close()
+            tmp.cleanup()
+
+    def test_deadline_text_rebuilt_from_deadline_at(self):
+        dl = NOW + 2 * 3600
+        v = wire_view(self.ticket(deadline_text="王小明 0912 345 678 A 123 456 789", deadline_at=dl), NOW, "B")
+        self.assertIn(time.strftime("%m/%d %H:%M", time.localtime(dl)), v["summary"])
+        for w in ("王小明", "0912", "345", "A 123"):
+            self.assertNotIn(w, v["summary"])
+        v = wire_view(self.ticket(deadline_text="王小明 0912345678", deadline_at=None), NOW, "B")
+        self.assertNotIn("王小明", v["summary"])
+        self.assertNotIn("0912", v["summary"])
+
+    def test_clerk_typed_outside_location_loses_the_name(self):
+        """H3: a location the clerk typed by hand is trimmed to its place part before it goes out."""
+        for typed, place in (("王小明家中正路三巷", "中正路三巷"), ("我叫陳志明中山路五號", "中山路五號"),
+                             ("李大同家中正路三巷 0912 345 678", "中正路三巷")):
+            v = wire_view(self.ticket(priority=1, category=4, item_code=0, zone_code=codebook.ZONE_EXTERNAL,
+                                      location=typed, transcript=""), NOW, "B")
+            self.assertIn(place, v["summary"])
+            for w in ("王小明", "陳志明", "李大同", "我叫", "0912"):
+                self.assertNotIn(w, v["summary"])
+        # a place that doesn't parse as an address still goes out as typed
+        v = wire_view(self.ticket(priority=1, category=4, item_code=0, zone_code=codebook.ZONE_EXTERNAL,
+                                  location="活動中心後門", transcript=""), NOW, "B")
+        self.assertIn("活動中心後門", v["summary"])
+
+
 if __name__ == "__main__":
     unittest.main()

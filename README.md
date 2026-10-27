@@ -63,6 +63,8 @@ python run_demo.py --config my.json
 - Ctrl+C stops all three processes.
 - If only one of the two databases exists, `run_demo` refuses to start: use `--reset` to reset both
   (otherwise reused ticket numbers would be dropped as duplicates at the EOC).
+- **More than one desk:** give every desk its own `desk_id` and `desk_letter` in `config.json`. Never copy a whole
+  `config.json` from another desk. At the EOC, add each extra desk's key under `"eoc": {"desk_keys": {"<desk_id>": "<hex key>"}}`.
 
 ### Demo script (3 minutes, see PLAN §10)
 
@@ -88,6 +90,8 @@ python run_demo.py --config my.json
 | **Mic doesn't work / permission denied** | Click the 🔒/camera icon in the address bar → allow the microphone, reload. The level meter must move. Without a mic the desk switches to TYPED mode automatically — typing always works. |
 | **Mic blocked when opened from another computer** | Browsers only allow the mic on `http://127.0.0.1` / `localhost`. Use the desk laptop itself, never a LAN IP like `http://192.168.x.x:8000`. |
 | **Mode badge says FAST, "AI 模型未執行"** | Ollama is not running or the model isn't pulled: start the Ollama app (or `ollama serve`), then `ollama pull qwen2.5:1.5b`. The desk re-warms the model by itself within ~10 s. Rules keep working meanwhile. |
+| **Mode badge says FAST, "AI 太慢，只在需要時使用"** | Ollama answered too slowly twice in a row, usually because memory is short. Rules keep working, so drafts appear without waiting for the AI. The desk tests the AI again every minute and goes back to FULL by itself. Close browser tabs to free memory. |
+| **Red banner 「N 筆語音在當機時遺失，請重錄」** | The desk crashed while recordings were waiting. For privacy, recordings are never saved to disk, so ask those people to say their request again. Typed requests are saved and finish by themselves after the restart. |
 | **"連接埠 8000 已被占用" / port in use** | Usually an orphaned process from an earlier run. Windows: `netstat -ano \| findstr :8000` then `taskkill /PID <pid> /F` (or close leftover `python.exe` in Task Manager). macOS: `lsof -i :8000` then `kill <pid>`. Or change `ports` in `config.json`. |
 | **Windows Firewall prompt on first run** | Everything binds to 127.0.0.1, so no inbound access is needed: choose **Cancel / don't allow** on public networks; nothing breaks. |
 | **`OSError`/`ImportError` loading ctranslate2 or faster-whisper** | Install the Visual C++ Redistributable x64 (link above), then rerun `python scripts/selftest.py`. Until then the desk runs in TYPED mode. |

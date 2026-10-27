@@ -5,7 +5,54 @@ checked the findings that hadn't been proven. They all worked read-only, so no c
 Every finding is **verified** (a proof of concept was run, and its key output is quoted) unless it is marked
 **unverified** (found by reading the code only).
 
-**Totals:** 2 critical, 6 high, 8 medium and 12 low (one low was withdrawn in the second round). Both critical findings can lose a life-threatening request.
+**Totals:** 2 critical, 6 high, 8 medium and 12 low (one low was withdrawn in the second round).
+
+## Status after the fixes (05:23–06:00)
+
+Four fixer agents, each owning separate files, plus the orchestrator fixed the findings below. Every fix has a
+regression test, and the red-team inputs were added to `eval/text_cases.jsonl`. After that, the full SPEC §13 suite
+was rerun on the combined code (see PROGRESS.md).
+
+| ID | Status | What changed |
+|---|---|---|
+| C1 | **Fixed** | About 90 emergency phrases (Traditional and Simplified) in `data/lexicon.json` make every C1 phrase P1 without the AI. In FAST mode caused by a backlog, the AI still takes a second look at requests the rules can't place. |
+| C2 | **Fixed** | Needs are grouped by item, person and place: 兒子/女兒 and 爸爸/媽媽 become separate tickets. |
+| H1 | **Partly fixed** | A clashing ticket is no longer shown as resolved. It stays undelivered, and a red banner tells the clerk at once to use the backup channel. The full fix needs a per-install id in every packet, which would change the header that SPEC §8.1 fixes. The README now requires a unique `desk_id` per desk. |
+| H2 | **Fixed** | A request guard on both apps refuses writes from other sites, non-JSON writes, and audio uploads without the `X-DarkShelter` header. The clerk name is no longer read from the URL, except on the audio route, where SPEC §9 puts it. |
+| H3 | **Fixed** | Only the place part of an address goes out, both when it comes from speech and when the clerk types it. |
+| H4 | **Fixed** | Duplicate suggestions never pair two different people. Person-specific needs must share a bed, an address or a household. |
+| H5 | **Fixed** | 走路, 迷路, 網路 and 馬路 are not addresses. 「我的孩子迷路了」 is now a lost-person P1. |
+| H6 | **Fixed** | Typed requests are saved until processed and re-run after a crash: 0 of 120 were lost in the live test, against 16 before. Lost recordings get a red banner asking for them to be recorded again. |
+| M1 | **Fixed** | Any run of 7 or more digits (Arabic, full-width or Chinese) is removed, even with separators between them. This covers +886 numbers, landlines and IDs with spaces. |
+| M2 | **Fixed** | The deadline text is always rebuilt from the deadline time, on the server and in the wire summary. |
+| M3 | **Fixed** | A ticket from the same sentence as a protection case goes out without its zone or location. The exception is a P1 rescue at an outside address, because the rescuers need it. |
+| M4 | **Fixed** | An older heartbeat no longer changes the census. One is accepted again after 30 s of silence, because a reset desk restarts its counters. |
+| M5 | **Fixed** | The Host header must be 127.0.0.1, localhost or [::1]. |
+| M6 | **Fixed** | Category and item are checked against the codebook, and quantity and zone are range-checked. Priority must be an integer from 1 to 3. |
+| M7 | **Fixed** | 依島素, 喜腎, 洗腰子, 喘袂過來, insulin, dialysis and oxygen are now recognised. |
+| M8 | **Fixed** | Two AI timeouts in a row switch the desk to FAST (「AI 太慢」), and a probe every 60 s returns it to FULL. |
+| L1 | **Fixed** | CSV cells starting with `= + - @`, a tab or a CR get a leading `'`. |
+| L2 | **Fixed** | Junk datagrams are counted in memory and written every 2 s. |
+| L3 | **Fixed** | The EOC clamps a priority outside 1–3. |
+| L4 | **Fixed** | Bad input types get a 400 JSON error, and server errors return JSON with no traceback. |
+| L5 | **Fixed** | Invisible format characters are stripped before matching. |
+| L6 | Withdrawn | Not exploitable (second round). |
+| L7 | Kept | 「不用洗腎了」 still comes out P1. Over-triage errs on the safe side. |
+| L8 | **Fixed** | The privacy toggle starts from the config value. |
+| L9 | Not changed | SPEC lists both keys. A comment in `config.py` says they are always on. |
+| L10 | **Fixed** | 「N號床」 is read as a bed. |
+| L11 | **Fixed** | Corrected in PROGRESS.md during the pass. |
+| L12 | Not fixed | `/api/state` is still sent whole every second (611 kB at 300 tickets). That is fine for a demo, but a long real shift needs it to send only changes. |
+| L13 | Kept | SPEC §0 requires `run_demo` to stop everything after 3 restarts in a minute. |
+
+**Found while checking the fixes** (20 everyday sentences run through the rules):
+- 「這裡網路不通」 came out P2 "road blocked", because 路不通 matched inside 網路不通. This was there before the
+  fixes. **Fixed:** the internet phrases now map to 聯絡家人 (P3), while 「中正路不通了」 stays P2 road blocked.
+  Both are now eval cases.
+- 「他昨天中暑，現在已經沒事了」 is now **P1** (it was P3), because 中暑 is a new red flag. **Kept on purpose.**
+  Adding 昨天 to the past-tense words would also drop 「他昨天中暑，現在還是很不舒服」 to P3. A false alarm costs the
+  clerk one tap (lowering a P1 needs a reason), while a miss could cost a life. A real fix would let an explicit
+  「現在沒事了」 in a later clause cancel an earlier past-tense symptom. Both critical findings can lose a life-threatening request.
 
 The proof-of-concept scripts are in the session scratch folder, under `redteam\A` … `redteam\F`. They were not
 copied into the repo.
@@ -293,6 +340,7 @@ Each fix should be followed by the full §13 suite, which takes about 15 minutes
 
 ## Not done in this pass
 
-- No fixes were applied. The pass lasted 20 minutes, and re-running the full §13 acceptance suite after a code
-  change takes about 15 minutes. The fixes are listed above, in priority order.
+- The red-team pass itself changed no code. The fixes came afterwards; see "Status after the fixes".
 - Not attacked: the real-microphone path, Whisper on adversarial audio (memory), and Safari/macOS.
+- Nobody has red-teamed the fixed code yet. A second pass should start with the new request guard
+  (`darkshelter/webguard.py`), the crash-recovery queue and the bigger lexicon, which could now over-trigger.

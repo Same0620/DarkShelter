@@ -83,9 +83,27 @@ class Timers:
         letter = self.cfg.get("desk_letter", "B")
         backup = self.cfg.get("backup_channel", {})
         banners = []
+        # Recordings still queued when the desk crashed were never saved (keep_audio is off): ask for them again.
+        lost_fn = getattr(self.store, "lost_intakes", None)
+        lost = lost_fn(now) if lost_fn is not None else 0
+        if lost:
+            banners.append({"kind": "lost_audio", "level": "danger", "count": lost,
+                            "zh": f"{lost} 筆語音在當機時遺失，請重錄",
+                            "en": (f"{lost} voice recordings were lost in a crash — please record again" if lost != 1
+                                   else "1 voice recording was lost in a crash — please record again")})
+        # The EOC holds a different ticket under these numbers (database reset, or two desks sharing desk_id).
+        conflicts_fn = getattr(self.store, "seq_conflicts", None)
+        conflicts = conflicts_fn() if conflicts_fn is not None else set()
         for t in self.store.open_tickets():
             seq = t["seq"]
             code = f"{letter}-{seq:03d}"
+            if seq in conflicts:
+                banners.append({"kind": "seq_conflict", "seq": seq, "code": code, "level": "danger",
+                                "print": True, "backup": True,
+                                "zh": f"{code} 無法送達應變中心（編號與中心已有的單重複：資料庫被重設或兩台登記台同編號），請改用備援管道",
+                                "en": f"{code} can't reach the EOC (its number clashes with a ticket the EOC already "
+                                      f"holds: database reset or two desks sharing desk_id) — use the backup channel"})
+                continue
             created = t.get("created_wall") or now
             age = max(0.0, now - created)
             hidden = codebook.is_hidden(t.get("category"))

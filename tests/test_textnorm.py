@@ -81,5 +81,33 @@ class JaccardTests(unittest.TestCase):
         self.assertGreaterEqual(bigram_jaccard("阿嬤 B區12床 洗腎", "阿嬤 B區12床 洗腎 明天早上"), 0.5)
 
 
+class RedTeamTextTests(unittest.TestCase):
+    """REDTEAM.md L5 (invisible characters) and M1 (contact numbers on the wire)."""
+
+    def test_format_characters_removed(self):
+        self.assertEqual(normalize("阿嬤要洗​腎"), "阿嬤要洗腎")
+        self.assertEqual(normalize("救‍命﻿"), "救命")
+        self.assertEqual(textnorm.strip_format_chars("a‮b­c"), "abc")
+
+    def test_phone_numbers_in_any_format_are_stripped(self):
+        strip = textnorm.strip_contact_numbers
+        for raw, want in [("中正路三巷 0912 345 678", "中正路三巷"), ("中正路 02-2345-6789", "中正路"),
+                          ("+886-912-345-678", ""), ("中正路 0912.345.678", "中正路"),
+                          ("(02)2345-6789 中正路", "中正路"), ("中正路零九一二三四五六七八", "中正路"),
+                          ("中正路０９１２３４５６７８", "中正路"), ("0912​345678", "")]:
+            self.assertEqual(strip(raw).strip(), want, raw)
+
+    def test_ids_with_spaces_are_stripped(self):
+        strip = textnorm.strip_contact_numbers
+        for raw in ["A 123 456 789", "a123456789", "A-123-456-789", "Ａ１２３４５６７８９"]:
+            self.assertEqual(strip(raw).strip(), "", raw)
+        self.assertEqual(scrub_ids("身分證A 123 456 789"), "身分證＊＊＊")
+
+    def test_places_dates_and_counts_survive(self):
+        strip = textnorm.strip_contact_numbers
+        for keep in ["中正路三巷5號", "B區12床 10/28 08:00", "中正路100巷200號", "約20份", "飲用水 10000 10/28 08:00"]:
+            self.assertEqual(strip(keep), keep)
+
+
 if __name__ == "__main__":
     unittest.main()

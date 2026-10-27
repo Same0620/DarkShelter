@@ -190,39 +190,92 @@ def _closest(items, pos):
     return items[0] if items else None
 
 
-def _nearest(clauses, home, attr, need_clauses=()):
+def _nearest(clauses, home, attr, need_clauses=(), skip=()):
     """Nearest clause that has `attr`: earlier clauses first (a topic carries forward in Chinese),
-    then later clauses that hold no other need (so 「…毛毯，還有我兒子手機沒電」 keeps 毛毯 subject-free)."""
+    then later clauses that hold no other need (so 「…毛毯，還有我兒子手機沒電」 keeps 毛毯 subject-free).
+    Clauses in `skip` (another person's need for the same item) are never borrowed from."""
     for ci in range(home - 1, -1, -1):
+        if ci in skip:
+            continue
         if getattr(clauses[ci], attr):
             return clauses[ci], "last"
     for ci in range(home + 1, len(clauses)):
-        if ci in need_clauses:
+        if ci in need_clauses or ci in skip:
             continue
         if getattr(clauses[ci], attr):
             return clauses[ci], "first"
     return None, None
 
 
-def _pick_subject(clauses, own, pos, need_clauses=()):
+def _pick_subject_ex(clauses, own, pos, need_clauses=(), skip=()):
+    """(subject tuple, clause) — the subject the need belongs to, and the clause it was said in."""
     home = own[0]
     s = _closest(clauses[home].subjects, pos)
     if s:
-        return s
+        return s, clauses[home]
     for ci in own[1:]:
         if clauses[ci].subjects:
-            return clauses[ci].subjects[0]
-    cl, where = _nearest(clauses, home, "subjects", need_clauses)
+            return clauses[ci].subjects[0], clauses[ci]
+    cl, where = _nearest(clauses, home, "subjects", need_clauses, skip)
     if cl:
-        return cl.subjects[-1] if where == "last" else cl.subjects[0]
-    return None
+        return (cl.subjects[-1] if where == "last" else cl.subjects[0]), cl
+    return None, None
 
 
-def _pick_location(clauses, own, need_clauses=()):
+def _pick_subject(clauses, own, pos, need_clauses=()):
+    return _pick_subject_ex(clauses, own, pos, need_clauses)[0]
+
+
+# 「陳家的阿嬤」「林家阿嬤」「隔壁的阿公」: the qualifier tells two people apart (red-team H4: dedupe must not
+# see two families' 阿嬤 as one person). 我家/大家/人家/老家 are not qualifiers.
+_SUBJ_QUAL = re.compile(r"(?:([一-鿿])家|(隔壁|對面|对面|樓上|楼上|樓下|楼下))(的)?$")
+_NOT_FAMILY = set("我你妳他她們们大人自回老住全")
+
+
+def _qualified_subject(s, cl):
+    """The subject word with a family/neighbour qualifier said right before it, if any."""
+    word = s[0]
+    if cl is None:
+        return word
+    m = _SUBJ_QUAL.search(cl.text[:s[2]])
+    if not m:
+        return word
+    if m.group(1) and m.group(1) in _NOT_FAMILY:
+        return word
+    return m.group(0) + word
+
+
+_REDUP = re.compile(r"(.)\1")
+_SUBJ_CANON = str.maketrans({"妈": "媽", "嬷": "嬤", "爷": "爺", "儿": "兒", "孙": "孫", "宝": "寶"})
+
+
+def subject_key(word):
+    """Comparable form of a subject: 爸爸 = 我爸 = 爸, 阿嬷 = 阿嬤; 陳家的阿嬤 != 林家的阿嬤."""
+    w = normalize(word or "").replace(" ", "").replace("的", "").translate(_SUBJ_CANON)
+    w = re.sub(r"^(我們|我们|我|他們|他们|他|她|你)", "", w)
+    return _REDUP.sub(r"\1", w)
+
+
+def _place_key(cl):
+    if not cl.zone:
+        return None
+    return (cl.zone, cl.location if cl.zone == codebook.ZONE_EXTERNAL else "")
+
+
+def _compatible(g, subj, place):
+    """Can a hit with this subject/place join group g? None (not said) fits anything."""
+    if subj is not None and g["subject"] is not None and subj != g["subject"]:
+        return False
+    if place is not None and g["place"] is not None and place != g["place"]:
+        return False
+    return True
+
+
+def _pick_location(clauses, own, need_clauses=(), skip=()):
     for ci in own:
         if clauses[ci].zone:
             return clauses[ci].zone, clauses[ci].location
-    cl, _ = _nearest(clauses, own[0], "zone", need_clauses)
+    cl, _ = _nearest(clauses, own[0], "zone", need_clauses, skip)
     if cl:
         return cl.zone, cl.location
     return 0, ""
@@ -294,12 +347,12 @@ def _adjust_item(h, clauses, ci):
     """Subject-dependent items: 走失 of an elder -> 404; 尿布 of an elder -> 804, 紙尿褲 of a baby -> 602."""
     e = h.entry
     code, cat = e["item_code"], e["category"]
-    if e["id"] not in ("rescue_lost_child", "baby_diaper", "adult_diaper"):
+    if e["id"] not in ("rescue_lost_child", "rescue_lost_way", "baby_diaper", "adult_diaper"):
         return code, cat
     s = _pick_subject(clauses, [ci], h.start)
     group = s[1] if s else "unknown"
     word = s[0] if s else ""
-    if e["id"] == "rescue_lost_child" and h.keyword in ("走丟", "走丢", "走失"):
+    if e["id"] in ("rescue_lost_child", "rescue_lost_way") and h.keyword in ("走丟", "走丢", "走失", "迷路"):
         if group == "elderly":
             return 404, 4
         if group == "unknown" and word:
@@ -334,7 +387,9 @@ def _build(text, now):
     """Untriaged needs from the rules. Returns (needs, clauses)."""
     lex = get_lexicon()
     _norm, clauses = _clauses(text, now)
-    groups = OrderedDict()
+    # One group per (item, subject, place): 「我兒子被困在中正路，我女兒被困在和平國小」 is two needs
+    # (red-team C2). A hit whose clause names no subject/place joins the earlier group of its item.
+    groups = []
     suppressed = []
     for cl in clauses:
         for h in cl.hits:
@@ -343,29 +398,50 @@ def _build(text, now):
                 continue
             code, cat = _adjust_item(h, clauses, cl.idx)
             key = code if code else ("cat", cat)
-            g = groups.get(key)
+            # only a subject said before the hit splits a need (「…洗腎要找爸爸帶她去」: 爸爸 is not the patient)
+            before = [x for x in cl.subjects if x[2] < h.start]
+            s = before[-1] if before else None
+            subj = subject_key(_qualified_subject(s, cl)) if s else None
+            place = _place_key(cl)
+            g = next((g for g in groups if g["key"] == key and _compatible(g, subj, place)), None)
             if g is None:
-                g = groups[key] = {"item_code": code, "category": cat, "hits": [], "clauses": [], "sensitive": False}
+                g = {"key": key, "item_code": code, "category": cat, "hits": [], "clauses": [], "sensitive": False,
+                     "subject": None, "place": None}
+                groups.append(g)
+            if subj is not None and g["subject"] is None:
+                g["subject"] = subj
+            if place is not None and g["place"] is None:
+                g["place"] = place
             g["hits"].append((cl.idx, h))
             if cl.idx not in g["clauses"]:
                 g["clauses"].append(cl.idx)
             if h.entry.get("sensitive"):
                 g["sensitive"] = True
-    need_clauses = {ci for g in groups.values() for ci in g["clauses"]}
-    # generic items give way to a specific item of the same category (sensitivity carries over)
+    # every clause that holds a need (even one absorbed below) is not a source for another need's fields
+    need_clauses = {ci for g in groups for ci in g["clauses"]}
+    # generic items give way to a specific item of the same category for the same person/place
+    # (sensitivity carries over); 「阿公的藥沒了，阿嬤的胰島素也沒了」 keeps both
     for gen_code, gen_cat in GENERIC_ITEMS.items():
-        if gen_code not in groups:
-            continue
-        specific = [k for k, g in groups.items() if k != gen_code and g["category"] == gen_cat]
-        if specific:
-            gen = groups.pop(gen_code)
-            for k in specific:
-                groups[k]["sensitive"] = groups[k]["sensitive"] or gen["sensitive"]
+        for gen in [g for g in groups if g["key"] == gen_code]:
+            specific = [g for g in groups if g["key"] != gen_code and g["category"] == gen_cat
+                        and _compatible(g, gen["subject"], gen["place"])]
+            if specific:
+                groups.remove(gen)
+                for g in specific:
+                    g["sensitive"] = g["sensitive"] or gen["sensitive"]
     for code, by in ABSORBED_BY.items():
-        if code in groups and any(b in groups for b in by):
-            groups.pop(code)
+        if any(o["key"] in by for o in groups):
+            groups[:] = [g for g in groups if g["key"] != code]
+    # 救命 / 叫救護車 next to a real emergency is that emergency, not a second one (its red flag goes along,
+    # so the coverage invariant still sees it on a P1 need)
+    for g in [g for g in groups if all(h.id == "generic_emergency" for _ci, h in g["hits"])]:
+        target = next((o for o in groups if o is not g and any(h.entry.get("red_flag") and h.id != "generic_emergency"
+                                                                 for _ci, h in o["hits"])), None)
+        if target is not None:
+            target["hits"].extend(g["hits"])
+            groups.remove(g)
     needs = []
-    for g in groups.values():
+    for g in groups:
         n = Need(category=g["category"], item_code=g["item_code"])
         it = codebook.item(n.item_code)
         n.item = it["zh"] if it else ""
@@ -383,11 +459,13 @@ def _build(text, now):
         n.red_flags = reds
         if g["sensitive"]:
             n.add_flag("sensitive")
-        s = _pick_subject(clauses, own, first.start, need_clauses)
+        # the son's address is not the daughter's: never borrow from the other need of the same item
+        siblings = {ci for o in groups if o is not g and o["key"] == g["key"] for ci in o["clauses"]}
+        s, s_cl = _pick_subject_ex(clauses, own, first.start, need_clauses, siblings)
         if s:
-            n.subject, n.subject_group = s[0], s[1]
-            n.evidence["subject"] = s[0]
-        zone, loc = _pick_location(clauses, own, need_clauses)
+            n.subject, n.subject_group = _qualified_subject(s, s_cl), s[1]
+            n.evidence["subject"] = n.subject
+        zone, loc = _pick_location(clauses, own, need_clauses, siblings)
         if zone:
             n.zone_code, n.location = zone, loc
             n.evidence["location"] = loc
@@ -639,9 +717,11 @@ def _llm_info(d, ctx):
 def _match(rules, matched, info):
     ic = info["item_code"]
     if ic and ic not in GENERIC_ITEMS:
-        for pos, rn in enumerate(rules):
-            if rn.item_code == ic:
-                return "dup" if pos in matched else pos
+        same = [pos for pos, rn in enumerate(rules) if rn.item_code == ic]
+        if same:
+            # two people with the same item are two rules needs: take the next free one
+            free = [pos for pos in same if pos not in matched]
+            return free[0] if free else "dup"
     cat = info["cat"]
     for pos, rn in enumerate(rules):
         if pos in matched or rn.category != cat:
@@ -687,6 +767,8 @@ def _apply_llm_fields(m, d, ctx, now, src, ev, flags, own=frozenset(), other=fro
             if not z:
                 continue   # 「明天早上」 is not a place: treat as not said (no flag)
         rv = getattr(m, f)
+        if f == "subject" and rv and not _PRONOUN_PREFIX.sub("", str(lv)).strip():
+            continue   # 「我」 is the speaker, not the patient: keep the rules' 兒子 / 女兒 / 阿嬤
         g = grounded(f, lv, None, ctx)
         if f == "quantity" and not g and int(lv) in ctx.any_numbers:
             continue   # the number was said, but as a duration / bed / age: not a quantity

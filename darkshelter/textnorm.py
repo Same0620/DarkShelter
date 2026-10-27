@@ -68,11 +68,20 @@ _PUNCT = {",": "，", ";": "；", "!": "！", "?": "？", ":": "：", "(": "（"
 _CJK = r"　-〿一-鿿＀-￯"
 
 
+def strip_format_chars(s):
+    """Drop invisible format characters (Unicode Cf: zero-width space/joiner, BOM, bidi marks).
+
+    「洗\\u200b腎」 must match 洗腎, and a phone number must not hide behind a zero-width space."""
+    if not s:
+        return s or ""
+    return "".join(ch for ch in str(s) if unicodedata.category(ch) != "Cf")
+
+
 def normalize(s):
-    """to_traditional + NFKC width folding + whitespace/punctuation cleanup."""
+    """Cf removal + to_traditional + NFKC width folding + whitespace/punctuation cleanup."""
     if not s:
         return ""
-    s = to_traditional(str(s))
+    s = to_traditional(strip_format_chars(str(s)))
     s = unicodedata.normalize("NFKC", s)
     s = "".join(_PUNCT.get(ch, ch) for ch in s)
     # a period that is not a decimal point becomes 。
@@ -165,24 +174,44 @@ def parse_cn_number(s):
     return v, approx
 
 
-_ID_RE = re.compile(r"(?<![A-Za-z0-9])[A-Za-z][1289]\d{8}(?!\d)")
+# National ID: a letter, then 1/2/8/9 and 8 more digits; spaces or dashes may sit between them
+# (「A 123 456 789」), and full-width forms count too.
+_ID_RE = re.compile(r"(?<![A-Za-zＡ-Ｚａ-ｚ0-9０-９])[A-Za-zＡ-Ｚａ-ｚ][\s\-]?[1289１２８９](?:[\s\-]?[0-9０-９]){8}(?![0-9０-９])")
 PHONE_RE = re.compile(r"09\d{2}-?\d{3}-?\d{3}")
+# Digits as Arabic, full-width or Chinese numerals (零九一二…): a run of 7 or more of them is a phone
+# number (mobile, +886, (02) landline) even with spaces, dots, dashes or brackets between the groups.
+_DIGITS = "0123456789０１２３４５６７８９零〇一二三四五六七八九"
+_DIGIT_SET = frozenset(_DIGITS)
+_NUM_RUN = re.compile(r"[+＋(（]*[" + _DIGITS + r"](?:[\s\-‐‑–—_.．・･()（）]{0,2}[" + _DIGITS + r"])+[)）]?")
 
 
 def scrub_ids(s):
-    """Replace national ID numbers ([A-Z][1289]\\d{8}) with ＊＊＊. Phones stay (desk only)."""
+    """Replace national ID numbers ([A-Z][1289]\\d{8}, spaced or full-width too) with ＊＊＊. Phones stay (desk only)."""
     if not s:
         return s or ""
     return _ID_RE.sub("＊＊＊", s)
 
 
+def _drop_long_number(m):
+    txt = m.group(0)
+    if sum(1 for ch in txt if ch in _DIGIT_SET) < 7:
+        return txt
+    if m.string[m.end():m.end() + 1] in ("/", ":", "："):
+        return txt  # a date or a time follows (「10000 10/28」), not a phone number
+    return ""
+
+
 def strip_contact_numbers(s):
-    """Remove phone numbers, ID numbers and any 7+ digit run (used for wire text)."""
+    """Remove phone numbers, ID numbers and any run of 7+ digits (used for wire text).
+
+    Digits may be Arabic, full-width or Chinese numerals, with spaces, dots, dashes or brackets
+    between them: 0912 345 678, +886-912-345-678, (02)2345-6789, 零九一二三四五六七八."""
     if not s:
         return ""
+    s = strip_format_chars(s)
     s = _ID_RE.sub("", s)
     s = PHONE_RE.sub("", s)
-    s = re.sub(r"\d{7,}", "", s)
+    s = _NUM_RUN.sub(_drop_long_number, s)
     return s
 
 

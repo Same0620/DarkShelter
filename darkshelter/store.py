@@ -352,7 +352,13 @@ class Store:
         def fn(t, now, old):
             if fields:
                 self._apply_edit(t, fields)
-            p = int(t["priority"] if priority in (None, "") else priority)
+            if priority in (None, ""):
+                p = int(t["priority"])
+            elif isinstance(priority, bool) or not isinstance(priority, int):
+                # "1" or 1.5 must not silently become P1 (REDTEAM.md L4)
+                raise Conflict("bad_priority", "優先等級必須是 1、2 或 3", "Priority must be 1, 2 or 3")
+            else:
+                p = priority
             if p not in (1, 2, 3):
                 raise Conflict("bad_priority", "優先等級必須是 1、2 或 3", "Priority must be 1, 2 or 3")
             floor = int(t.get("rule_priority") or t["priority"] or 3)
@@ -589,7 +595,14 @@ class Store:
                 "send_attempts=send_attempts+1 WHERE seq=?", [(now, s) for s in seqs])
             self._event(c, now, None, "sent", None, {"seqs": seqs})
 
-    def _ack_one(self, c, now, seq, v, level, eoc_status):
+    def _seq_conflicts(self, c):
+        """Ticket numbers under which the EOC holds a DIFFERENT ticket (meta 'seq_conflicts')."""
+        try:
+            return {int(x) for x in json.loads(self._meta_get(c, "seq_conflicts", "[]") or "[]")}
+        except (TypeError, ValueError):
+            return set()
+
+    def _ack_one(self, c, now, seq, v, level, eoc_status, conflicts=None):
         r = c.execute("SELECT version, acked_version, acked_level, eoc_status, delivered_wall FROM tickets "
                       "WHERE seq=?", (int(seq),)).fetchone()
         if r is None:
@@ -598,7 +611,20 @@ class Store:
                                    r["eoc_status"] or 0, r["delivered_wall"])
         upd = {}
         v, level = int(v), int(level)
-        if v > version or v < av:
+        if level == 0 or v > version:
+            # Not an ack of anything this desk sent: the EOC holds a different ticket under this number
+            # (desk database reset while the EOC's was kept, or two desks sharing a desk_id). Take neither
+            # its status nor delivery, and stop sending this ticket (pending_units skips it): it stays
+            # undelivered, so the undelivered-P1 banner sends the clerk to the backup channel.
+            if conflicts is not None:
+                conflicts.add(int(seq))
+            if level == 0:          # the EOC says "not yours": anything it told us about it is wrong
+                c.execute("UPDATE tickets SET acked_version=0, acked_level=0, delivered_wall=NULL, eoc_status=0, "
+                          "eoc_status_wall=NULL WHERE seq=?", (int(seq),))
+            elif dw is None and es:  # a status that arrived for a ticket never delivered is not ours
+                c.execute("UPDATE tickets SET eoc_status=0, eoc_status_wall=NULL WHERE seq=?", (int(seq),))
+            return "conflict"
+        if v < av:
             pass
         elif v > av:
             upd["acked_version"], upd["acked_level"] = v, level
@@ -619,15 +645,27 @@ class Store:
         self.mark_acked_many([(seq, v, level, eoc_status)])
 
     def mark_acked_many(self, entries):
-        """entries: [(seq, version, level, eoc_status)] in one transaction."""
+        """entries: [(seq, version, level, eoc_status)] in one transaction.
+
+        Returns the number of entries that were NOT acks of this desk's tickets (a version above the
+        ticket's own, or level 0 = "the EOC holds a different ticket under this number").
+        """
         entries = list(entries)
         if not entries:
-            return
+            return 0
         now = self.clock()
+        n_conflict = 0
         with self._txn() as c:
+            conflicts = self._seq_conflicts(c)
+            known = set(conflicts)
             for seq, v, level, st in entries:
-                self._ack_one(c, now, seq, v, level, st)
+                if self._ack_one(c, now, seq, v, level, st, conflicts) == "conflict":
+                    n_conflict += 1
+            if conflicts != known:
+                self._meta_set(c, "seq_conflicts", json.dumps(sorted(conflicts)))
+                self._event(c, now, None, "seq_conflict", None, {"seqs": sorted(conflicts - known)})
             self._event(c, now, None, "acked", None, {"acks": [[int(e[0]), int(e[1]), int(e[2])] for e in entries]})
+        return n_conflict
 
     def apply_status(self, seq, eoc_status, status_seq):
         self.apply_status_many([(seq, eoc_status, status_seq)])
@@ -640,10 +678,13 @@ class Store:
         now = self.clock()
         with self._txn() as c:
             applied = int(self._meta_get(c, "status_seq_applied", "0"))
+            conflicts = self._seq_conflicts(c)
             for seq, st, sseq in entries:
                 if int(sseq) <= applied:
                     continue
-                r = c.execute("SELECT eoc_status FROM tickets WHERE seq=?", (int(seq),)).fetchone()
+                # A number the EOC uses for a different ticket: its status is not ours (skip, but advance).
+                r = None if int(seq) in conflicts else c.execute(
+                    "SELECT eoc_status FROM tickets WHERE seq=?", (int(seq),)).fetchone()
                 if r is not None and int(st) > int(r["eoc_status"] or 0):
                     c.execute("UPDATE tickets SET eoc_status=?, eoc_status_wall=? WHERE seq=?",
                               (int(st), now, int(seq)))
@@ -666,6 +707,7 @@ class Store:
         """
         now = self.clock() if now is None else now
         exclude = set(int(s) for s in exclude)
+        exclude |= self._seq_conflicts(self.conn())   # the EOC holds a different ticket under these numbers
         rows = self.conn().execute(
             "SELECT * FROM tickets WHERE version > 0 AND (acked_version < version OR acked_level < 2)").fetchall()
         out = []
@@ -713,14 +755,92 @@ class Store:
         return int(self.meta("boot_id", "0"))
 
     def recover(self):
-        """Counts after a restart: open drafts and unsent (pending) units."""
+        """Counts after a restart: open drafts, unsent (pending) units, and intakes that were still queued
+        (typed ones are requeued by the pipeline; recordings were never saved, so they are lost)."""
         c = self.conn()
         drafts = c.execute("SELECT COUNT(*) FROM tickets WHERE status='draft'").fetchone()[0]
         unsent = len(self.pending_units())
+        queued = self.intake_counts()
         now = self.clock()
         with self._txn() as cc:
-            self._event(cc, now, None, "recovered", None, {"drafts": drafts, "unsent": unsent})
-        return {"drafts": drafts, "unsent": unsent}
+            self._event(cc, now, None, "recovered", None, {"drafts": drafts, "unsent": unsent,
+                                                             "queued_text": queued["text"],
+                                                             "queued_audio": queued["audio"]})
+        return {"drafts": drafts, "unsent": unsent, "queued_text": queued["text"], "queued_audio": queued["audio"]}
+
+    # ------------------------------------------------------------ persisted intake queue (red-team H6)
+    # A row per queued intake, written before the job id is returned and deleted when the job ends.
+    # Typed text is kept so a crash can requeue it; a recording keeps only a marker (audio never hits disk).
+    _INTAKE_SCHEMA = ("CREATE TABLE IF NOT EXISTS intake_queue (job_id TEXT PRIMARY KEY, kind TEXT NOT NULL, "
+                      "text TEXT, clerk TEXT, household_id INTEGER, created_wall REAL, "
+                      "state TEXT NOT NULL DEFAULT 'queued', lost_wall REAL)")
+    LOST_WINDOW_S = 900  # the "recordings lost" banner shows for 15 min after the restart
+
+    def _intake_table(self, c):
+        c.execute(self._INTAKE_SCHEMA)  # idempotent, and rolled back together with the write if it fails
+
+    def intake_save(self, job_id, kind, text=None, clerk="", household_id=None, created_wall=None):
+        """Persist a queued intake (kind 'text' or 'audio'); audio rows carry no audio, only the marker."""
+        now = self.clock() if created_wall is None else created_wall
+        with self._txn() as c:
+            self._intake_table(c)
+            c.execute("INSERT OR REPLACE INTO intake_queue (job_id, kind, text, clerk, household_id, created_wall, "
+                      "state) VALUES (?,?,?,?,?,?, 'queued')",
+                      (str(job_id), kind, text if kind == "text" else None, clerk or "",
+                       int(household_id) if household_id is not None else None, now))
+
+    def intake_done(self, job_id):
+        """The job ended (drafts made, or nothing to make): forget the queued intake."""
+        with self._txn() as c:
+            self._intake_table(c)
+            c.execute("DELETE FROM intake_queue WHERE job_id=? AND state='queued'", (str(job_id),))
+
+    def intake_counts(self):
+        """{'text': n, 'audio': m} intakes still queued (i.e. not finished before the last stop)."""
+        out = {"text": 0, "audio": 0}
+        try:
+            for r in self.conn().execute("SELECT kind, COUNT(*) FROM intake_queue WHERE state='queued' "
+                                         "GROUP BY kind").fetchall():
+                if r[0] in out:
+                    out[r[0]] = int(r[1])
+        except sqlite3.OperationalError:  # table not created yet: nothing was ever queued
+            pass
+        return out
+
+    def intake_restore(self, now=None):
+        """After a restart: (typed rows to requeue, recordings lost). A row whose job already made
+        drafts is dropped (the crash came after the rules step), so nothing is processed twice."""
+        now = self.clock() if now is None else now
+        requeue, lost = [], []
+        with self._txn() as c:
+            self._intake_table(c)
+            rows = [dict(r) for r in c.execute("SELECT * FROM intake_queue WHERE state='queued' "
+                                               "ORDER BY created_wall, rowid").fetchall()]
+            for r in rows:
+                made = c.execute("SELECT COUNT(*) FROM tickets WHERE job_id=?", (r["job_id"],)).fetchone()[0]
+                if made:
+                    c.execute("DELETE FROM intake_queue WHERE job_id=?", (r["job_id"],))
+                elif r["kind"] == "text" and (r.get("text") or "").strip():
+                    requeue.append(r)
+                else:
+                    c.execute("UPDATE intake_queue SET state='lost', lost_wall=? WHERE job_id=?", (now, r["job_id"]))
+                    r["state"], r["lost_wall"] = "lost", now
+                    lost.append(r)
+            c.execute("DELETE FROM intake_queue WHERE state='lost' AND lost_wall < ?", (now - self.LOST_WINDOW_S,))
+            if requeue or lost:
+                self._event(c, now, None, "intake_restored", None,
+                            {"requeued_text": len(requeue), "lost_audio": len(lost)})
+        return requeue, lost
+
+    def lost_intakes(self, now=None):
+        """Recordings lost in a crash during the last LOST_WINDOW_S (for the banner)."""
+        now = self.clock() if now is None else now
+        try:
+            r = self.conn().execute("SELECT COUNT(*) FROM intake_queue WHERE state='lost' AND lost_wall >= ?",
+                                    (now - self.LOST_WINDOW_S,)).fetchone()
+        except sqlite3.OperationalError:
+            return 0
+        return int(r[0] or 0)
 
     # ------------------------------------------------------------ households
     def checkin(self, household, clerk=""):
@@ -818,6 +938,10 @@ class Store:
 
     def open_tickets(self):
         return self.tickets(OPEN_STATUSES)
+
+    def seq_conflicts(self):
+        """Ticket numbers the EOC holds a different ticket under: they can't be delivered (REDTEAM.md H1)."""
+        return self._seq_conflicts(self.conn())
 
     def query(self, sql, params=()):
         return [dict(r) for r in self.conn().execute(sql, tuple(params)).fetchall()]

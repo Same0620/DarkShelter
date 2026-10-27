@@ -5,6 +5,8 @@ older versions included) to the source address, echoing boot_id and msg_seq.
 HEARTBEAT: update the census and last_seen (commit), then reply HB_REPLY with that desk's
 status changes where status_seq > status_seq_applied, in order, as many as fit.
 The loop body runs under try/except Exception; the Windows UDP reset error is disabled.
+Junk (bad MAC, bad version, truncated) is counted in memory and written to the store every
+JUNK_FLUSH_S, so a flood of junk never costs one durable SQLite write per datagram.
 """
 import select
 import sys
@@ -13,6 +15,8 @@ import time
 
 from . import codec
 from .linkemu import open_udp
+
+JUNK_FLUSH_S = 2.0
 
 
 class Receiver(threading.Thread):
@@ -29,7 +33,10 @@ class Receiver(threading.Thread):
         self._lock = threading.Lock()
         self._last_err = {}
         self.counters = {"datagrams_rx": 0, "bytes_rx": 0, "bad_mac": 0, "bad_version": 0, "truncated": 0,
-                         "socket_errors": 0, "acks_tx": 0, "hb_replies_tx": 0, "bytes_tx": 0, "errors": 0}
+                         "socket_errors": 0, "acks_tx": 0, "hb_replies_tx": 0, "bytes_tx": 0, "errors": 0,
+                         "stale_heartbeats": 0}
+        self._junk = {}             # store counters not yet written (bad_mac, bad_datagrams, bytes_rx)
+        self._junk_flushed = time.monotonic()
         self.last_beat = time.monotonic()
 
     def start(self):
@@ -46,10 +53,30 @@ class Receiver(threading.Thread):
         self._stop_evt.set()
         if join and self.is_alive() and threading.current_thread() is not self:
             self.join(timeout=2.0)
+        self.flush_counters()
         try:
             self.sock.close()
         except Exception:
             pass
+
+    def _junk_count(self, **deltas):
+        with self._lock:
+            for k, v in deltas.items():
+                self._junk[k] = self._junk.get(k, 0) + v
+
+    def flush_counters(self):
+        """Write the junk counters gathered in memory to the store (one transaction)."""
+        with self._lock:
+            junk, self._junk = self._junk, {}
+            self._junk_flushed = time.monotonic()
+        if junk:
+            try:
+                self.store.bump(**junk)
+            except Exception as e:
+                with self._lock:    # keep them for the next try
+                    for k, v in junk.items():
+                        self._junk[k] = self._junk.get(k, 0) + v
+                self._error("flush", e)
 
     def stats(self):
         with self._lock:
@@ -79,6 +106,8 @@ class Receiver(threading.Thread):
                     self.beat()
                 self._wait(0.2)
                 self._drain()
+                if self._junk and time.monotonic() - self._junk_flushed >= JUNK_FLUSH_S:
+                    self.flush_counters()
             except Exception as e:  # never die from one bad input
                 self._error(type(e).__name__, e)
                 self._stop_evt.wait(0.05)
@@ -128,15 +157,15 @@ class Receiver(threading.Thread):
             msg = codec.unpack(data, self.keys)
         except codec.BadMac:
             self._count("bad_mac")
-            self.store.bump(bad_mac=1, bytes_rx=len(data), bad_datagrams=1)
+            self._junk_count(bad_mac=1, bytes_rx=len(data), bad_datagrams=1)
             return
         except codec.BadVersion:
             self._count("bad_version")
-            self.store.bump(bad_datagrams=1, bytes_rx=len(data))
+            self._junk_count(bad_datagrams=1, bytes_rx=len(data))
             return
         except codec.Truncated:
             self._count("truncated")
-            self.store.bump(bad_datagrams=1, bytes_rx=len(data))
+            self._junk_count(bad_datagrams=1, bytes_rx=len(data))
             return
         key = self.keys[msg.desk_id]
         if msg.type in (codec.DATA_SUMMARY, codec.DATA_DIGEST):
@@ -144,7 +173,10 @@ class Receiver(threading.Thread):
             reply = codec.pack_ack(acks, key, msg.desk_id, msg.boot_id, msg.msg_seq)
             self._send(reply, addr, "acks_tx")
         elif msg.type == codec.HEARTBEAT:
-            self.store.apply_heartbeat(msg.desk_id, msg.boot_id, msg.msg_seq, msg.census, nbytes=len(data))
+            # A stale copy (older boot_id/msg_seq) leaves the census alone but is still answered:
+            # replies are idempotent at the desk, and a desk whose database was reset needs them.
+            if not self.store.apply_heartbeat(msg.desk_id, msg.boot_id, msg.msg_seq, msg.census, nbytes=len(data)):
+                self._count("stale_heartbeats")
             limit = max(0, (self.mtu - codec.OVERHEAD) // codec.HB_ENTRY.size)
             changes = self.store.status_changes(msg.desk_id, msg.census.get("status_seq_applied", 0), limit=limit)
             reply, _ = codec.pack_hb_reply(changes, key, msg.desk_id, msg.boot_id, msg.msg_seq, self.mtu)
