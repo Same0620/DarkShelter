@@ -7,6 +7,9 @@
 - JSON routes need Content-Type application/json, so a cross-site form or text/plain
   POST (a "simple" request, no CORS preflight) can't reach them. Routes that take a raw
   body (audio) need the custom header X-DarkShelter: 1, which forces a preflight.
+- No page may be shown inside another site's frame (X-Frame-Options + CSP frame-ancestors).
+  Otherwise a hostile page could frame the desk and steer a clerk's click onto 結案: that
+  click would be a same-origin request, which the checks above rightly allow (clickjacking).
 """
 from flask import jsonify, request
 
@@ -74,5 +77,11 @@ def install(app, ports_fn, raw_endpoints=()):
         elif request.mimetype != "application/json":
             return _deny("json_required", "請用 JSON 格式", "Content-Type must be application/json", 415)
         return None
+
+    @app.after_request
+    def _no_framing(resp):
+        resp.headers.setdefault("X-Frame-Options", "DENY")
+        resp.headers.setdefault("Content-Security-Policy", "frame-ancestors 'none'")
+        return resp
 
     return _guard

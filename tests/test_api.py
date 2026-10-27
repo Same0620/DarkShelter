@@ -1,5 +1,6 @@
 """Desk HTTP API via the Flask test client (mock ASR/LLM, no network threads)."""
 import io
+import json
 import os
 import tempfile
 import time
@@ -214,6 +215,42 @@ class ApiTest(unittest.TestCase):
         for base in ("http://127.0.0.1:8000", "http://localhost:8000", "http://[::1]:8000", "http://localhost"):
             self.assertEqual(self.c.get("/healthz", base_url=base).status_code, 200, base)
 
+    def test_round2_no_framing(self):
+        """Round 2: no other site may frame the desk (clickjacking a 結案 click past the guard)."""
+        for path in ("/", "/api/state", "/export.csv"):
+            r = self.c.get(path)
+            self.assertEqual(r.headers.get("X-Frame-Options"), "DENY", path)
+            self.assertEqual(r.headers.get("Content-Security-Policy"), "frame-ancestors 'none'", path)
+        r = self.c.get("/api/state", base_url="http://evil.example:8000")  # refused responses too
+        self.assertEqual(r.status_code, 400)
+        self.assertEqual(r.headers.get("X-Frame-Options"), "DENY")
+
+    def test_round2_guard_bypasses_and_false_blocks(self):
+        """Round 2 probes: odd Origins and Hosts are refused; what real Chrome and urllib send is not."""
+        seq = self.draft_seq()
+        url = f"/api/tickets/{seq}/confirm"
+        r = self.c.post(url, json={"clerk": "A"}, headers={"Origin": "null", "Sec-Fetch-Site": "cross-site"})
+        self.assertEqual((r.status_code, r.get_json()["error"]), (403, "cross_origin"))  # sandboxed iframe, file://
+        r = self.c.post(url, data='--x\r\nContent-Disposition: form-data; name="clerk"\r\n\r\nA\r\n--x--\r\n',
+                        content_type="multipart/form-data; boundary=x")
+        self.assertEqual(r.status_code, 415)
+        for host in ("127.0.0.1.:8000", "localhost.:8000", "127.1:8000", "0x7f000001:8000", "[::ffff:127.0.0.1]:8000",
+                     "evil.example@127.0.0.1:8000", "127.0.0.1:8000@evil.example", "127.0.0.1:8000:8000", ""):
+            r = self.c.get("/api/state", environ_overrides={"HTTP_HOST": host})
+            self.assertEqual(r.status_code, 400, host)
+        self.assertEqual(self.desk.store.get(seq)["status"], "draft")
+        # not blocked: Chrome's same-origin headers at both addresses, a charset parameter, lower-case header names
+        for base in ("http://127.0.0.1:8000", "http://localhost:8000"):
+            r = self.c.post("/api/intake/text", base_url=base, json={"text": "我想要手機充電"},
+                            headers={"Origin": base, "Sec-Fetch-Site": "same-origin", "Sec-Fetch-Mode": "cors"})
+            self.assertEqual(r.status_code, 200, (base, r.get_data(as_text=True)))
+            r = self.c.post("/api/intake/audio", base_url=base, data=wav_bytes(1.0), content_type="audio/wav",
+                            headers={"Origin": base, "Sec-Fetch-Site": "same-origin", "x-darkshelter": "1"})
+            self.assertEqual(r.status_code, 200, (base, r.get_data(as_text=True)))
+        r = self.c.post("/api/intake/text", data=json.dumps({"text": "我想要手機充電"}),
+                        content_type="application/json; charset=utf-8")
+        self.assertEqual(r.status_code, 200, r.get_data(as_text=True))
+
     def test_deadline_text_never_from_client(self):
         """M2: a client-supplied deadline_text is ignored; the text is derived from deadline_at."""
         seq = self.draft_seq()
@@ -328,6 +365,17 @@ class EocGuardTest(unittest.TestCase):
         self.assertEqual(self.c.post(url, json={"status": 2}).status_code, 404)  # unknown ticket, but allowed
         self.assertEqual(self.c.get("/api/state", base_url="http://evil.example:8100").status_code, 400)
         self.assertEqual(self.c.get("/api/state", base_url="http://127.0.0.1:8100").status_code, 200)
+
+    def test_round2_no_framing_and_null_origin(self):
+        for path in ("/", "/api/state"):
+            r = self.c.get(path, base_url="http://127.0.0.1:8100")
+            self.assertEqual(r.headers.get("X-Frame-Options"), "DENY", path)
+            self.assertEqual(r.headers.get("Content-Security-Policy"), "frame-ancestors 'none'", path)
+        r = self.c.post("/api/tickets/7/1/status", json={"status": 3}, headers={"Origin": "null"})
+        self.assertEqual(r.status_code, 403)
+        r = self.c.post("/api/tickets/7/1/status", base_url="http://localhost:8100", json={"status": 2},
+                        headers={"Origin": "http://localhost:8100", "Sec-Fetch-Site": "same-origin"})
+        self.assertEqual(r.status_code, 404)  # passes the guard; the ticket just doesn't exist
 
 
 if __name__ == "__main__":
