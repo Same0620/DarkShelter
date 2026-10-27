@@ -20,6 +20,7 @@ rerun is the table below.
 | C5 | 03:09 | `7b432e7` | every SPEC §13 acceptance check, rerun on the final code |
 | Red-team | 04:40–05:00 | `64825d5`–`1d1603d` | 8 agents in two rounds, read-only: 29 findings with proofs of concept (`REDTEAM.md`) |
 | Red-team fixes | 05:23–06:05 | `368fe34` (tag `known-good-1`) | 4 fixer agents on separate files plus me; every fix has a regression test; all §13 checks rerun on the fixed code |
+| Filming prep | 07:20–07:50 | see `git log` | `FILMING.md` + `scripts/film_reset.py` (one command per take); the one-take sequence was dry-run twice from a clean reset in real Chrome (typed, real models), and every step passed. No product code was changed. |
 | Round 2 | 06:45–07:30 | `19e1ca6`…(this commit) | team decisions (self-harm, rescue + protection), red-team of the guard and the new phrases, real-model dress rehearsal (typed + spoken, real Whisper + Qwen), real Chrome on 127.0.0.1 and localhost; one commit per change; all §13 checks below rerun |
 
 The build used three sub-agents in parallel (network; lexicon/extract/triage; audio/ASR/LLM adapters) while I wrote
