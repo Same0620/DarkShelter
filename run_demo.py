@@ -112,6 +112,10 @@ class Child:
             log.write(f"\n===== restart {time.strftime('%H:%M:%S')} =====\n".encode("utf-8"))
             log.flush()
         env = {**os.environ, "PYTHONUTF8": "1", "PYTHONUNBUFFERED": "1"}
+        # numpy's OpenBLAS reserves a buffer per CPU thread at start-up; on a laptop short of memory (commit) that
+        # alone stopped the real-model desk ("OpenBLAS error: Memory allocation still failed"). Our BLAS work is
+        # tiny (Whisper's mel filter), so one thread costs nothing. Whisper's own threads are unaffected.
+        env.setdefault("OPENBLAS_NUM_THREADS", "1")
         kw = {}
         if os.name == "nt":
             kw["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP  # Ctrl+C goes to run_demo only
