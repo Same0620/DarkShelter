@@ -13,16 +13,17 @@ rerun is the table below.
 | Checkpoint | Time | Commit | How it was verified |
 |---|---|---|---|
 | Setup | 01:35–01:50 | — | venv (CPython 3.12.15), Whisper small/base + Ollama + qwen2.5:1.5b downloaded (see decisions) |
-| C1 core | 02:28 | `491e2c2` | 181 unit tests; `run_text_eval.py --llm none` P1 recall/precision 100 %; typed request → P1 draft with reasons → confirm → board, and check-in "yes" → draft, in headless Chromium |
-| C2 network | 02:29 → commit 02:39 | `249075a` | acceptance check 2 (`eval/demo_check.py` ALL PASS) + 41 codec/RTO/emulator/network/chaos/wire-audit tests. **Stop-the-line gate (T+2 h = 03:35) cleared at 02:30 — nothing was cut.** |
-| C3 AI | 02:30 → commit 02:40 | `6576ad5` | 190 tests incl. a real Whisper `base` and a real Ollama test; Ollama adapter against the stub (slow → timeout, bad JSON → retry → invalid_json, stopped → FAST); real-model runs below |
-| C4-lite + C4 rest | 02:35 → commit 02:41 | `cfbbc77` | selftest exit 0 with the real models; kill real Ollama → FAST → restart → FULL; hard-kill the desk under run_demo → restarted with 「已復原 2 筆草稿，1 筆待送」, queue delivered; unconfirmed P1 → content-free alert, watchdog, clock jump (unit tests) |
-| C5 | 03:09 | `7b432e7` | every SPEC §13 acceptance check, rerun on the final code |
-| Red-team | 04:40–05:00 | `64825d5`–`1d1603d` | 8 agents in two rounds, read-only: 29 findings with proofs of concept (`REDTEAM.md`) |
-| Red-team fixes | 05:23–06:05 | `368fe34` (tag `known-good-1`) | 4 fixer agents on separate files plus me; every fix has a regression test; all §13 checks rerun on the fixed code |
-| Round 2 | 06:45–07:30 | `19e1ca6`…`2bec536` (tag `known-good-2`) | team decisions (self-harm, rescue + protection), red-team of the guard and the new phrases, real-model dress rehearsal (typed + spoken, real Whisper + Qwen), real Chrome on 127.0.0.1 and localhost; one commit per change; all §13 checks below rerun |
-| Filming prep | 07:20–07:50 | `11ece2a`, `8e3cb20` | `FILMING.md` + `scripts/film_reset.py` (one command per take); the one-take sequence was dry-run twice from a clean reset in real Chrome (typed, real models), and every step passed. No product code was changed. |
-| Push | 08:55 | this commit | README links the demo video (https://youtu.be/oYu6KuO3Z-w). `main` and the tags `known-good-1` and `known-good-2` pushed to GitHub over HTTPS with the `gh` login, because this laptop's SSH key isn't on the GitHub account. No code changed. |
+| C1 core | 02:28 | `7b176e5` | 181 unit tests; `run_text_eval.py --llm none` P1 recall/precision 100 %; typed request → P1 draft with reasons → confirm → board, and check-in "yes" → draft, in headless Chromium |
+| C2 network | 02:29 → commit 02:39 | `06b8aa5` | acceptance check 2 (`eval/demo_check.py` ALL PASS) + 41 codec/RTO/emulator/network/chaos/wire-audit tests. **Stop-the-line gate (T+2 h = 03:35) cleared at 02:30 — nothing was cut.** |
+| C3 AI | 02:30 → commit 02:40 | `01f425c` | 190 tests incl. a real Whisper `base` and a real Ollama test; Ollama adapter against the stub (slow → timeout, bad JSON → retry → invalid_json, stopped → FAST); real-model runs below |
+| C4-lite + C4 rest | 02:35 → commit 02:41 | `9bae843` | selftest exit 0 with the real models; kill real Ollama → FAST → restart → FULL; hard-kill the desk under run_demo → restarted with 「已復原 2 筆草稿，1 筆待送」, queue delivered; unconfirmed P1 → content-free alert, watchdog, clock jump (unit tests) |
+| C5 | 03:09 | `f4a1c77` | every SPEC §13 acceptance check, rerun on the final code |
+| Red-team | 04:40–05:00 | `eb6bb65`–`e6acec7` | 8 agents in two rounds, read-only: 29 findings with proofs of concept (`REDTEAM.md`) |
+| Red-team fixes | 05:23–06:05 | `9dbb28e` (tag `known-good-1`) | 4 fixer agents on separate files plus me; every fix has a regression test; all §13 checks rerun on the fixed code |
+| Round 2 | 06:45–07:30 | `de3905b`…`3f6bfa0` (tag `known-good-2`) | team decisions (self-harm, rescue + protection), red-team of the guard and the new phrases, real-model dress rehearsal (typed + spoken, real Whisper + Qwen), real Chrome on 127.0.0.1 and localhost; one commit per change; all §13 checks below rerun |
+| Filming prep | 07:20–07:50 | `69933e3`, `f24a456` | `FILMING.md` + `scripts/film_reset.py` (one command per take); the one-take sequence was dry-run twice from a clean reset in real Chrome (typed, real models), and every step passed. No product code was changed. |
+| Push | 08:55 | `58136b3` | README links the demo video (https://youtu.be/oYu6KuO3Z-w). `main` and the tags `known-good-1` and `known-good-2` pushed to GitHub over HTTPS with the `gh` login, because this laptop's SSH key isn't on the GitHub account. No code changed. |
+| Email rewrite | 09:05 | every commit | The author and committer email on all 20 commits is now Same0620's GitHub noreply address. Names, dates, messages and files are unchanged, checked commit by commit. The tags moved to the rewritten commits, the hashes in this file and REDTEAM.md were updated, and `main` and the tags were force-pushed. |
 
 The build used three sub-agents in parallel (network; lexicon/extract/triage; audio/ASR/LLM adapters) while I wrote
 the store, wire view, pipeline, health, timers, desk app/UI and run_demo. Checkpoints were still verified and

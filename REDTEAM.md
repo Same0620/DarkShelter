@@ -88,7 +88,7 @@ Each fix should be followed by the full §13 suite, which takes about 15 minutes
 
 ## Round 2 (06:45–07:30): only what changed today, plus a real-model dress rehearsal
 
-Starting point: tag `known-good-1` (`368fe34`). Each change is a separate commit.
+Starting point: tag `known-good-1` (`9dbb28e`). Each change is a separate commit.
 
 **Request guard (agent G2).**
 - **Bypasses: none.** G2 sent 42 raw requests with Chrome's exact headers: a null Origin, cross-site form and
