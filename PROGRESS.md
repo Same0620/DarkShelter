@@ -24,6 +24,7 @@ rerun is the table below.
 | Filming prep | 07:20–07:50 | `69933e3`, `f24a456` | `FILMING.md` + `scripts/film_reset.py` (one command per take); the one-take sequence was dry-run twice from a clean reset in real Chrome (typed, real models), and every step passed. No product code was changed. |
 | Push | 08:55 | `58136b3` | README links the demo video (https://youtu.be/oYu6KuO3Z-w). `main` and the tags `known-good-1` and `known-good-2` pushed to GitHub over HTTPS with the `gh` login, because this laptop's SSH key isn't on the GitHub account. No code changed. |
 | Email rewrite | 09:05 | every commit | The author and committer email on all 20 commits is now Same0620's GitHub noreply address. Names, dates, messages and files are unchanged, checked commit by commit. The tags moved to the rewritten commits, the hashes in this file and REDTEAM.md were updated, and `main` and the tags were force-pushed. |
+| Judge README | 09:08 | `README: judge-facing summary` | Pitch, screenshots (`docs/img/`), results table and limits at the top of the README, with the numbers from the rerun below. PLAN.md now says Typhoon Danas cut power to about 880,000 households, because the "1,200+ base stations" figure was unverified. No code changed. |
 
 The build used three sub-agents in parallel (network; lexicon/extract/triage; audio/ASR/LLM adapters) while I wrote
 the store, wire view, pipeline, health, timers, desk app/UI and run_demo. Checkpoints were still verified and

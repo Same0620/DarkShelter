@@ -243,7 +243,7 @@ Stage I runs on a laptop processor. Stage II moves the same two models onto the 
 
 | Time | Scene |
 |---|---|
-| 0:00–0:20 | The problem: Typhoon Danas took 1,200+ base stations down and the Hualien quake 172; a shelter desk drowning in paper slips |
+| 0:00–0:20 | The problem: Typhoon Danas cut power to about 880,000 households and the Hualien quake took 172 base stations down; a shelter desk drowning in paper slips |
 | 0:20–1:20 | Wi-Fi off, charger out. Check-in of a family, where a screening "yes" opens a draft. Then three residents: (1) 「阿嬤明天早上要洗腎，她的胰島素今天也用完了」 becomes two P1s with quotes; (2) an elder speaks Taiwanese, the clerk repeats it in Mandarin, and it becomes a P2 medicine request; (3) 「我爸還在中正路三巷的家裡沒出來」 gives a P1 rescue banner, and the clerk logs "119 unreachable". A daughter reports the dialysis again and it's merged |
 | 1:20–2:10 | Link down, the queue grows. Switch to the LoRa-class relay: the headcount, then the P1s, land on the EOC board first, in seconds. The byte meter shows under 1 KB sent versus about 90 KB as voice notes. Flap the link, kill the desk app mid-send and restart it: nothing lost, nothing duplicated. The EOC clicks "dispatched" and the status appears at the desk |
 | 2:10–2:40 | Failure tour: stop Ollama, and the desk drops to FAST mode and keeps going; 「我沒有胸痛」 does not trigger an alarm; a silent press is rejected |

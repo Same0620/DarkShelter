@@ -1,13 +1,41 @@
 # DarkShelter 黑暗收容站 — Stage I
 
-An offline shelter front desk: check-in and screening, speech or typed requests turned into structured,
-triaged tickets (Whisper + a small LLM + fixed rules + clerk confirmation), and a crash-proof outbox that sends
-≤ 80-byte records most-urgent-first over a thin link (LoRa-class, one-bar LTE, satellite) to an EOC board.
+**Demo video:** https://youtu.be/oYu6KuO3Z-w
 
-- **Demo video:** https://youtu.be/oYu6KuO3Z-w
-- Why: [docs/PLAN.md](docs/PLAN.md) · What: [docs/SPEC.md](docs/SPEC.md) · Status: [PROGRESS.md](PROGRESS.md)
-- Three local processes: **desk** (http://127.0.0.1:8000), **EOC** (http://127.0.0.1:8100) and a
-  **link emulator** between them (UDP 9001 → 9002, control http://127.0.0.1:9100). Everything binds to 127.0.0.1.
+DarkShelter is an offline intake and triage desk for typhoon and earthquake shelters; it runs on one laptop with no
+internet. A clerk records or types what an evacuee needs, and the laptop itself turns the speech into a structured,
+triaged request: local Whisper, a small local LLM and fixed rules draft it, and the clerk confirms it. Requests travel
+to the emergency operations center (EOC) as records of at most 80 bytes, most urgent first, over any thin link:
+LoRa-class radio, one bar of LTE, or satellite.
+
+<p>
+  <img src="docs/img/desk.png" width="49%" alt="Shelter desk: request input, the request board and the link panel with the byte meter">
+  <img src="docs/img/eoc.png" width="49%" alt="EOC board: P1 requests first, B-001 marked dispatched, 37 people at the shelter">
+</p>
+
+*Left: the shelter desk after the LoRa-class link came up. Three P1 requests have been delivered, the EOC has marked
+B-001 🚑 已派遣 (dispatched), and the byte meter shows 348 B sent against 58.6 KB as voice notes. Right: the EOC board,
+P1s first, with 37 people at the shelter.*
+
+**Results** (final rerun on this code; details in [PROGRESS.md](PROGRESS.md), raw output in [eval/results/](eval/results/))
+
+| Check | Result |
+|---|---|
+| Automated tests, including network, chaos, UI, real Whisper and the real LLM | **349 pass**, 0 skipped |
+| Triage of 258 self-written test requests (rules only) | **P1 recall 100 %, P1 precision 100 %** |
+| Scripted demo (`eval/demo_check.py`) on an emulated LoRa-class link, from link-up | headcount at the EOC in **0.6 s**, all P1 requests in **1.8 s** |
+| Same demo: bytes sent vs the same requests as voice notes | **843 B vs 160,000 B**, 190× less |
+| 60 requests on each of 5 emulated links (LoRa relay, one-bar LTE, satellite, flapping, good) | **0** duplicates, **0** losses, **0** ordering violations |
+| Chaos: 5 hard kills each of the desk's sender and the EOC, with 30 % packet loss and a flapping link | EOC matches the desk, **43 = 43** requests: 0 missing, 0 duplicates |
+
+**Limits:** the test set is self-written, not recorded in a real shelter, and about 12 % of the fields the local LLM
+fills in are not found in what was said (12.2 % on 72 cases), so the desk flags them amber as AI guesses that can
+raise urgency but never lower it.
+
+**Design:** [docs/PLAN.md](docs/PLAN.md) (why and how) · [docs/SPEC.md](docs/SPEC.md) (exact behavior) · Status: [PROGRESS.md](PROGRESS.md)
+
+Three local processes: **desk** (http://127.0.0.1:8000), **EOC** (http://127.0.0.1:8100) and a
+**link emulator** between them (UDP 9001 → 9002, control http://127.0.0.1:9100). Everything binds to 127.0.0.1.
 
 ## 1. Setup (once, while online)
 
