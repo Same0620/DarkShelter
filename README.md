@@ -4,6 +4,7 @@ An offline shelter front desk: check-in and screening, speech or typed requests 
 triaged tickets (Whisper + a small LLM + fixed rules + clerk confirmation), and a crash-proof outbox that sends
 ≤ 80-byte records most-urgent-first over a thin link (LoRa-class, one-bar LTE, satellite) to an EOC board.
 
+- **Demo video:** https://youtu.be/oYu6KuO3Z-w
 - Why: [docs/PLAN.md](docs/PLAN.md) · What: [docs/SPEC.md](docs/SPEC.md) · Status: [PROGRESS.md](PROGRESS.md)
 - Three local processes: **desk** (http://127.0.0.1:8000), **EOC** (http://127.0.0.1:8100) and a
   **link emulator** between them (UDP 9001 → 9002, control http://127.0.0.1:9100). Everything binds to 127.0.0.1.
